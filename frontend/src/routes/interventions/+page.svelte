@@ -1,18 +1,23 @@
 <script lang="ts">
-	import SearchComponent from '../../components/SearchComponent.svelte';
-	import type { intervention } from 'src/models/intervention';
-	import CardComponent from '../../components/CardComponent.svelte';
-	import { fly } from 'svelte/transition';
-	export let data;
-	let interventions = data.interventions;
-	let filteredInterventions: intervention[] = interventions;
+	import SearchComponent from "../../components/SearchComponent.svelte";
+	import type { Intervention } from "src/models/intervention";
+	import CardComponent from "../../components/CardComponent.svelte";
+	import { fly } from "svelte/transition";
+	import { rootStore } from "../../stores/store";
+	// export let data;
 
-	function filterInterventions(filtered: intervention[]) {
+	let interventions = $rootStore.interventions;
+	let filteredInterventions: Intervention[] = interventions;
+
+	function filterInterventions(filtered: Intervention[]) {
 		filteredInterventions = filtered;
 	}
 </script>
 
-<section in:fly={{ y: 50, duration: 500, delay: 500 }} out:fly={{ duration: 500 }}>
+<section
+	in:fly={{ y: 50, duration: 500, delay: 500 }}
+	out:fly={{ duration: 500 }}
+>
 	<div class="flex flex-col p-10">
 		<SearchComponent
 			interventions={filteredInterventions}

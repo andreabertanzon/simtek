@@ -2,18 +2,20 @@
 	import { rootStore } from "../stores/store";
 	import { addToast } from "../stores/toasts";
 	import { fly, fade } from "svelte/transition";
+	import { goto } from "$app/navigation";
 	import type { Material, ChosenMaterial } from "../models/material";
 	import {
 		WorkerInterventionSchema,
 		type WorkerIntervention,
 	} from "../models/Worker";
 	import type { CurrentIntervention } from "src/models/intervention";
+	import { newInterventionStore } from "../stores/newIntStore";
 
 	// let workers = $rootStore.workers;
 
 	let descr = "";
 	let materialInput = "";
-
+	let notesInput = "";
 	//*** INTERVENTION: ***
 	let workers = $rootStore.workers.map((item) => {
 		try {
@@ -84,6 +86,12 @@
 		return result === undefined ? 0 : result;
 	};
 
+	$: getMaterialCost = () => {
+		return chosenMaterials
+			.map((item) => item.Price * item.Pieces)
+			.reduce((previous, current) => (previous = previous + current));
+	};
+
 	function addDescription(e: KeyboardEvent | null) {
 		if (e === null || e.key === "Enter") {
 			if (descr !== "") {
@@ -125,11 +133,13 @@
 			descriptions: descriptions,
 			workers: workers,
 			completed: false,
-			clientName: "",
-			workCost: getHourTotal(),
-			materialCost: 0,
+			clientName:
+				($newInterventionStore.choosenClient?.name ?? "") +
+				($newInterventionStore.choosenClient?.surname ?? ""),
+			workCost: getPriceTotal(),
+			materialCost: getMaterialCost(),
 			numberOfWorkers: 0,
-			notes: [],
+			notes: notesInput,
 			materials: chosenMaterials,
 		};
 		rootStore.addIntervention(currentIntervention);
@@ -141,6 +151,8 @@
 			dismissable: true,
 			timeout: 1000,
 		});
+
+		goto(`/interventions`, { replaceState: true });
 	}
 	let hideWorkers = false;
 </script>
@@ -352,6 +364,7 @@
 			<div class="flex flex-col">
 				<label for="notes" class="text-sm font-thin mx-4 mt-4">Note: </label>
 				<textarea
+					bind:value={notesInput}
 					id="notes"
 					type="text"
 					rows="5"

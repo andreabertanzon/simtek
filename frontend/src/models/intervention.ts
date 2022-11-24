@@ -18,7 +18,7 @@ export type Intervention = z.infer<typeof InterventionStruct>
 export const CurrentInterventionStruct = InterventionStruct.extend({
   descriptions: z.array(z.string()).default([]).optional(),
   workers: z.array(WorkerInterventionSchema).default([]).optional(),
-  notes: z.array(z.string()),
+  notes: z.string(),
   materials: z.array(ChosenMaterialScheme)
 })
 
