@@ -6,3 +6,11 @@ export const workerSchema = z.object({
 })
 
 export type Worker = z.infer<typeof workerSchema>
+
+
+export const WorkerInterventionSchema = workerSchema.extend({
+  WorkedHours: z.number().positive().default(0).optional(),
+  Checked: z.boolean().default(false).optional()
+})
+
+export type WorkerIntervention = z.infer<typeof WorkerInterventionSchema>

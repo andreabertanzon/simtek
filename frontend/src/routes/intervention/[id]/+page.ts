@@ -1,26 +1,39 @@
 import type { Client } from "src/models/client"
-import { intervention } from "../../../models/intervention"
+import type { CurrentIntervention } from "../../../models/intervention"
 
-/** @type {import('./$types').PageLoad} */
+/** @type {import('./$types').pageload} */
 export function load({ params }) {
-  let currentIntervention: intervention
-  if (params.id === -1) {
-    currentIntervention = new intervention("", 0, "", false)
-  } else {
-    currentIntervention = new intervention("", 0, "", false)
+  console.log(params.id)
+  // let currentintervention: intervention
+  // if (params.id === -1) {
+  //   currentintervention = new intervention("", 0, "", false)
+  // } else {
+  //   currentintervention = new intervention("", 0, "", false)
+  // }
+  // const clients: client[] = [
+  //   { name: "gino", surname: "peppino" },
+  //   { name: "susie", surname: "storm" },
+  //   { name: "luca", surname: "marenzio" },
+  //   { name: "andrea", surname: "bertanzon" },
+  //   { name: "simone", surname: "bonfante" },
+  //   { name: "valentina", surname: "bertanzon" },
+  //   { name: "francesco", surname: "bertanzon" },
+  // ]
+  let currentIntervention: CurrentIntervention = {
+    date: "",
+    title: "",
+    spentHours: 0,
+    materialCost: 0,
+    workCost: 0,
+    completed: false,
+    numberOfWorkers: 0,
+    clientName: "",
+    descriptions: [],
+    workers: [],
+    notes: [],
+    materials: []
   }
-  const clients: Client[] = [
-    { name: "Gino", surname: "Peppino" },
-    { name: "Susie", surname: "Storm" },
-    { name: "Luca", surname: "Marenzio" },
-    { name: "Andrea", surname: "Bertanzon" },
-    { name: "Simone", surname: "Bonfante" },
-    { name: "Valentina", surname: "Bertanzon" },
-    { name: "Francesco", surname: "Bertanzon" },
-  ]
-
   return {
-    currentIntervention: currentIntervention,
-    clients: clients
+    currentintervention: currentIntervention,
   }
 }

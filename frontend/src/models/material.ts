@@ -8,3 +8,10 @@ const materialScheme = z.object({
 })
 
 export type Material = z.infer<typeof materialScheme>
+
+export const ChosenMaterialScheme = materialScheme.extend({
+  Checked: z.boolean().default(false).optional(),
+  Pieces: z.number().default(0)
+})
+
+export type ChosenMaterial = z.infer<typeof ChosenMaterialScheme>

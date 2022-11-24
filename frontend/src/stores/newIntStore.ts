@@ -1,11 +1,11 @@
-import type { intervention } from "../models/intervention"
+import type { Intervention } from "../models/intervention"
 import type { Client } from "../models/client";
 import { writable } from "svelte/store";
 import type { Site } from "../models/site";
 
 interface NewInterventionState {
   step: 1 | 2 | 3 | 4,
-  currentIntervention?: intervention | null,
+  currentIntervention?: Intervention | null,
   choosenClient?: Client | null,
   choosenSite?: Site | null
 }

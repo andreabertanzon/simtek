@@ -1,15 +1,15 @@
 <script lang="ts">
-	import { rootStore } from '../stores/store';
-	import { newInterventionStore } from '../stores/newIntStore';
-	import { fade, fly } from 'svelte/transition';
-	import ProgressComponent from '../components/ProgressComponent.svelte';
-	import { type Site, siteSchema } from '../models/site';
+	import { rootStore } from "../stores/store";
+	import { newInterventionStore } from "../stores/newIntStore";
+	import { fade, fly } from "svelte/transition";
+	import ProgressComponent from "../components/ProgressComponent.svelte";
+	import { type Site, siteSchema } from "../models/site";
 
 	let currentSite: Site = {
-		Name: '',
+		Name: "",
 		City: undefined,
 		Cap: undefined,
-		Address: undefined
+		Address: undefined,
 	};
 
 	const sitesCall = $rootStore.clients.find(
@@ -45,7 +45,8 @@
 			<ProgressComponent />
 			<h1>Scegli Cantiere:</h1>
 			<div
-				class="mt-8 grid grid-flow-row rounded-md border shadow-lg {sites.length === 0
+				class="mt-8 mr-2 grid grid-flow-row rounded-md border shadow-lg {sites.length ===
+				0
 					? 'hidden'
 					: ''}"
 			>
@@ -59,7 +60,9 @@
 						<div
 							on:click={() => setCurrentSite(site)}
 							class="p-4 border cursor-pointer transion-colors hover:bg-[#afb39a]
- 					{currentSite === site ? 'bg-[#afb39a] text-white' : 'border-slate-100'} flex justify-between"
+ 					{currentSite === site
+								? 'bg-[#afb39a] text-white'
+								: 'border-slate-100'} flex justify-between"
 						>
 							<p class="text-sm font-normal">{site.Name}</p>
 						</div>
@@ -70,8 +73,9 @@
 				<p class="font-normal">
 					Non lo trovi?
 					<!-- svelte-ignore a11y-click-events-have-key-events -->
-					<span class="text-orange-400 cursor-pointer" on:click={() => (createClicked = true)}
-						>Crealo</span
+					<span
+						class="text-orange-400 cursor-pointer"
+						on:click={() => (createClicked = true)}>Crealo</span
 					>
 				</p>
 			</div>
@@ -143,16 +147,23 @@
 		<div class="overflow-x-hidden self-center">
 			<img src="/images/Asset_5.png" alt="client" class="responsive-img" />
 		</div>
-		<div class="mx-2 lg:mx-6 mt-20 p-2 border rounded-lg border-slate-600 grid-flow-row">
+		<div
+			class="mx-2 lg:mx-6 mt-20 p-2 border rounded-lg border-slate-600 grid-flow-row"
+		>
 			<p class="font-normal self-center mb-2">
 				{$newInterventionStore.choosenClient === null ||
 				$newInterventionStore.choosenClient === undefined
-					? 'Seleziona cliente'
+					? "Seleziona cliente"
 					: `${$newInterventionStore.choosenClient?.name} ${$newInterventionStore.choosenClient?.surname}`}:
 			</p>
 			<div class="flex flex-wrap">
 				<div class="flex flex-nowrap mr-2 my-2">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" class="w-4 h-4">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 24 24"
+						fill="black"
+						class="w-4 h-4"
+					>
 						<path
 							fill-rule="evenodd"
 							d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z"
@@ -160,7 +171,7 @@
 						/>
 					</svg>
 					<p class="font-thin text-sm ml-2">
-						{$newInterventionStore.choosenClient?.email === ''
+						{$newInterventionStore.choosenClient?.email === ""
 							? `non.trovata@email.com`
 							: $newInterventionStore.choosenClient?.email}
 					</p>
@@ -183,8 +194,8 @@
 					</svg>
 
 					<p class="font-thin text-sm ml-2">
-						{currentSite.Name === undefined || currentSite.Name === ''
-							? 'Nome Cantiere'
+						{currentSite.Name === undefined || currentSite.Name === ""
+							? "Nome Cantiere"
 							: `${currentSite.Name}`}
 					</p>
 				</div>
@@ -205,7 +216,9 @@
 						/>
 					</svg>
 					<p class="font-thin text-sm ml-2">
-						{currentSite.City === undefined ? 'Citta del cantiere' : `${currentSite.City}`}
+						{currentSite.City === undefined
+							? "Citta del cantiere"
+							: `${currentSite.City}`}
 					</p>
 				</div>
 				<div class="flex flex-nowrap mr-2 my-2">
@@ -225,7 +238,9 @@
 						/>
 					</svg>
 					<p class="font-thin text-sm ml-2">
-						{currentSite.Cap === undefined ? 'Cap del cantiere' : `${currentSite.Cap}`}
+						{currentSite.Cap === undefined
+							? "Cap del cantiere"
+							: `${currentSite.Cap}`}
 					</p>
 				</div>
 				<div class="flex flex-nowrap mr-2 my-2">
@@ -245,7 +260,9 @@
 						/>
 					</svg>
 					<p class="font-thin text-sm ml-2">
-						{currentSite.Address === undefined ? 'Via del cantiere' : `${currentSite.Address}`}
+						{currentSite.Address === undefined
+							? "Via del cantiere"
+							: `${currentSite.Address}`}
 					</p>
 				</div>
 			</div>

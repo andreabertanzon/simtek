@@ -1,13 +1,10 @@
 <script lang="ts">
 	import { newInterventionStore } from "../../../stores/newIntStore";
-	import type { Client } from "../../../models/client";
 	import { fade, fly } from "svelte/transition";
-	import type { intervention } from "../../../models/intervention";
 	import ChooseClient from "../../../components/ChooseClient.svelte";
 	import NewClient from "../../../models/NewClient.svelte";
 	import NewSiteComponent from "../../../components/NewSiteComponent.svelte";
 	import NewInterventionComponent from "../../../components/NewInterventionComponent.svelte";
-
 	function beforeUnload(e: BeforeUnloadEvent) {
 		e.preventDefault();
 		e.returnValue = "";

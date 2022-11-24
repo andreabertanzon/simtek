@@ -52,7 +52,7 @@
 		<div class="my-4 ml-4">
 			<ProgressComponent />
 			<h1>Cerca Cliente:</h1>
-			<div class="mt-8 grid grid-flow-row rounded-md border shadow-lg">
+			<div class="mt-8 mr-2 grid grid-flow-row rounded-md border shadow-lg">
 				<input
 					type="text"
 					bind:value={clientSearch}
