@@ -1,19 +1,22 @@
 <script lang="ts">
-	import type { Client } from '../models/client';
-	import { rootStore } from '../stores/store';
-	import { newInterventionStore } from '../stores/newIntStore';
-	import { fade, fly } from 'svelte/transition';
-	import ProgressComponent from './ProgressComponent.svelte';
+	import type { Client } from "../models/client";
+	import { rootStore } from "../stores/store";
+	import { newInterventionStore } from "../stores/newIntStore";
+	import { fade, fly } from "svelte/transition";
+	import ProgressComponent from "./ProgressComponent.svelte";
 	$newInterventionStore.choosenClient;
-	let clientSearch = '';
+	let clientSearch = "";
 	let clients = $rootStore.clients;
 
 	function filterClients(text: string): Client[] {
-		let splittedText = text.trimStart().trimEnd().split(' ');
+		let splittedText = text.trimStart().trimEnd().split(" ");
 		if (splittedText.length == 1) {
-			return text === ''
+			return text === ""
 				? $rootStore.clients
-				: clients.filter((item) => item.name.includes(text.trim()) || item.surname.includes(text));
+				: clients.filter(
+						(item) =>
+							item.name.includes(text.trim()) || item.surname.includes(text)
+				  );
 		} else {
 			return clients.filter(
 				(item) =>
@@ -29,7 +32,7 @@
 
 	function incrementStep() {
 		if ($newInterventionStore.choosenClient === null) {
-			alert('Seleziona un cliente!');
+			alert("Seleziona un cliente!");
 			return;
 		}
 		newInterventionStore.updateStep(3);
@@ -37,7 +40,7 @@
 
 	$: clientSearch && filterClients(clientSearch);
 	$: filteredClients = filterClients(clientSearch);
-	$: hiddenClass = filteredClients.length > 0 ? 'hidden' : '';
+	$: hiddenClass = filteredClients.length > 0 ? "hidden" : "";
 </script>
 
 <div
@@ -55,7 +58,7 @@
 					bind:value={clientSearch}
 					class="pl-2 py-1 rounded-t-md border border-slate-300 text-normal font-normal"
 				/>
-				<div class="overflow-y-auto scroll-auto max-h-96">
+				<div class="overflow-y-auto scroll-auto max-h-64">
 					{#each filteredClients as client}
 						<!-- svelte-ignore a11y-click-events-have-key-events -->
 						<div
@@ -97,7 +100,7 @@
 		<div class="mx-2 mb-10 p-6 border rounded-lg border-slate-600">
 			{$newInterventionStore.choosenClient === null ||
 			$newInterventionStore.choosenClient === undefined
-				? 'Seleziona un cliente'
+				? "Seleziona un cliente"
 				: `${$newInterventionStore.choosenClient?.name} ${$newInterventionStore.choosenClient?.surname}`}
 		</div>
 		<div class="">

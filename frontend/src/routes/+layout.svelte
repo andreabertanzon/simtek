@@ -1,19 +1,21 @@
 <script lang="ts">
-	import '../app.css';
-	let selected = '/';
+	import Toasts from "../components/Toasts.svelte";
+
+	import "../app.css";
+	let selected = "/";
 </script>
 
 <div class="flex">
 	<div
 		class="w-16 shadow-md shadow-slate-400 bg-orange-50 relative md:flex h-screen overflow-hidden flex-col content-center items-center hidden"
 	>
-		<a href="/" on:click={() => (selected = '/')}
+		<a href="/" on:click={() => (selected = "/")}
 			><svg
 				xmlns="http://www.w3.org/2000/svg"
 				fill="none"
 				viewBox="0 0 24 24"
 				stroke-width="1.6"
-				stroke={selected == '/' ? 'orange' : '#7c2d12'}
+				stroke={selected == "/" ? "orange" : "#7c2d12"}
 				class="w-6 h-6 mt-8"
 			>
 				<path
@@ -23,13 +25,13 @@
 				/>
 			</svg>
 		</a>
-		<a href="/interventions" on:click={() => (selected = '/interventions')}>
+		<a href="/interventions" on:click={() => (selected = "/interventions")}>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				fill="none"
 				viewBox="0 0 24 24"
 				stroke-width="1.6"
-				stroke={selected == '/interventions' ? 'orange' : '#7c2d12'}
+				stroke={selected == "/interventions" ? "orange" : "#7c2d12"}
 				class="w-6 h-6 mt-8"
 			>
 				<path
@@ -39,7 +41,7 @@
 				/>
 			</svg>
 		</a>
-		<a href="/" on:click={() => (selected = '/')}>
+		<a href="/" on:click={() => (selected = "/")}>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				fill="none"
@@ -71,6 +73,7 @@
 		</a>
 	</div>
 	<div class="flex-1 text-2xl font-bold h-screen overflow-y-auto">
+		<Toasts />
 		<slot />
 	</div>
 </div>

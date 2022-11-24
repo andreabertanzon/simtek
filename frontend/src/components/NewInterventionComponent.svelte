@@ -1,9 +1,10 @@
 <script lang="ts">
-	import { rootStore } from '../stores/store';
-	import { fly, fade } from 'svelte/transition';
-	import { z } from 'zod';
-	import type { Material } from '../models/material';
-	let descr = '';
+	import { rootStore } from "../stores/store";
+	import { addToast } from "../stores/toasts";
+	import { fly, fade } from "svelte/transition";
+	import { z } from "zod";
+	import type { Material } from "../models/material";
+	let descr = "";
 	let descriptions: string[] = [];
 
 	// let workers = $rootStore.workers;
@@ -11,14 +12,14 @@
 		Name: z.string(),
 		SpentHours: z.number().default(0.0),
 		PriceHour: z.number().default(30.0),
-		Checked: z.boolean().default(false)
+		Checked: z.boolean().default(false),
 	});
 
 	const materialSchema = z.object({
 		Name: z.string(),
 		Pieces: z.number().positive().default(0),
-		Unit: z.string().max(4).default('pz'),
-		Price: z.number().positive()
+		Unit: z.string().max(4).default("pz"),
+		Price: z.number().positive(),
 	});
 
 	type ChosenMaterial = z.infer<typeof materialSchema>;
@@ -30,24 +31,24 @@
 		} catch (err) {
 			console.log(err);
 			return workerSchema.parse({
-				Name: 'Error',
+				Name: "Error",
 				SpentHours: 0,
 				PriceHour: 0,
-				Checked: false
+				Checked: false,
 			});
 		}
 	});
 
-	let materialInput = '';
+	let materialInput = "";
 	let materials: Material[] = [];
 	let chosenMaterials: ChosenMaterial[] = [];
 
 	function filterMaterials() {
-		if (materialInput.trim() === '' || materialInput.length < 3) {
+		if (materialInput.trim() === "" || materialInput.length < 3) {
 			materials = [];
 			return;
 		}
-		let matArray = materialInput.split(' ');
+		let matArray = materialInput.split(" ");
 		if (matArray.length <= 1) {
 			materials = $rootStore.materials.filter((item) =>
 				item.Name.toLowerCase().includes(materialInput.trim().toLowerCase())
@@ -56,8 +57,12 @@
 		}
 
 		materials = $rootStore.materials
-			.filter((item) => item.Name.toLowerCase().match(matArray[0].trim().toLowerCase()))
-			.filter((item) => item.Name.toLowerCase().match(matArray[1].trim().toLowerCase()));
+			.filter((item) =>
+				item.Name.toLowerCase().match(matArray[0].trim().toLowerCase())
+			)
+			.filter((item) =>
+				item.Name.toLowerCase().match(matArray[1].trim().toLowerCase())
+			);
 	}
 
 	$: materialInput && filterMaterials();
@@ -69,8 +74,6 @@
 			.map((item) => item.PriceHour * item.SpentHours)
 			.reduce((sum, a) => sum + a);
 
-		console.log(`GETPRICE: ${result}`);
-
 		return result === undefined ? 0 : result;
 	};
 
@@ -80,14 +83,15 @@
 			.filter((item) => item.Checked)
 			.map((item) => item.SpentHours)
 			.reduce((sum, a) => sum + a);
-		console.log(`GETHOURS: ${result}`);
 		return result === undefined ? 0 : result;
 	};
 
-	function addDescription(e: KeyboardEvent) {
-		if (e.key === 'Enter') {
-			descriptions = [...descriptions, descr];
-			descr = '';
+	function addDescription(e: KeyboardEvent | null) {
+		if (e === null || e.key === "Enter") {
+			if (descr !== "") {
+				descriptions = [...descriptions, descr];
+			}
+			descr = "";
 		}
 	}
 	function removeDescr(i: number) {
@@ -103,10 +107,10 @@
 				Name: m.Name,
 				Pieces: 0,
 				Price: m.Price,
-				Unit: m.Unit
+				Unit: m.Unit,
 			} as ChosenMaterial;
 			chosenMaterials = [...chosenMaterials, result];
-			materialInput = '';
+			materialInput = "";
 			materials = [];
 		} catch (err) {
 			console.log(err);
@@ -114,7 +118,13 @@
 	}
 
 	function saveIntervention() {
-		console.log('saved');
+		addToast({
+			id: 1,
+			message: "Saved",
+			type: "success",
+			dismissable: true,
+			timeout: 1000,
+		});
 	}
 </script>
 
@@ -127,37 +137,46 @@
 		<div class="m-4 grid grid-flow-row scroll-auto">
 			<h1>Definisci Intervento</h1>
 
-			<div class="mt-8 grid grid-flow-row rounded-md border {workers.length === 0 ? 'hidden' : ''}">
-				<div class="overflow-y-auto scroll-auto max-h-96">
+			<div
+				class="mt-8 grid grid-flow-row rounded-md border {workers.length === 0
+					? 'hidden'
+					: ''}"
+			>
+				<div class="overflow-y-auto scroll-auto max-h-72">
 					{#each workers as worker}
 						<!-- svelte-ignore a11y-click-events-have-key-events -->
 						<div
-							on:click={() => ''}
+							on:click={() => ""}
 							class="p-2 border cursor-pointer transion-colors 
- 					 flex flex-row justify-between"
+ 					 flex flex-row justify-start"
 						>
-							<div class="flex self-center h-6 w-6">
-								<input id="checked-checkbox" type="checkbox" bind:checked={worker.Checked} />
+							<div class="flex self-center h-6 w-6 flex-1 mr-4">
+								<input
+									id="checked-checkbox"
+									type="checkbox"
+									bind:checked={worker.Checked}
+									class="mr-4"
+								/>
+								<p class="text-sm font-normal self-center">
+									{worker.Name}
+								</p>
 							</div>
-							<div class="flex flex-column">
-								<p class="text-sm font-normal flex-grow self-center">{worker.Name}</p>
-							</div>
-							<div class="flex flex-col">
+							<div class="flex flex-col flex-auto">
 								<label for="hours" class="text-xs font-thin">ore spese:</label>
 								<input
 									bind:value={worker.SpentHours}
 									id="hours"
 									type="number"
-									class="text-sm font-normal border rounded-md px-1 py-0.5"
+									class="text-sm font-normal border rounded-md px-1 py-0.5 w-12"
 								/>
 							</div>
-							<div class="flex flex-col">
+							<div class="flex flex-col flex-auto">
 								<label for="hours" class="text-xs font-thin">prezzo:</label>
 								<input
 									bind:value={worker.PriceHour}
 									id="euro"
 									type="number"
-									class="text-sm font-normal border rounded-md px-1 py-0.5"
+									class="text-sm font-normal border rounded-md px-1 py-0.5 w-14"
 								/>
 							</div>
 						</div>
@@ -167,11 +186,13 @@
 
 			<div class="mt-6 flex flex-col">
 				<label for="name" class="text-sm font-thin">Breve titolo:</label>
-				<input
-					id="name"
-					type="text"
-					class="border border-slate-600 rounded-lg font-normal p-2 text-sm"
-				/>
+				<div class="flex">
+					<input
+						id="name"
+						type="text"
+						class="border border-slate-600 rounded-lg font-normal p-2 text-sm flex-1"
+					/>
+				</div>
 			</div>
 			<div class="mt-6 flex flex-col">
 				<div
@@ -203,13 +224,31 @@
 					{/each}
 				</div>
 				<label for="surname" class="text-sm font-thin">Descrizione:</label>
-				<input
-					bind:value={descr}
-					on:keypress={addDescription}
-					id="surname"
-					type="text"
-					class="border border-slate-600 rounded-lg font-normal p-2 text-sm"
-				/>
+				<div class="flex">
+					<input
+						bind:value={descr}
+						on:keypress={addDescription}
+						id="surname"
+						type="text"
+						class="flex-1 border border-slate-600 rounded-lg font-normal p-2 text-sm"
+					/>
+					<!-- svelte-ignore a11y-click-events-have-key-events -->
+					<svg
+						on:click={() => addDescription(null)}
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke-width="1.5"
+						stroke="currentColor"
+						class="w-8 h-8 ml-2 self-center"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+						/>
+					</svg>
+				</div>
 			</div>
 		</div>
 
@@ -241,7 +280,9 @@
 							{chMat.Name},
 						</p>
 					</div>
-					<label for="pieces" class="font-thin text-sm mr-2">{chMat.Unit}:</label>
+					<label for="pieces" class="font-thin text-sm mr-2"
+						>{chMat.Unit}:</label
+					>
 					<input
 						bind:value={chMat.Pieces}
 						id="pieces"
@@ -298,7 +339,9 @@
 			>
 		</div>
 	</div>
-	<div class="h-screen overflow-y-scroll bg-slate-100 p-2 hidden md:flex md:flex-col">
+	<div
+		class="h-screen overflow-y-scroll bg-slate-100 p-2 hidden md:flex md:flex-col"
+	>
 		<h2 class="text-sm">Lavoratori:</h2>
 		<div class="flex my-4">
 			<table class="table-fixed flex-1">
@@ -307,7 +350,11 @@
 						<tr class="border border-slate-900">
 							<td><p class="font-normal text-sm">{worker.Name}</p></td>
 							<td><p class="font-normal text-sm">{worker.SpentHours}h</p></td>
-							<td><p class="font-normal text-sm">{worker.PriceHour * worker.SpentHours}€</p></td>
+							<td
+								><p class="font-normal text-sm">
+									{worker.PriceHour * worker.SpentHours}€
+								</p></td
+							>
 						</tr>
 					{/each}
 					<tr class="border border-slate-900">
@@ -337,7 +384,11 @@
 					{#each chosenMaterials as mat}
 						<tr class="border border-slate-900">
 							<td><p class="font-normal text-sm">{mat.Name}</p></td>
-							<td><p class="font-normal text-sm">{mat.Price * mat.Pieces}€</p></td>
+							<td
+								><p class="font-normal text-sm">
+									{mat.Price * mat.Pieces}€
+								</p></td
+							>
 						</tr>
 					{/each}
 				</tbody>
