@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { intervention } from 'src/models/intervention';
-	export let interventions: intervention[];
-	export let callback: (a: intervention[]) => void;
+	import type { Intervention } from 'src/models/intervention';
+	export let interventions: Intervention[];
+	export let callback: (a: Intervention[]) => void;
 	export let refresh: () => void;
 	let inputValue = '';
 	let active = false;
