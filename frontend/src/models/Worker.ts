@@ -1,4 +1,4 @@
-import { z } from "Zod"
+import { z } from "zod"
 
 export const workerSchema = z.object({
   Name: z.string(),
