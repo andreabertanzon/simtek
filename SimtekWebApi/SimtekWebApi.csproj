@@ -23,4 +23,8 @@
       <Folder Include="Controllers\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\SimtekApplication\SimtekApplication.csproj" />
+    </ItemGroup>
+
 </Project>

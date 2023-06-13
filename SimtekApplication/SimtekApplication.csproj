@@ -11,4 +11,8 @@
       <PackageReference Include="MediatR" Version="12.0.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\SimtekData\SimtekData.csproj" />
+    </ItemGroup>
+
 </Project>
