@@ -2,4 +2,4 @@ obj
 bin
 .idea
 data
-appsettings.Development.json
+appSettings.Development.json
