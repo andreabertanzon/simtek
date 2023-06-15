@@ -1,8 +1,8 @@
 using System.Data;
 using Dapper;
 using Npgsql;
+using SimtekData.Models;
 using SimtekDomain;
-using Material = SimtekData.Models.Material;
 
 namespace SimtekData;
 
@@ -15,26 +15,26 @@ public class MaterialRepository
         _db = new NpgsqlConnection(connectionString);
     }
 
-    public List<Material> GetMaterials()
+    public List<MaterialDto> GetMaterials()
     {
-        return _db.Query<Material>("SELECT * FROM Materials WHERE stored = FALSE").ToList();
+        return _db.Query<MaterialDto>("SELECT * FROM Materials WHERE stored = FALSE").ToList();
     }
 
-    public Material GetMaterial(int id)
+    public MaterialDto GetMaterial(int id)
     {
-        return _db.QuerySingle<Material>("SELECT * FROM Materials WHERE id = @id AND stored = FALSE", new { id });
+        return _db.QuerySingle<MaterialDto>("SELECT * FROM Materials WHERE id = @id AND stored = FALSE", new { id });
     }
 
-    public void AddMaterial(Material material)
+    public void AddMaterial(MaterialDto materialDto)
     {
         var sql = "INSERT INTO Materials (name, price, unit, quantity, stored, creation_date, last_update_date) VALUES (@Name, @Price, @Unit, @Quantity, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);";
-        _db.Execute(sql, material);
+        _db.Execute(sql, materialDto);
     }
 
-    public void UpdateMaterial(Material material)
+    public void UpdateMaterial(MaterialDto materialDto)
     {
         var sql = "UPDATE Materials SET name = @Name, price = @Price, unit = @Unit, quantity = @Quantity, last_update_date = CURRENT_TIMESTAMP WHERE id = @Id";
-        _db.Execute(sql, material);
+        _db.Execute(sql, materialDto);
     }
 
     public void DeleteMaterial(int id)

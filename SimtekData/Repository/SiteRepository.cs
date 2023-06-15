@@ -1,8 +1,8 @@
 using System.Data;
 using Dapper;
 using Npgsql;
+using SimtekData.Models;
 using SimtekDomain;
-using Site = SimtekData.Models.Site;
 
 namespace SimtekData;
 
@@ -15,26 +15,26 @@ public class SiteRepository
         _db = new NpgsqlConnection(connectionString);
     }
 
-    public List<Site> GetSites()
+    public List<SiteDto> GetSites()
     {
-        return _db.Query<Site>("SELECT * FROM Sites WHERE stored = FALSE").ToList();
+        return _db.Query<SiteDto>("SELECT * FROM Sites WHERE stored = FALSE").ToList();
     }
 
-    public Site GetSite(int id)
+    public SiteDto GetSite(int id)
     {
-        return _db.QuerySingle<Site>("SELECT * FROM Sites WHERE id = @id AND stored = FALSE", new { id });
+        return _db.QuerySingle<SiteDto>("SELECT * FROM Sites WHERE id = @id AND stored = FALSE", new { id });
     }
 
-    public void AddSite(Site site)
+    public void AddSite(SiteDto siteDto)
     {
         var sql = "INSERT INTO Sites (name, address, customer_id, stored, creation_date, last_update_date) VALUES (@Name, @Address, @CustomerId, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);";
-        _db.Execute(sql, site);
+        _db.Execute(sql, siteDto);
     }
 
-    public void UpdateSite(Site site)
+    public void UpdateSite(SiteDto siteDto)
     {
         var sql = "UPDATE Sites SET name = @Name, address = @Address, customer_id = @CustomerId, last_update_date = CURRENT_TIMESTAMP WHERE id = @Id";
-        _db.Execute(sql, site);
+        _db.Execute(sql, siteDto);
     }
 
     public void DeleteSite(int id)

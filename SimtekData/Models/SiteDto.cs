@@ -1,6 +1,6 @@
 namespace SimtekData.Models;
 
-public class Site
+public class SiteDto
 {
     public int Id { get; set; }
     public string Name { get; set; }

@@ -1,4 +1,5 @@
 using Carter;
+using SimtekData.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,9 @@ builder.Services.AddCarter();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+builder.Services.AddScoped<InterventionRepository>();
 
 
 var app = builder.Build();

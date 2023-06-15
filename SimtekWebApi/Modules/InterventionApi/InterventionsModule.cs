@@ -1,5 +1,6 @@
 using Carter;
-using SimtekDomain;
+using Microsoft.AspNetCore.Mvc;
+using SimtekData.Repository;
 
 namespace SimtekWebApi.Modules.InterventionApi;
 
@@ -11,6 +12,9 @@ public class InterventionsModule : CarterModule
 
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
-
+        app.MapPost("/", ([FromServices] InterventionRepository interventionRepository) =>
+        {
+            
+        });
     }
 }

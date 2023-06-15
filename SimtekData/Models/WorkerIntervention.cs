@@ -1,4 +1,4 @@
-namespace SimtekDomain;
+namespace SimtekData.Models;
 
 public class WorkerIntervention
 {

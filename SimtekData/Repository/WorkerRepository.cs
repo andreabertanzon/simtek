@@ -1,9 +1,9 @@
 using System.Data;
 using Dapper;
 using Npgsql;
-using SimtekDomain;
+using SimtekData.Models;
 
-namespace SimtekData;
+namespace SimtekData.Repository;
 
 public class WorkerRepository
 {
@@ -14,26 +14,26 @@ public class WorkerRepository
         _db = new NpgsqlConnection(connectionString);
     }
 
-    public List<Worker> GetWorkers()
+    public List<WorkerDto> GetWorkers()
     {
-        return _db.Query<Worker>("SELECT * FROM Workers WHERE stored = FALSE").ToList();
+        return _db.Query<WorkerDto>("SELECT * FROM Workers WHERE stored = FALSE").ToList();
     }
 
-    public Worker GetWorker(int id)
+    public WorkerDto GetWorker(int id)
     {
-        return _db.QuerySingle<Worker>("SELECT * FROM Workers WHERE id = @id AND stored = FALSE", new { id });
+        return _db.QuerySingle<WorkerDto>("SELECT * FROM Workers WHERE id = @id AND stored = FALSE", new { id });
     }
 
-    public void AddWorker(Worker worker)
+    public void AddWorker(WorkerDto workerDto)
     {
         var sql = "INSERT INTO Workers (name, surname, pph, stored, creation_date, last_update_date) VALUES (@Name, @Surname, @Pph, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);";
-        _db.Execute(sql, worker);
+        _db.Execute(sql, workerDto);
     }
 
-    public void UpdateWorker(Worker worker)
+    public void UpdateWorker(WorkerDto workerDto)
     {
         var sql = "UPDATE Workers SET name = @Name, surname = @Surname, pph = @Pph, last_update_date = CURRENT_TIMESTAMP WHERE id = @Id";
-        _db.Execute(sql, worker);
+        _db.Execute(sql, workerDto);
     }
 
     public void DeleteWorker(int id)

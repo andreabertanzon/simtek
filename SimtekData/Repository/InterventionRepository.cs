@@ -1,8 +1,8 @@
 using System.Data;
 using Dapper;
 using Npgsql;
+using SimtekData.Models;
 using SimtekDomain;
-using Intervention = SimtekData.Models.Intervention;
 
 namespace SimtekData.Repository;
 
@@ -15,17 +15,17 @@ public class InterventionRepository
         _db = new NpgsqlConnection(connectionString);
     }
 
-    public List<Intervention> GetInterventions()
+    public List<InterventionDto> GetInterventions()
     {
-        return _db.Query<Intervention>("SELECT * FROM Interventions WHERE stored = FALSE").ToList();
+        return _db.Query<InterventionDto>("SELECT * FROM Interventions WHERE stored = FALSE").ToList();
     }
 
-    public Intervention GetIntervention(int id)
+    public InterventionDto GetIntervention(int id)
     {
-        return _db.QuerySingle<Intervention>("SELECT * FROM Interventions WHERE id = @id AND stored = FALSE", new { id });
+        return _db.QuerySingle<InterventionDto>("SELECT * FROM Interventions WHERE id = @id AND stored = FALSE", new { id });
     }
 
-    public void AddIntervention(SimtekDomain.Intervention intervention)
+    public void AddIntervention(Intervention intervention)
     {
         // Start a transaction to ensure all inserts are successful
         using var transaction = _db.BeginTransaction();
@@ -66,10 +66,10 @@ public class InterventionRepository
     }
 
 
-    public void UpdateIntervention(Intervention intervention)
+    public void UpdateIntervention(InterventionDto interventionDto)
     {
         var sql = "UPDATE Interventions SET site_id = @SiteId, intervention_date = @InterventionDate, last_update_date = CURRENT_TIMESTAMP WHERE id = @Id";
-        _db.Execute(sql, intervention);
+        _db.Execute(sql, interventionDto);
     }
 
     public void DeleteIntervention(int id)

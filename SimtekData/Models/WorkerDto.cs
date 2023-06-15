@@ -1,12 +1,11 @@
 namespace SimtekData.Models;
 
-public class Material
+public class WorkerDto
 {
     public int Id { get; set; }
     public string Name { get; set; }
-    public double Price { get; set; }
-    public string Unit { get; set; }
-    public double Quantity { get; set; }
+    public string Surname { get; set; }
+    public double Pph { get; set; }
     public bool Stored { get; set; }
     public DateTime CreationDate { get; set; }
     public DateTime LastUpdateDate { get; set; }
