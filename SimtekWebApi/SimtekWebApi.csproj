@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Carter" Version="7.1.0" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0-preview.4.23260.4" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     </ItemGroup>
@@ -21,6 +22,8 @@
 
     <ItemGroup>
       <Folder Include="Controllers\" />
+      <Folder Include="Modules\Intervention\Requests\" />
+      <Folder Include="Modules\Intervention\Responses\" />
     </ItemGroup>
 
     <ItemGroup>

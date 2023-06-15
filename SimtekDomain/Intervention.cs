@@ -1,8 +1,8 @@
 namespace SimtekDomain;
 
 public record Intervention(
-    int Id,
+    Guid Id,
     Site Site,
-    KeyValuePair<Worker,double> WorkerHours,
+    KeyValuePair<string,double> WorkerHours,
     DateTime InterventionDate,
-    bool Complete);
+    bool Stored);

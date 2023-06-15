@@ -1,7 +1,6 @@
 namespace SimtekDomain;
 
 public record Customer(
-    int Id,
+    Guid Id,
     string Name,
-    string Surname,
-    List<Site> Sites);
+    string Surname);

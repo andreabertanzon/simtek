@@ -13,6 +13,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\SimtekData\SimtekData.csproj" />
+      <ProjectReference Include="..\SimtekDomain\SimtekDomain.csproj" />
     </ItemGroup>
 
 </Project>

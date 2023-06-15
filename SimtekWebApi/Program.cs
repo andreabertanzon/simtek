@@ -1,3 +1,4 @@
+using Carter;
 using Marten;
 using Weasel.Core;
 
@@ -5,10 +6,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddCarter();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 // This is the absolute, simplest way to integrate Marten into your
 // .NET application with Marten's default configuration
 builder.Services.AddMarten(options =>
@@ -35,8 +37,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
-
-app.MapControllers();
+//app.UseAuthorization();
+app.MapCarter();
+//app.MapControllers();
 
 app.Run();

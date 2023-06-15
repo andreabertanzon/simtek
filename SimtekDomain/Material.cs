@@ -1,7 +1,7 @@
 namespace SimtekDomain;
 
 public record Material(
-    int Id,
+    Guid Id,
     double Price,
     string Unit,
     double Quantity)
