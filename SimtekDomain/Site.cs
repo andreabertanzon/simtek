@@ -1,8 +1,8 @@
 namespace SimtekDomain;
 
 public record Site(
-    Guid Id,
-    string Name,
-    Address? Address,
+    int Id,
+    string? Name,
+    string? Address,
     Customer Customer
     );

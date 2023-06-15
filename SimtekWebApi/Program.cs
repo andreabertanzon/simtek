@@ -1,6 +1,4 @@
 using Carter;
-using Marten;
-using Weasel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,20 +9,6 @@ builder.Services.AddCarter();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// This is the absolute, simplest way to integrate Marten into your
-// .NET application with Marten's default configuration
-builder.Services.AddMarten(options =>
-{
-    // Establish the connection string to your Marten database
-    options.Connection(builder.Configuration.GetConnectionString("Marten")!);
-
-    // If we're running in development mode, let Marten just take care
-    // of all necessary schema building and patching behind the scenes
-    if (builder.Environment.IsDevelopment())
-    {
-        options.AutoCreateSchemaObjects = AutoCreate.All;
-    }
-});
 
 var app = builder.Build();
 
