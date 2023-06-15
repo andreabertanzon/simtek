@@ -1,4 +1,6 @@
+using System.Data;
 using Carter;
+using Npgsql;
 using SimtekData.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +12,7 @@ builder.Services.AddCarter();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
+builder.Services.AddTransient<IDbConnection>(db => new NpgsqlConnection(builder.Configuration.GetConnectionString("Marten")));
 builder.Services.AddScoped<InterventionRepository>();
 
 
