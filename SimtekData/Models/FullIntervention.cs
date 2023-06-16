@@ -3,6 +3,8 @@ namespace SimtekData.Models;
 public class FullInterventionDto
 {
     public int Id { get; set; }
+    public string Title { get; set; }
+    public string Description { get; set; }
     public DateTime InterventionDate { get; set; }
     public bool Stored { get; set; }
     

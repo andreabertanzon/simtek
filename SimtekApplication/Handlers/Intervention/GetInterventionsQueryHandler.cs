@@ -33,7 +33,7 @@ public class
             return fullInterventionDtos
                 .Select(dto => 
                     new SimtekDomain.Intervention(
-                        dto.Id, 
+                        dto.Id,
                         new Site(dto.SiteId, dto.SiteName, dto.SiteAddress, 
                             new Customer(
                                 dto.CustomerId, 
@@ -43,6 +43,8 @@ public class
                                 dto.CustomerVat, 
                                 dto.CustomerEmail, 
                                 dto.CustomerPhoneNumber)),
+                        dto.Title,
+                        dto.Description,
                         new List<WorkerHour>
                         {
                             new WorkerHour(new Worker(dto.WorkerId, dto.WorkerName, dto.WorkerSurname, dto.WorkerPph), Hours: dto.HoursWorked)

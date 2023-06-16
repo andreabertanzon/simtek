@@ -19,6 +19,8 @@ public record WorkerHour(
 public record Intervention(
     int Id,
     Site Site,
+    string Title,
+    string Description,
     List<WorkerHour> WorkerHours,
     List<MaterialUse> Materials,
     DateTime InterventionDate,

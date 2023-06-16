@@ -19,7 +19,7 @@ public class InterventionRepository
     {
         var sql = @"
         SELECT
-            i.id as Id, i.intervention_date as InterventionDate, i.stored as Stored,
+            i.id as Id, i.intervention_date as InterventionDate, i.stored as Stored, i.title as Title, i.description as Description,
             s.id AS SiteId, s.name AS SiteName, s.address AS SiteAddress,
             c.id AS CustomerId, c.name AS CustomerName, c.surname AS CustomerSurname, c.address AS CustomerAddress, c.vat AS CustomerVat, c.email AS CustomerEmail, c.phone_number AS CustomerPhoneNumber,
             w.id AS WorkerId, w.name AS WorkerName, w.surname AS WorkerSurname, w.pph AS WorkerPph, wi.hours_worked AS HoursWorked,

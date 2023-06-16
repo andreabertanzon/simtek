@@ -17,7 +17,7 @@ builder.Services.AddMediatR(cfg =>
         .Assembly);
 });
 
-builder.Services.AddTransient<IDbConnection>(db => new NpgsqlConnection(builder.Configuration.GetConnectionString("Marten")));
+builder.Services.AddTransient<IDbConnection>(db => new NpgsqlConnection(builder.Configuration.GetConnectionString("Local")));
 builder.Services.AddScoped<InterventionRepository>();
 
 
