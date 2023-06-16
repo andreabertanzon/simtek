@@ -11,6 +11,11 @@ builder.Services.AddCarter();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(typeof(SimtekApplication.Handlers.Intervention.GetInterventionsQueryHandler)
+        .Assembly);
+});
 
 builder.Services.AddTransient<IDbConnection>(db => new NpgsqlConnection(builder.Configuration.GetConnectionString("Marten")));
 builder.Services.AddScoped<InterventionRepository>();

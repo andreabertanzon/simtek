@@ -1,7 +1,12 @@
 using Carter;
+using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using OneOf;
 using SimtekData.Repository;
 using SimtekDomain;
+using SimtekDomain.Errors;
+using SimtekDomain.Query;
 
 namespace SimtekWebApi.Modules.InterventionApi;
 
@@ -13,7 +18,13 @@ public class InterventionsModule : CarterModule
 
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("/", ([FromServices] InterventionRepository interventionRepository) => interventionRepository.GetInterventions());
+        app.MapGet("/", async ([FromServices] InterventionRepository interventionRepository, [FromServices] IMediator mediatr) =>
+        {
+            var request = new GetInterventions();
+            var response = await mediatr.Send<OneOf<List<Intervention>,SimtekError>>(request);
+            return response.ToHttpResult<List<Intervention>>();
+        });
+        
         app.MapPost("/", ([FromServices] InterventionRepository interventionRepository) =>
         {
 

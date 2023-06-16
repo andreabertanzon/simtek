@@ -15,9 +15,36 @@ public class InterventionRepository
         _db = db;
     }
 
-    public List<InterventionDto> GetInterventions()
+    public async Task<IEnumerable<FullInterventionDto>> GetInterventions(CancellationToken cancellationToken = default)
     {
-        return _db.Query<InterventionDto>("SELECT * FROM Interventions WHERE stored = FALSE").ToList();
+        var sql = @"
+        SELECT
+            i.id as Id, i.intervention_date as InterventionDate, i.stored as Stored,
+            s.id AS SiteId, s.name AS SiteName, s.address AS SiteAddress,
+            c.id AS CustomerId, c.name AS CustomerName, c.surname AS CustomerSurname, c.address AS CustomerAddress, c.vat AS CustomerVat, c.email AS CustomerEmail, c.phone_number AS CustomerPhoneNumber,
+            w.id AS WorkerId, w.name AS WorkerName, w.surname AS WorkerSurname, w.pph AS WorkerPph, wi.hours_worked AS HoursWorked,
+            m.id AS MaterialId, m.name AS MaterialName, m.price AS MaterialPrice, m.unit AS MaterialUnit, im.quantity AS MaterialQuantity
+        FROM interventions i
+        INNER JOIN sites s ON i.site_id = s.id
+        INNER JOIN customers c ON s.customer_id = c.id
+        INNER JOIN workerinterventions wi ON i.id = wi.intervention_id
+        INNER JOIN workers w ON wi.worker_id = w.id
+        LEFT JOIN interventionmaterials im ON i.id = im.intervention_id
+        LEFT JOIN materials m ON im.material_id = m.id;
+    ";
+
+        try
+        {
+            _db.Open();
+
+            var fullInterventionDtos = await _db.QueryAsync<FullInterventionDto>(sql, cancellationToken);
+
+            return fullInterventionDtos;
+        }
+        finally
+        {
+            _db.Close();
+        }
     }
 
     public InterventionDto GetIntervention(int id)
@@ -38,12 +65,14 @@ public class InterventionRepository
 
             // Check if customer exists
             var sql = "SELECT id FROM Customers WHERE CONCAT(name, ' ', surname) = @FullCustomerName;";
-            var customerId = await _db.QuerySingleOrDefaultAsync<int>(sql, new { FullCustomerName = fullCustomerName }, transaction);
+            var customerId =
+                await _db.QuerySingleOrDefaultAsync<int>(sql, new { FullCustomerName = fullCustomerName }, transaction);
 
             if (customerId == 0)
             {
                 // Insert new customer
-                sql = "INSERT INTO Customers (name, surname, vat, email, stored, creation_date, last_update_date) VALUES (@Name, @Surname, @Vat, @Email, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id;";
+                sql =
+                    "INSERT INTO Customers (name, surname, vat, email, stored, creation_date, last_update_date) VALUES (@Name, @Surname, @Vat, @Email, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id;";
                 customerId = await _db.QuerySingleAsync<int>(sql, intervention.Site.Customer, transaction);
             }
 
@@ -71,14 +100,14 @@ public class InterventionRepository
                 // Insert material if it does not exist
                 sql =
                     "INSERT INTO Materials (id, name, price, unit, quantity, stored, creation_date, last_update_date) VALUES (@Id, @Name, @Price, @Unit, @Quantity, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) ON CONFLICT (id) DO NOTHING;";
-                await _db.ExecuteAsync(sql, material.Key, transaction);
+                await _db.ExecuteAsync(sql, material.Material, transaction);
 
                 sql =
                     "INSERT INTO InterventionMaterials (intervention_id, material_id, quantity, stored, creation_date, last_update_date) VALUES (@InterventionId, @MaterialId, @Quantity, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);";
                 await _db.ExecuteAsync(sql,
                     new
                     {
-                        InterventionId = interventionId, MaterialId = material.Key.Id, Quantity = material.Value
+                        InterventionId = interventionId, MaterialId = material.Material.Id, Quantity = material.Quantity
                     }, transaction);
             }
 
@@ -88,15 +117,15 @@ public class InterventionRepository
                 // Insert worker if it does not exist
                 sql =
                     "INSERT INTO Workers (id, name, surname, pph, stored, creation_date, last_update_date) VALUES (@Id, @Name, @Surname, @Pph, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) ON CONFLICT (id) DO NOTHING;";
-                await _db.ExecuteAsync(sql, workerHour.Key, transaction);
+                await _db.ExecuteAsync(sql, workerHour.Worker, transaction);
 
                 sql =
                     "INSERT INTO WorkerInterventions (worker_id, intervention_id, hours_worked, stored, creation_date, last_update_date) VALUES (@WorkerId, @InterventionId, @HoursWorked, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);";
                 await _db.ExecuteAsync(sql,
                     new
                     {
-                        WorkerId = workerHour.Key.Id, InterventionId = interventionId,
-                        HoursWorked = workerHour.Value
+                        WorkerId = workerHour.Worker.Id, InterventionId = interventionId,
+                        HoursWorked = workerHour.Hours
                     }, transaction);
             }
 

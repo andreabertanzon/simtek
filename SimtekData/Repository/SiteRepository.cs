@@ -42,4 +42,20 @@ public class SiteRepository
         var sql = "UPDATE Sites SET stored = TRUE WHERE id = @id";
         _db.Execute(sql, new { id });
     }
+
+    public List<SiteDto> GetSitesByIds(List<int> ids)
+    {
+        try
+        {
+            _db.Open();
+            var result = _db.Query<SiteDto>("SELECT * from sites where id in(@Ids)", new { Ids = ids }).ToList();
+            return result;
+        }
+        finally
+        {
+            _db.Close();
+        }
+        
+            
+    }
 }
