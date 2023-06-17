@@ -3,7 +3,6 @@ using Npgsql;
 using OneOf;
 using OneOf.Types;
 using SimtekData;
-using SimtekData.Models.Intervention;
 using SimtekData.Repository;
 using SimtekDomain;
 using SimtekDomain.Errors;
@@ -29,9 +28,7 @@ public class
     {
         try
         {
-            var fullInterventionDtos = await _interventionRepository
-                .GetInterventions(InterventionFilter.Full, cancellationToken)
-                .AsT1;
+            var fullInterventionDtos =  _interventionRepository.GetFullInterventions();
 
             return fullInterventionDtos
                 .Select(dto => 

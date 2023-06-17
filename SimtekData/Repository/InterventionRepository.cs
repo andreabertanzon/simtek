@@ -19,18 +19,8 @@ public class InterventionRepository
         _db = db;
     }
 
-    public OneOf<Task<IEnumerable<InterventionShortDto>>, Task<IEnumerable<FullInterventionDto>>> GetInterventions(InterventionFilter filter, CancellationToken cancellationToken = default)
-    {
-        return filter switch
-        {
-            InterventionFilter.Full => GetFullInterventionsAsync(cancellationToken),
-            InterventionFilter.Compact => GetShortInterventionsAsync(cancellationToken),
-            _ => GetFullInterventionsAsync(cancellationToken)
-        };
-    }
 
-    private Task<IEnumerable<InterventionShortDto>> GetShortInterventionsAsync(CancellationToken cancellationToken =
-        default)
+    public IEnumerable<InterventionShortDto> GetShortInterventions()
     {
         var sql = @"
         SELECT
@@ -51,7 +41,7 @@ public class InterventionRepository
         try
         {
             _db.Open();
-            return _db.QueryAsync<InterventionShortDto>(sql, cancellationToken);
+            return _db.Query<InterventionShortDto>(sql);
         }
         finally
         {
@@ -93,8 +83,7 @@ public class InterventionRepository
         }
     }
 
-    private Task<IEnumerable<FullInterventionDto>> GetFullInterventionsAsync(
-        CancellationToken cancellationToken = default)
+    public IEnumerable<FullInterventionDto> GetFullInterventions()
     {
         var sql = @"
         SELECT
@@ -121,7 +110,7 @@ public class InterventionRepository
         {
             _db.Open();
 
-            return _db.QueryAsync<FullInterventionDto>(sql, cancellationToken);
+            return _db.Query<FullInterventionDto>(sql);
         }
         finally
         {
@@ -129,7 +118,7 @@ public class InterventionRepository
         }
     }
 
-    public Task<FullInterventionDto?> GetFullInterventionByIdAsync(int id,
+    public Task<FullInterventionDto?> GetFullInterventionById(int id,
         CancellationToken cancellationToken = default)
     {
         var sql = @"
@@ -267,7 +256,7 @@ public class InterventionRepository
         {
             _db.Open();
             transaction = _db.BeginTransaction();
-            
+
             var sql = "UPDATE Interventions SET stored = TRUE WHERE id = @id";
             _db.Execute(sql, new { id }, transaction);
 
@@ -279,7 +268,7 @@ public class InterventionRepository
 
             transaction.Commit();
         }
-        catch(Exception)
+        catch (Exception)
         {
             transaction?.Rollback();
             throw;
