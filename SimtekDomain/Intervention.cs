@@ -1,21 +1,15 @@
 namespace SimtekDomain;
 
-// public record Intervention(
-//     int Id,
-//     Site Site,
-//     Dictionary<Worker, double> WorkerHours,
-//     Dictionary<Material, double> Materials,
-//     DateTime InterventionDate,
-//     bool Stored = false);
-//     
 public record MaterialUse(
     Material Material,
     double Quantity
 );
+
 public record WorkerHour(
     Worker Worker,
     double Hours
 );
+
 public record Intervention(
     int Id,
     Site Site,
@@ -26,3 +20,12 @@ public record Intervention(
     DateTime InterventionDate,
     bool Stored = false);
  
+ public record InterventionShort(
+     int Id,
+     string SiteName,
+     DateTime InterventionDate,
+     string Title,
+     string Description,
+     double HourSpent,
+     double TotalWorkerCost,
+     double TotalMaterialCost);

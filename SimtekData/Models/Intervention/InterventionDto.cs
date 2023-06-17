@@ -1,4 +1,4 @@
-namespace SimtekData.Models;
+namespace SimtekData.Models.Intervention;
 
 public class InterventionDto
 {

@@ -3,15 +3,16 @@ using Npgsql;
 using OneOf;
 using OneOf.Types;
 using SimtekData;
+using SimtekData.Models.Intervention;
 using SimtekData.Repository;
-using SimtekDomain.Query;
 using SimtekDomain;
 using SimtekDomain.Errors;
+using SimtekDomain.InterventionCQRS;
 
 namespace SimtekApplication.Handlers.Intervention;
 
 public class
-    GetInterventionsQueryHandler : IRequestHandler<GetInterventions,
+    GetInterventionsQueryHandler : IRequestHandler<GetInterventionsQuery,
         OneOf<List<SimtekDomain.Intervention>, SimtekError>>
 {
     private readonly InterventionRepository _interventionRepository;
@@ -23,12 +24,14 @@ public class
       
     }
 
-    public async Task<OneOf<List<SimtekDomain.Intervention>, SimtekError>> Handle(GetInterventions request,
+    public async Task<OneOf<List<SimtekDomain.Intervention>, SimtekError>> Handle(GetInterventionsQuery request,
         CancellationToken cancellationToken)
     {
         try
         {
-            var fullInterventionDtos = await _interventionRepository.GetInterventions(cancellationToken);
+            var fullInterventionDtos = await _interventionRepository
+                .GetInterventions(InterventionFilter.Full, cancellationToken)
+                .AsT1;
 
             return fullInterventionDtos
                 .Select(dto => 

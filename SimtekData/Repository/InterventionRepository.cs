@@ -1,8 +1,12 @@
 using System.Data;
+using System.Transactions;
 using Dapper;
 using Npgsql;
+using OneOf;
 using SimtekData.Models;
+using SimtekData.Models.Intervention;
 using SimtekDomain;
+using SimtekDomain.Errors;
 
 namespace SimtekData.Repository;
 
@@ -15,14 +19,94 @@ public class InterventionRepository
         _db = db;
     }
 
-    public async Task<IEnumerable<FullInterventionDto>> GetInterventions(CancellationToken cancellationToken = default)
+    public OneOf<Task<IEnumerable<InterventionShortDto>>, Task<IEnumerable<FullInterventionDto>>> GetInterventions(InterventionFilter filter, CancellationToken cancellationToken = default)
+    {
+        return filter switch
+        {
+            InterventionFilter.Full => GetFullInterventionsAsync(cancellationToken),
+            InterventionFilter.Compact => GetShortInterventionsAsync(cancellationToken),
+            _ => GetFullInterventionsAsync(cancellationToken)
+        };
+    }
+
+    private Task<IEnumerable<InterventionShortDto>> GetShortInterventionsAsync(CancellationToken cancellationToken =
+        default)
     {
         var sql = @"
         SELECT
+        i.id as Id,
+        s.name as SiteName,
+        i.intervention_date as InterventionDate,
+        SUM(wi.hours_worked) as HoursSpent,
+        SUM(wi.hours_worked * w.pph) as TotalWorkerCost,
+        SUM(im.quantity * m.price) as TotalMaterialCost
+        FROM interventions i
+            INNER JOIN sites s ON i.site_id = s.id
+        INNER JOIN workerinterventions wi ON i.id = wi.intervention_id
+        INNER JOIN workers w ON wi.worker_id = w.id
+        LEFT JOIN interventionmaterials im ON i.id = im.intervention_id
+        LEFT JOIN materials m ON im.material_id = m.id
+        GROUP BY i.id, s.name, i.intervention_date;
+";
+        try
+        {
+            _db.Open();
+            return _db.QueryAsync<InterventionShortDto>(sql, cancellationToken);
+        }
+        finally
+        {
+            _db.Close();
+        }
+    }
+
+    public Task<InterventionShortDto?> GetShortInterventionByIdAsync(int id,
+        CancellationToken cancellationToken = default)
+    {
+        var sql = @"
+        SELECT
+        i.id as Id,
+        s.name as SiteName,
+        i.intervention_date as InterventionDate,
+        SUM(wi.hours_worked) as HoursSpent,
+        SUM(wi.hours_worked * w.pph) as TotalWorkerCost,
+        SUM(im.quantity * m.price) as TotalMaterialCost
+        FROM interventions i
+            INNER JOIN sites s ON i.site_id = s.id
+        INNER JOIN workerinterventions wi ON i.id = wi.intervention_id
+        INNER JOIN workers w ON wi.worker_id = w.id
+        LEFT JOIN interventionmaterials im ON i.id = im.intervention_id
+        LEFT JOIN materials m ON im.material_id = m.id
+        WHERE i.id = @Id
+        GROUP BY i.id, s.name, i.intervention_date;
+";
+        try
+        {
+            if (cancellationToken.IsCancellationRequested)
+                throw new TaskCanceledException("Cancellation requested in GetShortInterventionByIdAsync");
+
+            _db.Open();
+            return _db.QuerySingleAsync<InterventionShortDto?>(sql, new { Id = id });
+        }
+        finally
+        {
+            _db.Close();
+        }
+    }
+
+    private Task<IEnumerable<FullInterventionDto>> GetFullInterventionsAsync(
+        CancellationToken cancellationToken = default)
+    {
+        var sql = @"
+        SELECT
+            -- intervention
             i.id as Id, i.intervention_date as InterventionDate, i.stored as Stored, i.title as Title, i.description as Description,
+            -- site
             s.id AS SiteId, s.name AS SiteName, s.address AS SiteAddress,
+            -- customer
             c.id AS CustomerId, c.name AS CustomerName, c.surname AS CustomerSurname, c.address AS CustomerAddress, c.vat AS CustomerVat, c.email AS CustomerEmail, c.phone_number AS CustomerPhoneNumber,
+            -- worker
             w.id AS WorkerId, w.name AS WorkerName, w.surname AS WorkerSurname, w.pph AS WorkerPph, wi.hours_worked AS HoursWorked,
+            -- material
             m.id AS MaterialId, m.name AS MaterialName, m.price AS MaterialPrice, m.unit AS MaterialUnit, im.quantity AS MaterialQuantity
         FROM interventions i
         INNER JOIN sites s ON i.site_id = s.id
@@ -37,9 +121,7 @@ public class InterventionRepository
         {
             _db.Open();
 
-            var fullInterventionDtos = await _db.QueryAsync<FullInterventionDto>(sql, cancellationToken);
-
-            return fullInterventionDtos;
+            return _db.QueryAsync<FullInterventionDto>(sql, cancellationToken);
         }
         finally
         {
@@ -47,10 +129,42 @@ public class InterventionRepository
         }
     }
 
-    public InterventionDto GetIntervention(int id)
+    public Task<FullInterventionDto?> GetFullInterventionByIdAsync(int id,
+        CancellationToken cancellationToken = default)
     {
-        return _db.QuerySingle<InterventionDto>("SELECT * FROM Interventions WHERE id = @id AND stored = FALSE",
-            new { id });
+        var sql = @"
+        SELECT
+            -- intervention
+            i.id as Id, i.intervention_date as InterventionDate, i.stored as Stored, i.title as Title, i.description as Description,
+            -- site
+            s.id AS SiteId, s.name AS SiteName, s.address AS SiteAddress,
+            -- customer
+            c.id AS CustomerId, c.name AS CustomerName, c.surname AS CustomerSurname, c.address AS CustomerAddress, c.vat AS CustomerVat, c.email AS CustomerEmail, c.phone_number AS CustomerPhoneNumber,
+            -- worker
+            w.id AS WorkerId, w.name AS WorkerName, w.surname AS WorkerSurname, w.pph AS WorkerPph, wi.hours_worked AS HoursWorked,
+            -- material
+            m.id AS MaterialId, m.name AS MaterialName, m.price AS MaterialPrice, m.unit AS MaterialUnit, im.quantity AS MaterialQuantity
+        FROM interventions i
+        INNER JOIN sites s ON i.site_id = s.id
+        INNER JOIN customers c ON s.customer_id = c.id
+        INNER JOIN workerinterventions wi ON i.id = wi.intervention_id
+        INNER JOIN workers w ON wi.worker_id = w.id
+        LEFT JOIN interventionmaterials im ON i.id = im.intervention_id
+        LEFT JOIN materials m ON im.material_id = m.id
+        WHERE i.id = @id;
+    ";
+        try
+        {
+            _db.Open();
+            if (cancellationToken.IsCancellationRequested)
+                throw new TaskCanceledException("Cancellation requested in GetFullInterventionByIdAsync");
+
+            return _db.QuerySingleAsync<FullInterventionDto?>(sql, new { id });
+        }
+        finally
+        {
+            _db.Close();
+        }
     }
 
     public async Task AddInterventionAsync(Intervention intervention, CancellationToken cancellationToken)
@@ -90,9 +204,13 @@ public class InterventionRepository
             }
 
             sql =
-                "INSERT INTO Interventions (site_id, intervention_date, stored, creation_date, last_update_date) VALUES (@SiteId, @InterventionDate, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id;";
+                "INSERT INTO Interventions (site_id, title, description, intervention_date, stored, creation_date, last_update_date) VALUES (@SiteId, @Title, @Description, @InterventionDate, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id;";
             var interventionId = await _db.QuerySingleAsync<int>(sql,
-                new { SiteId = siteId, InterventionDate = intervention.InterventionDate }, transaction);
+                new
+                {
+                    SiteId = siteId, Title = intervention.Title, Description = intervention.Description,
+                    InterventionDate = intervention.InterventionDate
+                }, transaction);
 
             // Insert into InterventionMaterials
             foreach (var material in intervention.Materials)
@@ -142,16 +260,33 @@ public class InterventionRepository
         }
     }
 
-    public void UpdateIntervention(InterventionDto interventionDto)
-    {
-        var sql =
-            "UPDATE Interventions SET site_id = @SiteId, intervention_date = @InterventionDate, last_update_date = CURRENT_TIMESTAMP WHERE id = @Id";
-        _db.Execute(sql, interventionDto);
-    }
-
     public void DeleteIntervention(int id)
     {
-        var sql = "UPDATE Interventions SET stored = TRUE WHERE id = @id";
-        _db.Execute(sql, new { id });
+        IDbTransaction? transaction = null;
+        try
+        {
+            _db.Open();
+            transaction = _db.BeginTransaction();
+            
+            var sql = "UPDATE Interventions SET stored = TRUE WHERE id = @id";
+            _db.Execute(sql, new { id }, transaction);
+
+            sql = "UPDATE InterventionMaterials SET stored = TRUE WHERE intervention_id = @id";
+            _db.Execute(sql, transaction);
+
+            sql = "UPDATE WorkerInterventions SET stored = TRUE WHERE intervention_id = @id";
+            _db.Execute(sql, transaction);
+
+            transaction.Commit();
+        }
+        catch(Exception)
+        {
+            transaction?.Rollback();
+            throw;
+        }
+        finally
+        {
+            _db.Close();
+        }
     }
 }
