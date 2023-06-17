@@ -1,22 +1,21 @@
 using System.Data;
-using System.Transactions;
 using Dapper;
 using Npgsql;
-using OneOf;
+using SimtekData.Configurations;
 using SimtekData.Models;
 using SimtekData.Models.Intervention;
 using SimtekDomain;
-using SimtekDomain.Errors;
 
 namespace SimtekData.Repository;
 
 public class InterventionRepository
 {
-    private readonly IDbConnection _db;
+    private readonly string _connectionString;
+    
 
-    public InterventionRepository(IDbConnection db)
+    public InterventionRepository(DbConnectionLiteral connectionString)
     {
-        _db = db;
+        _connectionString = connectionString.ConnectionString;
     }
 
 
@@ -38,15 +37,9 @@ public class InterventionRepository
         LEFT JOIN materials m ON im.material_id = m.id
         GROUP BY i.id, s.name, i.intervention_date;
 ";
-        try
-        {
-            _db.Open();
-            return _db.Query<InterventionShortDto>(sql);
-        }
-        finally
-        {
-            _db.Close();
-        }
+        using var connection = new NpgsqlConnection(connectionString: _connectionString);
+        connection.Open();
+        return connection.Query<InterventionShortDto>(sql);
     }
 
     public Task<InterventionShortDto?> GetShortInterventionByIdAsync(int id,
@@ -69,18 +62,13 @@ public class InterventionRepository
         WHERE i.id = @Id
         GROUP BY i.id, s.name, i.intervention_date;
 ";
-        try
-        {
-            if (cancellationToken.IsCancellationRequested)
-                throw new TaskCanceledException("Cancellation requested in GetShortInterventionByIdAsync");
+        
+        if (cancellationToken.IsCancellationRequested)
+            throw new TaskCanceledException("Cancellation requested in GetShortInterventionByIdAsync");
 
-            _db.Open();
-            return _db.QuerySingleAsync<InterventionShortDto?>(sql, new { Id = id });
-        }
-        finally
-        {
-            _db.Close();
-        }
+        using var connection = new NpgsqlConnection(connectionString: _connectionString);
+        connection.Open();
+        return connection.QuerySingleAsync<InterventionShortDto?>(sql, new { Id = id });
     }
 
     public IEnumerable<FullInterventionDto> GetFullInterventions()
@@ -106,16 +94,10 @@ public class InterventionRepository
         LEFT JOIN materials m ON im.material_id = m.id;
     ";
 
-        try
-        {
-            _db.Open();
+        using var connection = new NpgsqlConnection(connectionString: _connectionString);
+        connection.Open();
 
-            return _db.Query<FullInterventionDto>(sql);
-        }
-        finally
-        {
-            _db.Close();
-        }
+        return connection.Query<FullInterventionDto>(sql);
     }
 
     public Task<FullInterventionDto?> GetFullInterventionById(int id,
@@ -142,25 +124,22 @@ public class InterventionRepository
         LEFT JOIN materials m ON im.material_id = m.id
         WHERE i.id = @id;
     ";
-        try
-        {
-            _db.Open();
-            if (cancellationToken.IsCancellationRequested)
-                throw new TaskCanceledException("Cancellation requested in GetFullInterventionByIdAsync");
 
-            return _db.QuerySingleAsync<FullInterventionDto?>(sql, new { id });
-        }
-        finally
-        {
-            _db.Close();
-        }
+        using var connection = new NpgsqlConnection(connectionString: _connectionString);
+        connection.Open();
+        if (cancellationToken.IsCancellationRequested)
+            throw new TaskCanceledException("Cancellation requested in GetFullInterventionByIdAsync");
+
+        return connection.QuerySingleAsync<FullInterventionDto?>(sql, new { id });
     }
 
     public async Task AddInterventionAsync(Intervention intervention, CancellationToken cancellationToken)
     {
         // Start a transaction to ensure all inserts are successful
-        _db.Open();
-        using var transaction = _db.BeginTransaction();
+        await using var connection = new NpgsqlConnection(connectionString: _connectionString);
+        connection.Open();
+
+        await using var transaction = connection.BeginTransaction();
         try
         {
             // Insert customer if it does not exist
@@ -169,32 +148,34 @@ public class InterventionRepository
             // Check if customer exists
             var sql = "SELECT id FROM Customers WHERE CONCAT(name, ' ', surname) = @FullCustomerName;";
             var customerId =
-                await _db.QuerySingleOrDefaultAsync<int>(sql, new { FullCustomerName = fullCustomerName }, transaction);
+                await connection.QuerySingleOrDefaultAsync<int>(sql, new { FullCustomerName = fullCustomerName },
+                    transaction);
 
             if (customerId == 0)
             {
                 // Insert new customer
                 sql =
                     "INSERT INTO Customers (name, surname, vat, email, stored, creation_date, last_update_date) VALUES (@Name, @Surname, @Vat, @Email, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id;";
-                customerId = await _db.QuerySingleAsync<int>(sql, intervention.Site.Customer, transaction);
+                customerId = await connection.QuerySingleAsync<int>(sql, intervention.Site.Customer, transaction);
             }
 
             // Insert site if it does not exist
             sql =
                 "INSERT INTO Sites (name, address, customer_id, stored, creation_date, last_update_date) VALUES (@Name, @Address, @CustomerId, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) ON CONFLICT (name) DO NOTHING RETURNING id;";
-            var siteId = await _db.QuerySingleOrDefaultAsync<int>(sql,
+            var siteId = await connection.QuerySingleOrDefaultAsync<int>(sql,
                 new { Name = intervention.Site.Name, Address = intervention.Site.Address, CustomerId = customerId },
                 transaction);
 
             if (siteId == 0)
             {
                 sql = "SELECT id FROM Sites WHERE name = @Name;";
-                siteId = await _db.QuerySingleAsync<int>(sql, new { Name = intervention.Site.Name }, transaction);
+                siteId = await connection.QuerySingleAsync<int>(sql, new { Name = intervention.Site.Name },
+                    transaction);
             }
 
             sql =
                 "INSERT INTO Interventions (site_id, title, description, intervention_date, stored, creation_date, last_update_date) VALUES (@SiteId, @Title, @Description, @InterventionDate, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id;";
-            var interventionId = await _db.QuerySingleAsync<int>(sql,
+            var interventionId = await connection.QuerySingleAsync<int>(sql,
                 new
                 {
                     SiteId = siteId, Title = intervention.Title, Description = intervention.Description,
@@ -207,11 +188,11 @@ public class InterventionRepository
                 // Insert material if it does not exist
                 sql =
                     "INSERT INTO Materials (id, name, price, unit, quantity, stored, creation_date, last_update_date) VALUES (@Id, @Name, @Price, @Unit, @Quantity, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) ON CONFLICT (id) DO NOTHING;";
-                await _db.ExecuteAsync(sql, material.Material, transaction);
+                await connection.ExecuteAsync(sql, material.Material, transaction);
 
                 sql =
                     "INSERT INTO InterventionMaterials (intervention_id, material_id, quantity, stored, creation_date, last_update_date) VALUES (@InterventionId, @MaterialId, @Quantity, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);";
-                await _db.ExecuteAsync(sql,
+                await connection.ExecuteAsync(sql,
                     new
                     {
                         InterventionId = interventionId, MaterialId = material.Material.Id, Quantity = material.Quantity
@@ -224,11 +205,11 @@ public class InterventionRepository
                 // Insert worker if it does not exist
                 sql =
                     "INSERT INTO Workers (id, name, surname, pph, stored, creation_date, last_update_date) VALUES (@Id, @Name, @Surname, @Pph, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) ON CONFLICT (id) DO NOTHING;";
-                await _db.ExecuteAsync(sql, workerHour.Worker, transaction);
+                await connection.ExecuteAsync(sql, workerHour.Worker, transaction);
 
                 sql =
                     "INSERT INTO WorkerInterventions (worker_id, intervention_id, hours_worked, stored, creation_date, last_update_date) VALUES (@WorkerId, @InterventionId, @HoursWorked, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);";
-                await _db.ExecuteAsync(sql,
+                await connection.ExecuteAsync(sql,
                     new
                     {
                         WorkerId = workerHour.Worker.Id, InterventionId = interventionId,
@@ -236,35 +217,31 @@ public class InterventionRepository
                     }, transaction);
             }
 
-            transaction.Commit();
+            await transaction.CommitAsync(cancellationToken);
         }
         catch (Exception)
         {
-            transaction.Rollback();
+            await transaction.RollbackAsync(cancellationToken);
             throw; // rethrowing the exception to be handled by upper layers
-        }
-        finally
-        {
-            _db.Close();
         }
     }
 
     public void DeleteIntervention(int id)
     {
-        IDbTransaction? transaction = null;
+        using var connection = new NpgsqlConnection(connectionString: _connectionString);
+        connection.Open();
+        using IDbTransaction? transaction = connection.BeginTransaction();
+
         try
         {
-            _db.Open();
-            transaction = _db.BeginTransaction();
-
             var sql = "UPDATE Interventions SET stored = TRUE WHERE id = @id";
-            _db.Execute(sql, new { id }, transaction);
+            connection.Execute(sql, new { id }, transaction);
 
             sql = "UPDATE InterventionMaterials SET stored = TRUE WHERE intervention_id = @id";
-            _db.Execute(sql, transaction);
+            connection.Execute(sql, transaction);
 
             sql = "UPDATE WorkerInterventions SET stored = TRUE WHERE intervention_id = @id";
-            _db.Execute(sql, transaction);
+            connection.Execute(sql, transaction);
 
             transaction.Commit();
         }
@@ -272,10 +249,6 @@ public class InterventionRepository
         {
             transaction?.Rollback();
             throw;
-        }
-        finally
-        {
-            _db.Close();
         }
     }
 }

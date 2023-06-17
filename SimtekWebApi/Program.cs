@@ -1,6 +1,7 @@
 using System.Data;
 using Carter;
 using Npgsql;
+using SimtekData.Configurations;
 using SimtekData.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,7 +18,14 @@ builder.Services.AddMediatR(cfg =>
         .Assembly);
 });
 
-builder.Services.AddTransient<IDbConnection>(db => new NpgsqlConnection(builder.Configuration.GetConnectionString("Local")));
+builder.Services.AddTransient<DbConnectionLiteral>(db =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("Local") ?? throw new Exception("Missing Connection String");
+    return new DbConnectionLiteral()
+    {
+        ConnectionString = connectionString
+    };
+});
 builder.Services.AddScoped<InterventionRepository>();
 
 
