@@ -27,7 +27,6 @@
       <Folder Include="Controllers\" />
       <Folder Include="Modules\InterventionApi\Requests\" />
       <Folder Include="Modules\InterventionApi\Responses\" />
-      <Folder Include="Modules\Material\" />
     </ItemGroup>
 
     <ItemGroup>

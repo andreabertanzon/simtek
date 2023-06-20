@@ -22,38 +22,36 @@ public class InterventionsModule : CarterModule
             async (
                 [FromQuery] bool? getFull,
                 [FromServices] InterventionRepository interventionRepository,
-                [FromServices] IMediator mediatr) =>
+                [FromServices] IMediator mediatr,
+                CancellationToken cancellationToken) =>
             {
                 if (getFull == true)
                 {
                     var request = new GetInterventionsQuery();
-                    var response = await mediatr.Send<OneOf<List<Intervention>, SimtekError>>(request);
-                    return response.ToHttpResult<List<Intervention>>();
+                    var response = await mediatr.Send<OneOf<List<Intervention>, SimtekError>>(request, cancellationToken);
+                    return response.ToHttpResult();
                 }
 
                 var shortRequest = new GetShortInterventionsQuery();
-                var shortResponse = await mediatr.Send(shortRequest);
+                var shortResponse = await mediatr.Send(shortRequest, cancellationToken);
                 return shortResponse.ToHttpResult();
             });
 
-        app.MapPost("/", async ([FromServices] InterventionRepository interventionRepository) =>
+        app.MapGet("/{id:int}", async (
+            [FromRoute] int id,
+            [FromServices] IMediator mediator) =>
         {
-            var site = new Site(-99, "Andrea Valeggio", "Corte Cittadella 19, Valeggio Sul Mincio, 37067",
-                new Customer(-99, "Andrea", "Bertanzon", "Corte Cittadella 19, Valeggio Sul Mincio", null, null, null));
-            var intervention = new Intervention(
-                -99,
-                site,
-                "Rifacimento Bagno",
-                "Aggiunto rubinetto\nAggiunto bidet",
-                new List<WorkerHour>()
-                {
-                    new(new Worker(1, "Simone", "Bonfante", 30.00), 8)
-                },
-                new List<MaterialUse>(),
-                DateTime.Now,
-                false
-            );
-            await interventionRepository.AddInterventionAsync(intervention, cancellationToken: CancellationToken.None);
+            var request = new GetInterventionByIdQuery();
+            var result = await mediator.Send(request);
+            return result.ToHttpResult();
+        });
+
+        app.MapPost("/", async (
+            [FromBody] Intervention intervention,
+            [FromServices] InterventionRepository interventionRepository,
+            CancellationToken cancellationToken) =>
+        {
+            await interventionRepository.AddInterventionAsync(intervention, cancellationToken: cancellationToken);
             return Results.Ok();
         });
     }

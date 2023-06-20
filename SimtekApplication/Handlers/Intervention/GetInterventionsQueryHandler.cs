@@ -2,6 +2,7 @@ using MediatR;
 using Npgsql;
 using OneOf;
 using OneOf.Types;
+using SimtekApplication.Handlers.Mappers;
 using SimtekData;
 using SimtekData.Repository;
 using SimtekDomain;
@@ -28,35 +29,10 @@ public class
     {
         try
         {
-            var fullInterventionDtos =  _interventionRepository.GetFullInterventions();
+            var fullInterventionDtos =  await _interventionRepository.GetFullInterventions(cancellationToken);
 
             return fullInterventionDtos
-                .Select(dto => 
-                    new SimtekDomain.Intervention(
-                        dto.Id,
-                        new Site(dto.SiteId, dto.SiteName, dto.SiteAddress, 
-                            new Customer(
-                                dto.CustomerId, 
-                                dto.CustomerName, 
-                                dto.CustomerSurname, 
-                                dto.CustomerAddress, 
-                                dto.CustomerVat, 
-                                dto.CustomerEmail, 
-                                dto.CustomerPhoneNumber)),
-                        dto.Title,
-                        dto.Description,
-                        new List<WorkerHour>
-                        {
-                            new WorkerHour(new Worker(dto.WorkerId, dto.WorkerName, dto.WorkerSurname, dto.WorkerPph), Hours: dto.HoursWorked)
-                        }, 
-                        new List<MaterialUse>
-                        {
-                            new MaterialUse(
-                                new Material(dto.MaterialId, dto.MaterialName, dto.MaterialPrice, dto.MaterialUnit, dto.MaterialQuantity), 
-                                dto.MaterialQuantity)
-                        },
-                        dto.InterventionDate, 
-                        dto.Stored))
+                .Select(dto => dto.ToDomainModel())
                 .ToList();
         }
         catch (Exception ex)

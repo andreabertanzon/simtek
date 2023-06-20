@@ -71,7 +71,7 @@ public class InterventionRepository
         return connection.QuerySingleAsync<InterventionShortDto?>(sql, new { Id = id });
     }
 
-    public IEnumerable<FullInterventionDto> GetFullInterventions()
+    public async Task<IEnumerable<FullInterventionDto>> GetFullInterventions(CancellationToken cancellationToken)
     {
         var sql = @"
         SELECT
@@ -94,10 +94,10 @@ public class InterventionRepository
         LEFT JOIN materials m ON im.material_id = m.id;
     ";
 
-        using var connection = new NpgsqlConnection(connectionString: _connectionString);
-        connection.Open();
+        await using var connection = new NpgsqlConnection(connectionString: _connectionString);
+        await connection.OpenAsync(cancellationToken);
 
-        return connection.Query<FullInterventionDto>(sql);
+        return await connection.QueryAsync<FullInterventionDto>(sql,cancellationToken);
     }
 
     public Task<FullInterventionDto?> GetFullInterventionById(int id,
