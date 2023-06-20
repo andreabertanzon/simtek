@@ -29,7 +29,7 @@ public static class InterventionMapperExtensions
             new List<MaterialUse>
             {
                 new MaterialUse(
-                    new Material(dto.MaterialId, dto.MaterialName, dto.MaterialPrice, dto.MaterialUnit,
+                    new SimtekDomain.Material(dto.MaterialId, dto.MaterialName, dto.MaterialPrice, dto.MaterialUnit,
                         dto.MaterialQuantity),
                     dto.MaterialQuantity)
             },
