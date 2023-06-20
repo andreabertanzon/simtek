@@ -4,11 +4,12 @@ using Npgsql;
 using SimtekData.Configurations;
 using SimtekData.Models;
 using SimtekData.Models.Intervention;
+using SimtekData.Repository.Abstractions;
 using SimtekDomain;
 
-namespace SimtekData.Repository;
+namespace SimtekData.Repository.Implementations;
 
-public class InterventionRepository
+public class InterventionRepository : IInterventionRepository
 {
     private readonly string _connectionString;
     

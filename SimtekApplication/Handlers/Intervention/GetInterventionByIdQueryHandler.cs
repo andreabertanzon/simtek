@@ -2,6 +2,7 @@ using MediatR;
 using OneOf;
 using SimtekApplication.Handlers.Mappers;
 using SimtekData.Repository;
+using SimtekData.Repository.Abstractions;
 using SimtekDomain.Errors;
 using SimtekDomain.InterventionCQRS;
 
@@ -11,9 +12,9 @@ public class
     GetInterventionByIdQueryHandler : IRequestHandler<GetInterventionByIdQuery,
         OneOf<SimtekDomain.Intervention, SimtekError>>
 {
-    private readonly InterventionRepository _interventionRepository;
+    private readonly IInterventionRepository _interventionRepository;
 
-    public GetInterventionByIdQueryHandler(InterventionRepository interventionRepository)
+    public GetInterventionByIdQueryHandler(IInterventionRepository interventionRepository)
     {
         _interventionRepository = interventionRepository;
     }

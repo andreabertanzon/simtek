@@ -1,6 +1,7 @@
 using Carter;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SimtekDomain.MaterialCQRS;
 
 namespace SimtekWebApi.Modules.Material;
 
@@ -16,8 +17,9 @@ public class MaterialModule:CarterModule
             [FromServices]IMediator mediator,
             [FromRoute] int id) =>
         {
-            
-            return Results.Ok();
+            var request = new GetMaterialByIdQuery(id);
+            var response = await mediator.Send(request);
+            response.ToHttpResult();
         });
     }
 }

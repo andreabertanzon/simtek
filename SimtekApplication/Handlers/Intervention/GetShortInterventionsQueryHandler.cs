@@ -1,6 +1,7 @@
 using MediatR;
 using OneOf;
 using SimtekData.Repository;
+using SimtekData.Repository.Abstractions;
 using SimtekDomain;
 using SimtekDomain.Errors;
 using SimtekDomain.InterventionCQRS;
@@ -11,9 +12,9 @@ public class
     GetShortInterventionsQueryHandler : IRequestHandler<GetShortInterventionsQuery,
         OneOf<List<InterventionShort>, SimtekError>>
 {
-    private readonly InterventionRepository _interventionRepository;
+    private readonly IInterventionRepository _interventionRepository;
 
-    public GetShortInterventionsQueryHandler(InterventionRepository interventionRepository)
+    public GetShortInterventionsQueryHandler(IInterventionRepository interventionRepository)
     {
         _interventionRepository = interventionRepository;
     }

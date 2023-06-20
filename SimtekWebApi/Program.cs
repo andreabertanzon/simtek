@@ -3,6 +3,8 @@ using Carter;
 using Npgsql;
 using SimtekData.Configurations;
 using SimtekData.Repository;
+using SimtekData.Repository.Abstractions;
+using SimtekData.Repository.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +28,7 @@ builder.Services.AddTransient<DbConnectionLiteral>(db =>
         ConnectionString = connectionString
     };
 });
-builder.Services.AddScoped<InterventionRepository>();
+builder.Services.AddScoped<IInterventionRepository,InterventionRepository>();
 
 
 var app = builder.Build();

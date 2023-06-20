@@ -1,6 +1,5 @@
 using Carter;
 using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using OneOf;
 using SimtekData.Repository;
@@ -21,7 +20,6 @@ public class InterventionsModule : CarterModule
         app.MapGet("/",
             async (
                 [FromQuery] bool? getFull,
-                [FromServices] InterventionRepository interventionRepository,
                 [FromServices] IMediator mediatr,
                 CancellationToken cancellationToken) =>
             {
@@ -48,10 +46,9 @@ public class InterventionsModule : CarterModule
 
         app.MapPost("/", async (
             [FromBody] Intervention intervention,
-            [FromServices] InterventionRepository interventionRepository,
             CancellationToken cancellationToken) =>
         {
-            await interventionRepository.AddInterventionAsync(intervention, cancellationToken: cancellationToken);
+            //await interventionRepository.AddInterventionAsync(intervention, cancellationToken: cancellationToken);
             return Results.Ok();
         });
     }

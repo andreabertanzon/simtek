@@ -5,6 +5,7 @@ using OneOf.Types;
 using SimtekApplication.Handlers.Mappers;
 using SimtekData;
 using SimtekData.Repository;
+using SimtekData.Repository.Abstractions;
 using SimtekDomain;
 using SimtekDomain.Errors;
 using SimtekDomain.InterventionCQRS;
@@ -15,10 +16,10 @@ public class
     GetInterventionsQueryHandler : IRequestHandler<GetInterventionsQuery,
         OneOf<List<SimtekDomain.Intervention>, SimtekError>>
 {
-    private readonly InterventionRepository _interventionRepository;
+    private readonly IInterventionRepository _interventionRepository;
 
 
-    public GetInterventionsQueryHandler(InterventionRepository interventionRepository)
+    public GetInterventionsQueryHandler(IInterventionRepository interventionRepository)
     {
         _interventionRepository = interventionRepository;
       
