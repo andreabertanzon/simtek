@@ -9,4 +9,5 @@ public class InterventionShortDto
     public double HourSpent { get; set; }
     public double TotalWorkerCost { get; set; } = 0;
     public double? TotalMaterialCost { get; set; } = 0;
+    public DateTime InterventionDate { get; set; }
 }

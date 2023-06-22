@@ -29,6 +29,7 @@ builder.Services.AddTransient<DbConnectionLiteral>(db =>
     };
 });
 builder.Services.AddScoped<IInterventionRepository,InterventionRepository>();
+builder.Services.AddScoped<IMaterialRepository,MaterialRepository>();
 
 
 var app = builder.Build();

@@ -13,8 +13,7 @@ using SimtekDomain.InterventionCQRS;
 namespace SimtekApplication.Handlers.Intervention;
 
 public class
-    GetInterventionsQueryHandler : IRequestHandler<GetInterventionsQuery,
-        OneOf<List<SimtekDomain.Intervention>, SimtekError>>
+    GetInterventionsQueryHandler : IRequestHandler<GetInterventionsQuery,OneOf<List<InterventionShort>,SimtekError>>
 {
     private readonly IInterventionRepository _interventionRepository;
 
@@ -25,14 +24,14 @@ public class
       
     }
 
-    public async Task<OneOf<List<SimtekDomain.Intervention>, SimtekError>> Handle(GetInterventionsQuery request,
+    public async Task<OneOf<List<SimtekDomain.InterventionShort>, SimtekError>> Handle(GetInterventionsQuery request,
         CancellationToken cancellationToken)
     {
         try
         {
-            var fullInterventionDtos =  await _interventionRepository.GetFullInterventions(cancellationToken);
+            var interventionDtos =  await _interventionRepository.GetInterventionsAsync(cancellationToken);
 
-            return fullInterventionDtos
+            return interventionDtos
                 .Select(dto => dto.ToDomainModel())
                 .ToList();
         }

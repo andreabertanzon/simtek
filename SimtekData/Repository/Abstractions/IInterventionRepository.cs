@@ -6,14 +6,9 @@ namespace SimtekData.Repository.Abstractions;
 
 public interface IInterventionRepository
 {
-    IEnumerable<InterventionShortDto> GetShortInterventions();
+    Task<IEnumerable<InterventionShortDto>> GetInterventionsAsync(CancellationToken cancellationToken = default);
 
-    Task<InterventionShortDto?> GetShortInterventionByIdAsync(int id,
-        CancellationToken cancellationToken = default);
-
-    Task<IEnumerable<FullInterventionDto>> GetFullInterventions(CancellationToken cancellationToken);
-
-    Task<FullInterventionDto?> GetFullInterventionById(int id,
+    Task<InterventionShortDto?> GetInterventionByIdAsync(int id,
         CancellationToken cancellationToken = default);
 
     Task AddInterventionAsync(Intervention intervention, CancellationToken cancellationToken);

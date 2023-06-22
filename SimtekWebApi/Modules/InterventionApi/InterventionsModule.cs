@@ -19,18 +19,12 @@ public class InterventionsModule : CarterModule
     {
         app.MapGet("/",
             async (
-                [FromQuery] bool? getFull,
                 [FromServices] IMediator mediatr,
                 CancellationToken cancellationToken) =>
             {
-                if (getFull == true)
-                {
-                    var request = new GetInterventionsQuery();
-                    var response = await mediatr.Send<OneOf<List<Intervention>, SimtekError>>(request, cancellationToken);
-                    return response.ToHttpResult();
-                }
+                
 
-                var shortRequest = new GetShortInterventionsQuery();
+                var shortRequest = new GetInterventionsQuery();
                 var shortResponse = await mediatr.Send(shortRequest, cancellationToken);
                 return shortResponse.ToHttpResult();
             });
