@@ -45,7 +45,7 @@ public class InterventionRepository : IInterventionRepository
         return await connection.QueryAsync<InterventionShortDto>(sql,cancellationToken);
     }
 
-    public Task<InterventionShortDto?> GetInterventionByIdAsync(int id,
+    public async Task<FullInterventionDto> GetInterventionByIdAsync(int id,
         CancellationToken cancellationToken = default)
     {
         var sql = @"
@@ -71,72 +71,41 @@ public class InterventionRepository : IInterventionRepository
         if (cancellationToken.IsCancellationRequested)
             throw new TaskCanceledException("Cancellation requested in GetShortInterventionByIdAsync");
 
-        using var connection = new NpgsqlConnection(connectionString: _connectionString);
+        await using var connection = new NpgsqlConnection(connectionString: _connectionString);
         connection.Open();
-        return connection.QuerySingleAsync<InterventionShortDto?>(sql, new { Id = id });
-    }
+        var interventionShort = await connection.QuerySingleAsync<InterventionShortDto?>(sql, new { Id = id });
+        
+        var materialsQuery = @"
+SELECT * FROM materials m 
+INNER JOIN interventionmaterials im ON m.id = im.material_id
+WHERE im.intervention_id = @Id;
+";
 
-    // public async Task<IEnumerable<FullInterventionDto>> GetFullInterventions(CancellationToken cancellationToken)
-    // {
-    //     var sql = @"
-    //     SELECT
-    //         -- intervention
-    //         i.id as Id, i.intervention_date as InterventionDate, i.stored as Stored, i.title as Title, i.description as Description,
-    //         -- site
-    //         s.id AS SiteId, s.name AS SiteName, s.address AS SiteAddress,
-    //         -- customer
-    //         c.id AS CustomerId, c.name AS CustomerName, c.surname AS CustomerSurname, c.address AS CustomerAddress, c.vat AS CustomerVat, c.email AS CustomerEmail, c.phone_number AS CustomerPhoneNumber,
-    //         -- worker
-    //         w.id AS WorkerId, w.name AS WorkerName, w.surname AS WorkerSurname, w.pph AS WorkerPph, wi.hours_worked AS HoursWorked,
-    //         -- material
-    //         m.id AS MaterialId, m.name AS MaterialName, m.price AS MaterialPrice, m.unit AS MaterialUnit, im.quantity AS MaterialQuantity
-    //     FROM interventions i
-    //     INNER JOIN sites s ON i.site_id = s.id
-    //     INNER JOIN customers c ON s.customer_id = c.id
-    //     INNER JOIN workerinterventions wi ON i.id = wi.intervention_id
-    //     INNER JOIN workers w ON wi.worker_id = w.id
-    //     LEFT JOIN interventionmaterials im ON i.id = im.intervention_id
-    //     LEFT JOIN materials m ON im.material_id = m.id;
-    // ";
-    //
-    //     await using var connection = new NpgsqlConnection(connectionString: _connectionString);
-    //     await connection.OpenAsync(cancellationToken);
-    //
-    //     return await connection.QueryAsync<FullInterventionDto>(sql,cancellationToken);
-    // }
-    //
-    // public Task<FullInterventionDto?> GetFullInterventionById(int id,
-    //     CancellationToken cancellationToken = default)
-    // {
-    //     var sql = @"
-    //     SELECT
-    //         -- intervention
-    //         i.id as Id, i.intervention_date as InterventionDate, i.stored as Stored, i.title as Title, i.description as Description,
-    //         -- site
-    //         s.id AS SiteId, s.name AS SiteName, s.address AS SiteAddress,
-    //         -- customer
-    //         c.id AS CustomerId, c.name AS CustomerName, c.surname AS CustomerSurname, c.address AS CustomerAddress, c.vat AS CustomerVat, c.email AS CustomerEmail, c.phone_number AS CustomerPhoneNumber,
-    //         -- worker
-    //         w.id AS WorkerId, w.name AS WorkerName, w.surname AS WorkerSurname, w.pph AS WorkerPph, wi.hours_worked AS HoursWorked,
-    //         -- material
-    //         m.id AS MaterialId, m.name AS MaterialName, m.price AS MaterialPrice, m.unit AS MaterialUnit, im.quantity AS MaterialQuantity
-    //     FROM interventions i
-    //     INNER JOIN sites s ON i.site_id = s.id
-    //     INNER JOIN customers c ON s.customer_id = c.id
-    //     INNER JOIN workerinterventions wi ON i.id = wi.intervention_id
-    //     INNER JOIN workers w ON wi.worker_id = w.id
-    //     LEFT JOIN interventionmaterials im ON i.id = im.intervention_id
-    //     LEFT JOIN materials m ON im.material_id = m.id
-    //     WHERE i.id = @id;
-    // ";
-    //
-    //     using var connection = new NpgsqlConnection(connectionString: _connectionString);
-    //     connection.Open();
-    //     if (cancellationToken.IsCancellationRequested)
-    //         throw new TaskCanceledException("Cancellation requested in GetFullInterventionByIdAsync");
-    //
-    //     return connection.QuerySingleAsync<FullInterventionDto?>(sql, new { id });
-    // }
+        var siteQuery = @"
+SELECT * FROM sites s 
+INNER JOIN interventions i ON s.id = i.site_id
+WHERE i.id = @Id;
+";
+
+        var workersQuery = @"
+SELECT * FROM workers w
+INNER JOIN workerinterventions wi ON w.id = wi.worker_id
+WHERE wi.intervention_id = @Id;
+";
+        
+        var materials = (await connection.QueryAsync<MaterialDto>(materialsQuery)).ToList();
+        var site = (await connection.QuerySingleAsync<SiteDto>(siteQuery));
+        var workers = (await connection.QueryAsync<WorkerDto>(workersQuery)).ToList();
+
+        var fullIntDto = new FullInterventionDto
+        {
+            InterventionShortDto = interventionShort ?? throw new ArgumentNullException("interventionShort"),
+            MaterialDto = materials,
+            SiteDto = site,
+            WorkerDto = workers
+        };
+        return fullIntDto;
+    }
 
     public async Task AddInterventionAsync(Intervention intervention, CancellationToken cancellationToken)
     {

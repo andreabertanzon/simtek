@@ -12,20 +12,18 @@ public record WorkerHour(
 
 public record Intervention(
     int Id,
-    Site Site,
+    string SiteName,
+    Site? Site,
     string Title,
     string Description,
     List<WorkerHour> WorkerHours,
     List<MaterialUse> Materials,
     DateTime InterventionDate,
-    bool Stored = false);
- 
- public record InterventionShort(
-     int Id,
-     string SiteName,
-     DateTime InterventionDate,
-     string Title,
-     string Description,
-     double HourSpent,
-     double TotalWorkerCost,
-     double TotalMaterialCost);
+    bool Stored = false)
+{
+    public double TotalMaterialCost => Materials.Sum(m => m.Material.Price * m.Quantity);
+    public double TotalWorkerCost => WorkerHours.Sum(w => w.Worker.Pph * w.Hours);
+    
+    public double TotalCost => TotalMaterialCost + TotalWorkerCost;
+    public bool IsFullIntervention => Site is null ;
+};

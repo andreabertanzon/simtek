@@ -27,9 +27,7 @@ public class
             var interventionDto =
                 await _interventionRepository.GetInterventionByIdAsync(request.Id, cancellationToken: cancellationToken);
 
-            return interventionDto is null
-                ? new SimtekError(new NotFoundError())
-                : interventionDto.ToDomainModel();
+            return interventionDto.ToDomainModel();
         }
         catch (Exception ex)
         {
