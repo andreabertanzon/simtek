@@ -1,5 +1,7 @@
 obj
 bin
 .idea
+.vs
+*.user
 data
 appsettings.Development.json
