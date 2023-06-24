@@ -11,8 +11,8 @@ public static class ResponseExtension
             value => Results.Ok(value),
             error => error.Error switch
             {
-                DatabaseError databaseError => Results.StatusCode(500),
-                NotFoundError notFoundError => Results.NotFound(),
+                DatabaseError databaseError => Results.Problem(statusCode:500,detail:databaseError.Err.Message),
+                NotFoundError notFoundError => Results.NotFound($"{notFoundError.PropertyName}, not found"),
                 RequestInvalidError requestInvalidError => Results.BadRequest(),
                 _ => throw new ArgumentOutOfRangeException()
             }

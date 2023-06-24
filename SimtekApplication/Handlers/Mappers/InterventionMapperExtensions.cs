@@ -1,5 +1,6 @@
 using SimtekData.Models;
 using SimtekData.Models.Intervention;
+using SimtekData.Models.Worker;
 using SimtekDomain;
 
 namespace SimtekApplication.Handlers.Mappers;
@@ -23,12 +24,19 @@ public static class InterventionMapperExtensions
     {
         return new SimtekDomain.Intervention(
             Id: dto.InterventionShortDto.Id,
-            dto.SiteDto.ToDomainModel(),
-            dto.InterventionShortDto.Title,
-            dto.InterventionShortDto.Description,
-            dto.MaterialDto.Select(m => m.ToDomainModel()).ToList(),
-            dto.WorkerDto.Select(w => w.ToDomainModel()).ToList(),
+            SiteName: dto.SiteDto.Name,
+            Site: dto.SiteDto.ToDomainModel(dto.CustomerDto),
+            Title:dto.InterventionShortDto.Title,
+            Description: dto.InterventionShortDto.Description,
+            WorkerHours: dto.WorkerDto.Select(x=>
+                new WorkerHour(
+                    Worker: new Worker(x.Id,x.Name,x.Surname,x.Pph), 
+                    Hours: x.HourWorked))
+                .ToList(),
+            Materials: dto.MaterialDto.Select(m=>new MaterialUse(
+                Material: m.ToDomainModel(),
+                Quantity: m.Quantity)).ToList(),
             dto.InterventionShortDto.InterventionDate,
-            dto.InterventionShortDto.Stored);
+            dto.InterventionShortDto.Stored) ;
     }
 }

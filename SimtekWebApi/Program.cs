@@ -22,7 +22,7 @@ builder.Services.AddMediatR(cfg =>
 
 builder.Services.AddTransient<DbConnectionLiteral>(db =>
 {
-    var connectionString = builder.Configuration.GetConnectionString("Local") ?? throw new Exception("Missing Connection String");
+    var connectionString = builder.Configuration.GetConnectionString("PostgresLocal") ?? throw new Exception("Missing Connection String");
     return new DbConnectionLiteral()
     {
         ConnectionString = connectionString

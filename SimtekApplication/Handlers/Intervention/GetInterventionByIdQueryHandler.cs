@@ -10,7 +10,7 @@ namespace SimtekApplication.Handlers.Intervention;
 
 public class
     GetInterventionByIdQueryHandler : IRequestHandler<GetInterventionByIdQuery,
-        OneOf<SimtekDomain.InterventionShort, SimtekError>>
+        OneOf<SimtekDomain.Intervention, SimtekError>>
 {
     private readonly IInterventionRepository _interventionRepository;
 
@@ -19,7 +19,7 @@ public class
         _interventionRepository = interventionRepository;
     }
 
-    public async Task<OneOf<SimtekDomain.InterventionShort, SimtekError>> Handle(GetInterventionByIdQuery request,
+    public async Task<OneOf<SimtekDomain.Intervention, SimtekError>> Handle(GetInterventionByIdQuery request,
         CancellationToken cancellationToken)
     {
         try

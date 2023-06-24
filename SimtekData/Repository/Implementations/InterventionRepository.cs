@@ -4,6 +4,7 @@ using Npgsql;
 using SimtekData.Configurations;
 using SimtekData.Models;
 using SimtekData.Models.Intervention;
+using SimtekData.Models.Worker;
 using SimtekData.Repository.Abstractions;
 using SimtekDomain;
 
@@ -45,7 +46,7 @@ public class InterventionRepository : IInterventionRepository
         return await connection.QueryAsync<InterventionShortDto>(sql,cancellationToken);
     }
 
-    public async Task<FullInterventionDto> GetInterventionByIdAsync(int id,
+    public async Task<FullInterventionDto?> GetInterventionByIdAsync(int id,
         CancellationToken cancellationToken = default)
     {
         var sql = @"
@@ -75,6 +76,8 @@ public class InterventionRepository : IInterventionRepository
         connection.Open();
         var interventionShort = await connection.QuerySingleAsync<InterventionShortDto?>(sql, new { Id = id });
         
+        if (interventionShort is null) return null;
+
         var materialsQuery = @"
 SELECT * FROM materials m 
 INNER JOIN interventionmaterials im ON m.id = im.material_id
@@ -87,21 +90,32 @@ INNER JOIN interventions i ON s.id = i.site_id
 WHERE i.id = @Id;
 ";
 
+        var customerQuery = @"
+SELECT * FROM customers s
+INNER JOIN sites s ON s.id = c.site_id
+WHERE s.id = @Id;
+";
+
         var workersQuery = @"
-SELECT * FROM workers w
+SELECT 
+w.id as Id,
+w.name as 
+FROM workers w
 INNER JOIN workerinterventions wi ON w.id = wi.worker_id
 WHERE wi.intervention_id = @Id;
 ";
         
         var materials = (await connection.QueryAsync<MaterialDto>(materialsQuery)).ToList();
-        var site = (await connection.QuerySingleAsync<SiteDto>(siteQuery));
-        var workers = (await connection.QueryAsync<WorkerDto>(workersQuery)).ToList();
+        var site = (await connection.QuerySingleAsync<SiteDto>(siteQuery, new {Id=interventionShort.Id}));
+        var customer = (await connection.QuerySingleAsync<CustomerDto>(customerQuery, new {site.CustomerId}));
+        var workers = (await connection.QueryAsync<WorkerHoursProjection>(workersQuery, new { Id = interventionShort.Id })).ToList();
 
         var fullIntDto = new FullInterventionDto
         {
             InterventionShortDto = interventionShort ?? throw new ArgumentNullException("interventionShort"),
             MaterialDto = materials,
             SiteDto = site,
+            CustomerDto = customer,
             WorkerDto = workers
         };
         return fullIntDto;

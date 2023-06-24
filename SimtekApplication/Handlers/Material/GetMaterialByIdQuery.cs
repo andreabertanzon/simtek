@@ -20,7 +20,7 @@ public class GetMaterialByIdQueryHandler:IRequestHandler<GetMaterialByIdQuery, O
         var materialDto = await _materialRepository.GetMaterialByIdAsync(request.Id,cancellationToken:cancellationToken);
 
         return materialDto is null
-            ? new SimtekError(new NotFoundError())
+            ? new SimtekError(new NotFoundError($"Material Id: {request.Id}"))
             : materialDto.ToDomainModel();
     }
 }
