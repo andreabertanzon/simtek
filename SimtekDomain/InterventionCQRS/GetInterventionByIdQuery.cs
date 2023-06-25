@@ -4,7 +4,4 @@ using SimtekDomain.Errors;
 
 namespace SimtekDomain.InterventionCQRS;
 
-public class GetInterventionByIdQuery:IRequest<OneOf<Intervention,SimtekError>>
-{
-    public int Id { get; }
-}
+public record GetInterventionByIdQuery(int Id):IRequest<OneOf<Intervention,SimtekError>>{}

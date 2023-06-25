@@ -8,7 +8,7 @@ public interface IInterventionRepository
 {
     Task<IEnumerable<InterventionShortDto>> GetInterventionsAsync(CancellationToken cancellationToken = default);
 
-    Task<FullInterventionDto> GetInterventionByIdAsync(int id,
+    Task<FullInterventionDto?> GetInterventionByIdAsync(int id,
         CancellationToken cancellationToken = default);
 
     Task AddInterventionAsync(Intervention intervention, CancellationToken cancellationToken);

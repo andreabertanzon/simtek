@@ -58,14 +58,15 @@ public class InterventionRepository : IInterventionRepository
         i.intervention_date as InterventionDate,
         SUM(wi.hours_worked) as HoursSpent,
         SUM(wi.hours_worked * w.pph) as TotalWorkerCost,
-        SUM(im.quantity * m.price) as TotalMaterialCost
+        SUM(im.quantity * m.price) as TotalMaterialCost,
+        i.stored as Stored
         FROM interventions i
             INNER JOIN sites s ON i.site_id = s.id
         INNER JOIN workerinterventions wi ON i.id = wi.intervention_id
         INNER JOIN workers w ON wi.worker_id = w.id
         LEFT JOIN interventionmaterials im ON i.id = im.intervention_id
         LEFT JOIN materials m ON im.material_id = m.id
-        WHERE i.id = @Id
+        WHERE i.id = @IdInt
         GROUP BY i.id, s.name, i.intervention_date;
 ";
         
@@ -73,42 +74,62 @@ public class InterventionRepository : IInterventionRepository
             throw new TaskCanceledException("Cancellation requested in GetShortInterventionByIdAsync");
 
         await using var connection = new NpgsqlConnection(connectionString: _connectionString);
-        connection.Open();
-        var interventionShort = await connection.QuerySingleAsync<InterventionShortDto?>(sql, new { Id = id });
+        await connection.OpenAsync(cancellationToken);
+        var interventionShort =  await connection.QueryFirstOrDefaultAsync<InterventionShortDto>(sql, new {IdInt = id});
         
         if (interventionShort is null) return null;
 
         var materialsQuery = @"
-SELECT * FROM materials m 
+SELECT
+    m.id as Id, 
+    m.name as Name, 
+    m.price as Price, 
+    m.unit as Unit, 
+    im.quantity as Quantity, 
+    m.stored as Stored, 
+    m.creation_date as CreationDate, 
+    m.last_update_date as LastUpdateDate
+FROM materials m
 INNER JOIN interventionmaterials im ON m.id = im.material_id
-WHERE im.intervention_id = @Id;
+WHERE im.intervention_id = @IntId;
 ";
 
         var siteQuery = @"
-SELECT * FROM sites s 
+SELECT 
+    s.id as Id,
+    s.name as Name,
+    s.address as Address,
+    s.customer_id as CustomerId,
+    s.stored as Stored,
+    s.creation_date as CreationDate,
+    s.last_update_date as LastUpdateDate
+    FROM sites s
 INNER JOIN interventions i ON s.id = i.site_id
 WHERE i.id = @Id;
 ";
 
         var customerQuery = @"
-SELECT * FROM customers s
-INNER JOIN sites s ON s.id = c.site_id
+SELECT * FROM customers c
+INNER JOIN sites s ON c.id = s.customer_id
 WHERE s.id = @Id;
 ";
 
         var workersQuery = @"
 SELECT 
-w.id as Id,
-w.name as 
+   w.id as Id, 
+   w.name as Name, 
+   w.surname as Surname,
+   wi.hours_worked as HourWorked,
+   w.pph as Pph 
 FROM workers w
 INNER JOIN workerinterventions wi ON w.id = wi.worker_id
-WHERE wi.intervention_id = @Id;
+WHERE wi.intervention_id = @IntId;
 ";
         
-        var materials = (await connection.QueryAsync<MaterialDto>(materialsQuery)).ToList();
+        var materials = (await connection.QueryAsync<MaterialDto>(materialsQuery, new {IntId=id})).ToList();
         var site = (await connection.QuerySingleAsync<SiteDto>(siteQuery, new {Id=interventionShort.Id}));
-        var customer = (await connection.QuerySingleAsync<CustomerDto>(customerQuery, new {site.CustomerId}));
-        var workers = (await connection.QueryAsync<WorkerHoursProjection>(workersQuery, new { Id = interventionShort.Id })).ToList();
+        var customer = (await connection.QuerySingleAsync<CustomerDto>(customerQuery, new {Id= site.CustomerId}));
+        var workers = (await connection.QueryAsync<WorkerHoursProjection>(workersQuery, new { IntId = interventionShort.Id })).ToList();
 
         var fullIntDto = new FullInterventionDto
         {
@@ -136,7 +157,7 @@ WHERE wi.intervention_id = @Id;
             // Check if customer exists
             var sql = "SELECT id FROM Customers WHERE CONCAT(name, ' ', surname) = @FullCustomerName;";
             var customerId =
-                await connection.QuerySingleOrDefaultAsync<int>(sql, new { FullCustomerName = fullCustomerName },
+                await connection.QueryFirstOrDefaultAsync<int>(sql, new { FullCustomerName = fullCustomerName },
                     transaction);
 
             if (customerId == 0)
@@ -175,15 +196,17 @@ WHERE wi.intervention_id = @Id;
             {
                 // Insert material if it does not exist
                 sql =
-                    "INSERT INTO Materials (id, name, price, unit, quantity, stored, creation_date, last_update_date) VALUES (@Id, @Name, @Price, @Unit, @Quantity, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) ON CONFLICT (id) DO NOTHING;";
+                    "INSERT INTO Materials (name, price, unit, quantity, stored, creation_date, last_update_date) VALUES (@Name, @Price, @Unit, @Quantity, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) ON CONFLICT (name) DO NOTHING;";
                 await connection.ExecuteAsync(sql, material.Material, transaction);
 
+                var mat = await connection.QuerySingleAsync<MaterialDto>("SELECT * FROM materials WHERE NAME = @MatName", new{MatName=material.Material.Name});
+                
                 sql =
                     "INSERT INTO InterventionMaterials (intervention_id, material_id, quantity, stored, creation_date, last_update_date) VALUES (@InterventionId, @MaterialId, @Quantity, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);";
                 await connection.ExecuteAsync(sql,
                     new
                     {
-                        InterventionId = interventionId, MaterialId = material.Material.Id, Quantity = material.Quantity
+                        InterventionId = interventionId, MaterialId = mat.Id, Quantity = material.Quantity
                     }, transaction);
             }
 
@@ -192,15 +215,18 @@ WHERE wi.intervention_id = @Id;
             {
                 // Insert worker if it does not exist
                 sql =
-                    "INSERT INTO Workers (id, name, surname, pph, stored, creation_date, last_update_date) VALUES (@Id, @Name, @Surname, @Pph, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) ON CONFLICT (id) DO NOTHING;";
+                    "INSERT INTO Workers (name, surname, pph, stored, creation_date, last_update_date) VALUES (@Name, @Surname, @Pph, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) ON CONFLICT (name, surname) DO NOTHING;";
                 await connection.ExecuteAsync(sql, workerHour.Worker, transaction);
 
+                var wrk = await connection.QuerySingleAsync<WorkerDto>(
+                    "SELECT * FROM workers WHERE CONCAT(name,'-',surname) = @NamSur", new{NamSur=$"{workerHour.Worker.Name}-{workerHour.Worker.Surname}"});
+                
                 sql =
                     "INSERT INTO WorkerInterventions (worker_id, intervention_id, hours_worked, stored, creation_date, last_update_date) VALUES (@WorkerId, @InterventionId, @HoursWorked, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);";
                 await connection.ExecuteAsync(sql,
                     new
                     {
-                        WorkerId = workerHour.Worker.Id, InterventionId = interventionId,
+                        WorkerId = wrk.Id, InterventionId = interventionId,
                         HoursWorked = workerHour.Hours
                     }, transaction);
             }
