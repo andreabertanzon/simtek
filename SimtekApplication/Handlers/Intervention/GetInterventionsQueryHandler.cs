@@ -28,7 +28,7 @@ public class GetInterventionsQueryHandler : IRequestHandler<GetInterventionsQuer
     {
         try
         {
-            var interventionDtos =  await _interventionRepository.GetInterventionsAsync(cancellationToken);
+            var interventionDtos =  await _interventionRepository.GetAsync(cancellationToken);
 
             return interventionDtos
                 .Select(dto => dto.ToDomainModel())

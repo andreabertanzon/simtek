@@ -1,5 +1,8 @@
 ﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
+using SimtekMaui.Application;
+using SimtekMaui.Data.Repositories;
+using SimtekMaui.ViewModels;
 
 namespace SimtekMaui;
 
@@ -16,6 +19,14 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
+        builder.Services.AddScoped<MainViewModel>();
+        builder.Services.AddScoped<MainPage>();
+        builder.Services.AddScoped<InterventionRepository>();
+        builder.Services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssembly(typeof(MediatorHook)
+                .Assembly);
+        });
 
 #if DEBUG
         builder.Logging.AddDebug();

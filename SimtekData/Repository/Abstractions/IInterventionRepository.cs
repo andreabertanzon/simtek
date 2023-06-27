@@ -6,11 +6,11 @@ namespace SimtekData.Repository.Abstractions;
 
 public interface IInterventionRepository
 {
-    Task<IEnumerable<InterventionShortDto>> GetInterventionsAsync(CancellationToken cancellationToken = default);
+    Task<IEnumerable<InterventionShortDto>> GetAsync(CancellationToken cancellationToken = default);
 
-    Task<FullInterventionDto?> GetInterventionByIdAsync(int id,
+    Task<FullInterventionDto?> GetByIdAsync(int id,
         CancellationToken cancellationToken = default);
 
-    Task AddInterventionAsync(Intervention intervention, CancellationToken cancellationToken);
-    void DeleteIntervention(int id);
+    Task AddAsync(Intervention intervention, CancellationToken cancellationToken);
+    void DeleteAsync(int id);
 }

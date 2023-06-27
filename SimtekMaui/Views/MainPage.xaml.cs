@@ -1,23 +1,22 @@
-﻿namespace SimtekMaui;
+﻿using SimtekMaui.ViewModels;
+
+namespace SimtekMaui;
 
 public partial class MainPage : ContentPage
 {
-    int count = 0;
 
-    public MainPage()
+    private readonly MainViewModel _mainViewModel;
+
+    public MainPage(MainViewModel mainViewModel)
     {
+        _mainViewModel = mainViewModel;
         InitializeComponent();
+        BindingContext = mainViewModel;
     }
 
-    private void OnCounterClicked(object sender, EventArgs e)
+    protected override async void OnAppearing()
     {
-        count++;
-
-        if (count == 1)
-            CounterBtn.Text = $"Clicked {count} time";
-        else
-            CounterBtn.Text = $"Clicked {count} times";
-
-        SemanticScreenReader.Announce(CounterBtn.Text);
+        base.OnAppearing();
+        await _mainViewModel.LoadInterventionsAsync();
     }
 }

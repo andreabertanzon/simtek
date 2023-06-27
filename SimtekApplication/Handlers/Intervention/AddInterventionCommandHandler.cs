@@ -18,7 +18,7 @@ public class AddInterventionCommandHandler:IRequestHandler<AddInterventionComman
     {
         try
         {
-            await _interventionRepository.AddInterventionAsync(request.Intervention, cancellationToken);
+            await _interventionRepository.AddAsync(request.Intervention, cancellationToken);
             return new Unit();
         }
         catch (Exception e)

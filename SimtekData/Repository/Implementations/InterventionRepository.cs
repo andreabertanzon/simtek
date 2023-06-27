@@ -21,7 +21,7 @@ public class InterventionRepository : IInterventionRepository
     }
 
 
-    public async Task<IEnumerable<InterventionShortDto>> GetInterventionsAsync(CancellationToken cancellationToken)
+    public async Task<IEnumerable<InterventionShortDto>> GetAsync(CancellationToken cancellationToken)
     {
         var sql = @"
         SELECT
@@ -46,7 +46,7 @@ public class InterventionRepository : IInterventionRepository
         return await connection.QueryAsync<InterventionShortDto>(sql,cancellationToken);
     }
 
-    public async Task<FullInterventionDto?> GetInterventionByIdAsync(int id,
+    public async Task<FullInterventionDto?> GetByIdAsync(int id,
         CancellationToken cancellationToken = default)
     {
         var sql = @"
@@ -142,7 +142,7 @@ WHERE wi.intervention_id = @IntId;
         return fullIntDto;
     }
 
-    public async Task AddInterventionAsync(Intervention intervention, CancellationToken cancellationToken)
+    public async Task AddAsync(Intervention intervention, CancellationToken cancellationToken)
     {
         // Start a transaction to ensure all inserts are successful
         await using var connection = new NpgsqlConnection(connectionString: _connectionString);
@@ -240,7 +240,7 @@ WHERE wi.intervention_id = @IntId;
         }
     }
 
-    public void DeleteIntervention(int id)
+    public void DeleteAsync(int id)
     {
         using var connection = new NpgsqlConnection(connectionString: _connectionString);
         connection.Open();

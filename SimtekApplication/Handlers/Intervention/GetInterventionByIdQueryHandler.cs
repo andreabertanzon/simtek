@@ -25,7 +25,7 @@ public class
         try
         {
             var interventionDto =
-                await _interventionRepository.GetInterventionByIdAsync(request.Id, cancellationToken: cancellationToken);
+                await _interventionRepository.GetByIdAsync(request.Id, cancellationToken: cancellationToken);
 
             return interventionDto is null 
                     ? new SimtekError(new NotFoundError($"InterventionId: {request.Id}"))
