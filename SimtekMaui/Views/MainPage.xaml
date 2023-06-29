@@ -5,30 +5,64 @@
              x:Class="SimtekMaui.MainPage"
              xmlns:viewmodel="clr-namespace:SimtekMaui.ViewModels"
              xmlns:model="clr-namespace:SimtekMaui.Data.Models.Intervention;assembly=SimtekMaui.Data"
-             x:DataType="viewmodel:MainViewModel">
+             Background="#1C1B1F"
+             x:DataType="viewmodel:MainViewModel"
+             Title="Interventi">
+    <Grid
+        ColumnDefinitions="*,*"
+        ColumnSpacing="5"
+        RowDefinitions="*,Auto"
+        RowSpacing="0">
+        <CollectionView
+            ItemsSource="{Binding Interventions}"
+            Margin="10"
+            Grid.ColumnSpan="2"
+            SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:InterventionDto">
+                    <Frame
+                        Margin="0 ,5"
+                        CornerRadius="10"
+                        Background="#B58392"
+                        BorderColor="Transparent"
+                        HasShadow="False">
+                        <StackLayout>
+                            <Label Text="{Binding Title}"
+                                   TextColor="White"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   Margin="10,10,10,0" />
+                            <Label Text="{Binding Description}"
+                                   TextColor="White"
+                                   FontSize="14"
+                                   Margin="10,0,10,10" />
+                            <HorizontalStackLayout
+                                FlowDirection="RightToLeft">
+                                <!-- TODO: Replace with icons -->
+                                <Label FontSize="18" FontFamily="FontAwesome" Text="&#xf2da;" Margin="0, 0, 5, 0"/>
+                                <Label FontSize="18" FontFamily="FontAwesome" Text="&#xf2da;" Margin="0, 0, 5, 0"/>
+                                <Label FontSize="18" FontFamily="FontAwesome" Text="&#xf2da;" Margin="0, 0, 5, 0"/>
+                                <Label FontSize="18" FontFamily="FontAwesome" Text="&#xf2da;" Margin="0, 0, 5, 0"/>
+                            </HorizontalStackLayout>
+                        </StackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <Button Text="Nuovo"
+                IsEnabled="{Binding IsNotBusy}"
+                Command="{Binding GoToAddInterventionCommand}"
+                Grid.Row="1"
+                Grid.Column="1"
+                Margin="8"/>
 
-    <CollectionView
-        ItemsSource="{Binding Interventions}"
-        SelectionMode="None"
-        Margin="10">
-        <CollectionView.ItemTemplate>
-            <DataTemplate x:DataType="model:InterventionDto">
-                <Frame CornerRadius="10" 
-                       BorderColor="DarkGray" 
-                       HasShadow="True">
-                    <StackLayout>
-                        <Label Text="{Binding Title}" 
-                               FontSize="24" 
-                               FontAttributes="Bold" 
-                               Margin="10,10,10,0"/>
-                        <Label Text="{Binding Description}" 
-                               FontSize="18" 
-                               Margin="10,0,10,10"/>
-                        <Label Text="{Binding InterventionDate}"
-                               Margin="10,0,10,10"/>
-                    </StackLayout>
-                </Frame>
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-    </CollectionView>
+
+        <ActivityIndicator IsVisible="{Binding IsBusy}"
+                           IsRunning="{Binding IsBusy}"
+                           HorizontalOptions="Fill"
+                           VerticalOptions="Center"
+                           Color="{StaticResource Primary}"
+                           Grid.RowSpan="2"
+                           Grid.ColumnSpan="2" />
+    </Grid>
 </ContentPage>

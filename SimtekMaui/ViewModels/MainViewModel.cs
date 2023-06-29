@@ -5,31 +5,51 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MediatR;
+using SimtekDomain;
+using SimtekDomain.InterventionCQRS;
 using SimtekMaui.Data.Models.Intervention;
 using SimtekMaui.Data.Repositories;
 using SimtekMaui.Utils;
+using CommunityToolkit.Mvvm.Input;
+using SimtekMaui.Views;
 
 namespace SimtekMaui.ViewModels
 {
     public partial class MainViewModel : BaseViewModel
     {
         private readonly InterventionRepository _interventionRepository;
+        private readonly IMediator _mediator;
 
-        public MainViewModel(InterventionRepository interventionRepository)
+        public MainViewModel(InterventionRepository interventionRepository, IMediator mediator)
         {
             _interventionRepository = interventionRepository;
-            Title = "Home";
+            _mediator = mediator;
+            Title = "Interventi";
         }
 
         [ObservableProperty]
         bool _isRefreshing;
 
-        public ObservableRangeCollection<InterventionDto> Interventions { get; } = new();
+        [RelayCommand]
+        async Task GoToAddIntervention()
+        {
+            await Shell.Current.GoToAsync(nameof(AddInterventionPage),true);
+        }
+
+        public ObservableRangeCollection<Intervention> Interventions { get; } = new();
 
         public async Task LoadInterventionsAsync()
         {
-            var interventionDtos = await _interventionRepository.GetAsync();
-            Interventions.AddRange(interventionDtos);
+            var request = new GetInterventionsQuery();
+            var response = await _mediator.Send(request, default);
+            response.Switch(value =>
+            {
+                Interventions.AddRange(value);
+            }, err =>
+            {
+
+            });
         }
     }
 }

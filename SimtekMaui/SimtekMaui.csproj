@@ -65,13 +65,13 @@
     </ItemGroup>
 
     <ItemGroup>
-      <MauiXaml Update="Views\AddInterventionSite.xaml">
-        <Generator>MSBuild:Compile</Generator>
-      </MauiXaml>
+      <ProjectReference Include="..\SimtekMaui.Application\SimtekMaui.Application.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\SimtekMaui.Application\SimtekMaui.Application.csproj" />
+      <MauiXaml Update="Views\AddInterventionPage.xaml">
+        <Generator>MSBuild:Compile</Generator>
+      </MauiXaml>
     </ItemGroup>
 
     <!-- Build Properties must be defined within these property groups to ensure successful publishing

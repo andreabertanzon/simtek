@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using SimtekMaui.Application;
 using SimtekMaui.Data.Repositories;
 using SimtekMaui.ViewModels;
+using SimtekMaui.Views;
 
 namespace SimtekMaui;
 
@@ -17,10 +18,11 @@ public static class MauiProgram
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+                fonts.AddFont("FontAwesome.otf", "FontAwesome");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-            });
-        builder.Services.AddScoped<MainViewModel>();
-        builder.Services.AddScoped<MainPage>();
+            })
+            .AddPages();
+        
         builder.Services.AddScoped<InterventionRepository>();
         builder.Services.AddMediatR(cfg =>
         {
@@ -33,5 +35,13 @@ public static class MauiProgram
 #endif
 
         return builder.Build();
+    }
+
+    public static void AddPages(this MauiAppBuilder builder)
+    {
+        builder.Services.AddScoped<MainViewModel>();
+        builder.Services.AddScoped<MainPage>();
+        builder.Services.AddScoped<AddInterventionPage>();
+        builder.Services.AddScoped<AddInterventionViewModel>();
     }
 }

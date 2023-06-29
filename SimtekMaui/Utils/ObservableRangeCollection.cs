@@ -1,13 +1,12 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using SimtekMaui.Application;
-using SimtekMaui.Data;
+using SimtekDomain;
 
 namespace SimtekMaui.Utils;
 
 public class ObservableRangeCollection<T>:ObservableCollection<T>
-where T: IIdetifiable
+where T: IRecordClass
 {
     
 /// <summary> 
@@ -141,7 +140,8 @@ where T: IIdetifiable
 			var itemAdded = false;
 			foreach (var item in collection)
 			{
-				if (Items.Any(x => x.IdentityId == item.IdentityId)) continue;
+				if (Items.Any(x=>x.Identity == item.Identity)) continue;
+				
 				Items.Add(item);
 				itemAdded = true;
 			}

@@ -17,9 +17,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MauiApp", "MauiApp", "{F969
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimtekMaui", "SimtekMaui\SimtekMaui.csproj", "{92516B8D-6537-4A3A-9195-C9BECB20ED69}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimtekMaui.Data", "SimtekMaui.Data\SimtekMaui.Data.csproj", "{D3206C50-D70C-4715-BDC4-7C9BE9C955E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimtekMaui.Data", "SimtekMaui.Data\SimtekMaui.Data.csproj", "{D3206C50-D70C-4715-BDC4-7C9BE9C955E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimtekMaui.Application", "SimtekMaui.Application\SimtekMaui.Application.csproj", "{78292C10-60CE-4895-972B-CF11E6FAFB0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimtekMaui.Application", "SimtekMaui.Application\SimtekMaui.Application.csproj", "{78292C10-60CE-4895-972B-CF11E6FAFB0A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

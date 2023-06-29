@@ -11,4 +11,5 @@
       <ProjectReference Include="..\SimtekMaui.Data\SimtekMaui.Data.csproj" />
     </ItemGroup>
 
+
 </Project>

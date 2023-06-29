@@ -19,8 +19,9 @@ public record Intervention(
     List<WorkerHour> WorkerHours,
     List<MaterialUse> Materials,
     DateTime InterventionDate,
-    bool Stored = false)
+    bool Stored = false):IRecordClass
 {
+    public string Identity => $"{Id}-{SiteName}-{Title}";
     public double TotalMaterialCost => Materials.Sum(m => m.Material.Price * m.Quantity);
     public double TotalWorkerCost => WorkerHours.Sum(w => w.Worker.Pph * w.Hours);
     

@@ -16,7 +16,15 @@ public class InterventionRepository
                 Description = "Did something to the house",
                 InterventionDate = default,
                 Stored = false
-            }
+            },new InterventionDto
+                          {
+                              Id = 2,
+                              SiteId = 1,
+                              Title = "Second Intervention",
+                              Description = "Pippo was here",
+                              InterventionDate = default,
+                              Stored = false
+                          }
         };
     }
 }
