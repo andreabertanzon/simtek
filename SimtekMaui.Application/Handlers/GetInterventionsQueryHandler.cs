@@ -6,7 +6,7 @@ using SimtekDomain.InterventionCQRS;
 using SimtekMaui.Application.Mappers;
 using SimtekMaui.Data.Repositories;
 
-namespace SimtekMaui.Application;
+namespace SimtekMaui.Application.Handlers;
 
 public class GetInterventionsQueryHandler:IRequestHandler<GetInterventionsQuery, OneOf<List<Intervention>,SimtekError>>
 {
