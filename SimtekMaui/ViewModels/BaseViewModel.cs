@@ -14,6 +14,9 @@ namespace SimtekMaui.ViewModels
         bool isBusy;
 
         [ObservableProperty]
+        bool inError;
+        
+        [ObservableProperty]
         string title;
 
         public bool IsNotBusy => !IsBusy;

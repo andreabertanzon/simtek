@@ -16,7 +16,6 @@ public class GetCustomersQueryHandler : IRequestHandler<GetCustomersQuery ,OneOf
 
     public GetCustomersQueryHandler(
         ICustomerRepository customerRepository, 
-        HttpClient httpClient, 
         ISimtekService simtekService)
     {
         _customerRepository = customerRepository;
@@ -29,7 +28,7 @@ public class GetCustomersQueryHandler : IRequestHandler<GetCustomersQuery ,OneOf
             // call a rest service to get all the customers
             await _simtekService.CacheCustomersAsync(cancellationToken);
 
-            var localCustomers = await _customerRepository.GetCustomersAsync(cancellationToken);
+            var localCustomers = await _customerRepository.GetAsync(cancellationToken);
 
             var result = localCustomers.Select(x => x.ToDomainModel()).ToList();
 

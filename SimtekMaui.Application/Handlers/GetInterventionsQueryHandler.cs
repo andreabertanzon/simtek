@@ -4,15 +4,15 @@ using SimtekDomain;
 using SimtekDomain.Errors;
 using SimtekDomain.InterventionCQRS;
 using SimtekMaui.Application.Mappers;
-using SimtekMaui.Data.Repositories;
+using SimtekMaui.Data.Repositories.Abstractions;
 
 namespace SimtekMaui.Application.Handlers;
 
 public class GetInterventionsQueryHandler:IRequestHandler<GetInterventionsQuery, OneOf<List<Intervention>,SimtekError>>
 {
-    private readonly InterventionRepository _interventionRepository;
+    private readonly IInterventionRepository _interventionRepository;
 
-    public GetInterventionsQueryHandler(InterventionRepository interventionRepository)
+    public GetInterventionsQueryHandler(IInterventionRepository interventionRepository)
     {
         _interventionRepository = interventionRepository;
     }

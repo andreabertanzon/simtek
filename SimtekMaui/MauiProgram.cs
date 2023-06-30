@@ -1,7 +1,11 @@
 ﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
+using SimtekData.Repository.Abstractions;
 using SimtekMaui.Application;
+using SimtekMaui.Application.Infrastructure;
+using SimtekMaui.Data;
 using SimtekMaui.Data.Repositories;
+using SimtekMaui.Data.Repositories.Abstractions;
 using SimtekMaui.ViewModels;
 using SimtekMaui.Views;
 
@@ -22,8 +26,7 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             })
             .AddPages();
-        
-        builder.Services.AddScoped<InterventionRepository>();
+        builder.AddServices();
         builder.Services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(MediatorHook)
@@ -37,11 +40,22 @@ public static class MauiProgram
         return builder.Build();
     }
 
-    public static void AddPages(this MauiAppBuilder builder)
+    public static MauiAppBuilder AddPages(this MauiAppBuilder builder)
     {
         builder.Services.AddScoped<MainViewModel>();
         builder.Services.AddScoped<MainPage>();
         builder.Services.AddScoped<AddInterventionPage>();
         builder.Services.AddScoped<AddInterventionViewModel>();
+        builder.Services.AddScoped<AddCustomerPage>();
+        builder.Services.AddScoped<AddCustomerViewModel>();
+        return builder;
+    }
+
+    public static void AddServices(this MauiAppBuilder builder)
+    {
+
+        builder.Services.AddScoped<ISimtekService, SimtekService>();
+        builder.Services.AddScoped<IInterventionRepository,FakeInterventionRepository>();
+        builder.Services.AddScoped<ICustomerRepository, FakeCustomerRepository>();
     }
 }

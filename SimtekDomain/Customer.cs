@@ -7,4 +7,7 @@ public record Customer(
     string Address,
     string? Vat,
     string? Email,
-    string? PhoneNumber);
+    string? PhoneNumber) : IRecordClass
+{
+    public string Identity => $"{Id}-{Surname}";
+};

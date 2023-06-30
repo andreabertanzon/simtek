@@ -12,16 +12,17 @@ using SimtekMaui.Data.Models.Intervention;
 using SimtekMaui.Data.Repositories;
 using SimtekMaui.Utils;
 using CommunityToolkit.Mvvm.Input;
+using SimtekMaui.Data.Repositories.Abstractions;
 using SimtekMaui.Views;
 
 namespace SimtekMaui.ViewModels
 {
     public partial class MainViewModel : BaseViewModel
     {
-        private readonly InterventionRepository _interventionRepository;
+        private readonly IInterventionRepository _interventionRepository;
         private readonly IMediator _mediator;
 
-        public MainViewModel(InterventionRepository interventionRepository, IMediator mediator)
+        public MainViewModel(IInterventionRepository interventionRepository, IMediator mediator)
         {
             _interventionRepository = interventionRepository;
             _mediator = mediator;
@@ -34,7 +35,7 @@ namespace SimtekMaui.ViewModels
         [RelayCommand]
         async Task GoToAddIntervention()
         {
-            await Shell.Current.GoToAsync(nameof(AddInterventionPage),true);
+            await Shell.Current.GoToAsync(nameof(AddCustomerPage),true);
         }
 
         public ObservableRangeCollection<Intervention> Interventions { get; } = new();

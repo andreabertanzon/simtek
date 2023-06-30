@@ -1,8 +1,9 @@
 using SimtekMaui.Data.Models.Intervention;
+using SimtekMaui.Data.Repositories.Abstractions;
 
 namespace SimtekMaui.Data.Repositories;
 
-public class InterventionRepository
+public class FakeInterventionRepository : IInterventionRepository
 {
     public async Task<List<InterventionDto>> GetAsync()
     {
