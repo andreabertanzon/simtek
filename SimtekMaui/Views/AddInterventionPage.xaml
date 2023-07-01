@@ -4,12 +4,11 @@
              x:Class="SimtekMaui.Views.AddInterventionPage"
              xmlns:viewmodel="clr-namespace:SimtekMaui.ViewModels"
              x:DataType="viewmodel:AddInterventionViewModel"
-             Background="#1C1B1F"
              Title="Nuovo Intervento">
     <Grid ColumnDefinitions="*" RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto" RowSpacing="10" Margin="10">
         <Label
             Text="Welcome to .NET MAUI!"
-            TextColor="White"/>
+            />
         <!--<Label 
             Grid.Row="2"
             Text="Pippo"
