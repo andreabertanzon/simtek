@@ -5,7 +5,7 @@ namespace SimtekMaui.Data.Repositories;
 
 public class FakeInterventionRepository : IInterventionRepository
 {
-    public async Task<List<InterventionDto>> GetAsync()
+    public async Task<List<InterventionDto>> GetAsync(CancellationToken cancellationToken)
     {
         return new List<InterventionDto>()
         {
@@ -25,7 +25,84 @@ public class FakeInterventionRepository : IInterventionRepository
                               Description = "Pippo was here",
                               InterventionDate = default,
                               Stored = false
+                          },
+            new InterventionDto
+                          {
+                              Id = 2,
+                              SiteId = 1,
+                              Title = "Third Intervention",
+                              Description = "Another amazing description",
+                              InterventionDate = default,
+                              Stored = false
+                          },
+            new InterventionDto
+                          {
+                              Id = 2,
+                              SiteId = 1,
+                              Title = "Fourth Intervention",
+                              Description = "Another Amazing superpowerful description",
+                              InterventionDate = default,
+                              Stored = false
+                          },new InterventionDto
+                          {
+                              Id = 2,
+                              SiteId = 1,
+                              Title = "Fourth Intervention",
+                              Description = "Another Amazing superpowerful description",
+                              InterventionDate = default,
+                              Stored = false
+                          },new InterventionDto
+                          {
+                              Id = 2,
+                              SiteId = 1,
+                              Title = "Fourth Intervention",
+                              Description = "Another Amazing superpowerful description",
+                              InterventionDate = default,
+                              Stored = false
+                          },new InterventionDto
+                          {
+                              Id = 2,
+                              SiteId = 1,
+                              Title = "Fourth Intervention",
+                              Description = "Another Amazing superpowerful description",
+                              InterventionDate = default,
+                              Stored = false
+                          },new InterventionDto
+                          {
+                              Id = 2,
+                              SiteId = 1,
+                              Title = "Fifth Intervention",
+                              Description = "Another Amazing superpowerful description",
+                              InterventionDate = default,
+                              Stored = false
+                          },new InterventionDto
+                          {
+                              Id = 2,
+                              SiteId = 1,
+                              Title = "Sixth Intervention",
+                              Description = "Another Amazing superpowerful description",
+                              InterventionDate = default,
+                              Stored = false
+                          },new InterventionDto
+                          {
+                              Id = 2,
+                              SiteId = 1,
+                              Title = "Seventh Intervention",
+                              Description = "Another Amazing superpowerful description",
+                              InterventionDate = default,
+                              Stored = false
                           }
+
+
+
+
+
+
+
+
+
+
+
         };
     }
 }

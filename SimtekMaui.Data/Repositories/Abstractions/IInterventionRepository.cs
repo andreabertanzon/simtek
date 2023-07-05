@@ -4,5 +4,5 @@ namespace SimtekMaui.Data.Repositories.Abstractions;
 
 public interface IInterventionRepository
 {
-    Task<List<InterventionDto>> GetAsync();
+    Task<List<InterventionDto>> GetAsync(CancellationToken cancellationToken);
 }

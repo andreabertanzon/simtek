@@ -4,10 +4,11 @@ using SimtekData.Repository.Abstractions;
 using SimtekDomain;
 using SimtekDomain.CustomerCQRS;
 using SimtekMaui.Utils;
+using SimtekMaui.Views;
 
 namespace SimtekMaui.ViewModels;
 
-public partial class AddCustomerViewModel:BaseViewModel
+public partial class AddCustomerViewModel : BaseViewModel
 {
     private readonly IMediator _mediator;
 
@@ -25,9 +26,16 @@ public partial class AddCustomerViewModel:BaseViewModel
         customers.Switch(success =>
         {
             Customers.AddRange(success);
-        }, error=>
+        }, error =>
         {
             InError = true;
         });
     }
+
+    [RelayCommand]
+    public async Task GoToAddIntervention()
+    {
+        await Shell.Current.GoToAsync(nameof(AddInterventionPage), true);
+    }
+
 }

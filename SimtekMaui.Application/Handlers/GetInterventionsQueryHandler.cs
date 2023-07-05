@@ -18,7 +18,7 @@ public class GetInterventionsQueryHandler:IRequestHandler<GetInterventionsQuery,
     }
     public async Task<OneOf<List<Intervention>, SimtekError>> Handle(GetInterventionsQuery request, CancellationToken cancellationToken)
     {
-        var interventionsDto = await _interventionRepository.GetAsync();
+        var interventionsDto = await _interventionRepository.GetAsync(cancellationToken);
         return interventionsDto.Select(x=>x.ToDomainModel()).ToList();
     }
 }

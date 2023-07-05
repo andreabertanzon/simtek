@@ -5,58 +5,57 @@
              xmlns:simtekDomain="clr-namespace:SimtekDomain;assembly=SimtekDomain"
              x:Class="SimtekMaui.Views.AddCustomerPage"
              x:DataType="viewmodel:AddCustomerViewModel"
-             Title="Cliente">
-    <Grid
-        ColumnDefinitions="*,*"
-        ColumnSpacing="5"
-        RowDefinitions="*,Auto"
-        RowSpacing="0">
-        <CollectionView
-            ItemsSource="{Binding Customers}"
-            Margin="10"
-            Grid.ColumnSpan="2"
-            SelectionMode="None">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="simtekDomain:Customer">
-                    <Frame Style="{StaticResource CardView}"
-                        Margin="5 ,5"
-                                               >
-                        <StackLayout>
-                            <Label Text="{Binding Name}"
-                                   FontSize="18"
-                                   FontAttributes="Bold"
-                                   Margin="10,10,10,0" />
-                            <Label Text="{Binding Surname}"
-                                   FontSize="14"
-                                   Margin="10,0,10,10" />
-                            <HorizontalStackLayout
-                                FlowDirection="RightToLeft">
-                                <!-- TODO: Replace with icons -->
-                                <Label FontSize="18" FontFamily="FontAwesome" Text="&#xf2da;" Margin="0, 0, 5, 0"/>
-                                <Label FontSize="18" FontFamily="FontAwesome" Text="&#xf2da;" Margin="0, 0, 5, 0"/>
-                                <Label FontSize="18" FontFamily="FontAwesome" Text="&#xf2da;" Margin="0, 0, 5, 0"/>
-                                <Label FontSize="18" FontFamily="FontAwesome" Text="&#xf2da;" Margin="0, 0, 5, 0"/>
-                            </HorizontalStackLayout>
-                        </StackLayout>
-                    </Frame>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-        <Button Text="Nuovo"
-                IsEnabled="{Binding IsNotBusy}"
-                Grid.Row="1"
-                Grid.Column="1"
-                Margin="8"/>
+             Title="Aggiungi Cliente">
 
+    <Grid Margin="0,0" ColumnDefinitions="*" RowDefinitions="*,*,*">
+        <!--<Label
+            Grid.Row="0"
+            FontSize="100" FontFamily="FontAwesome" Text="&#xf2be;" Margin="0,30" HorizontalTextAlignment="Center" TextColor="{StaticResource TertiaryLight}"/> -->
+        <Image Grid.Row="0" Source="user_png.png" Aspect="AspectFill"/>
 
-        <ActivityIndicator IsVisible="{Binding IsBusy}"
-                           IsRunning="{Binding IsBusy}"
-                           HorizontalOptions="Fill"
-                           VerticalOptions="Center"
-                           Color="{StaticResource Primary}"
-                           Grid.RowSpan="2"
-                           Grid.ColumnSpan="2" />
+        <Border Grid.Row="1"
+                Background="Transparent"
+                Grid.RowSpan="2">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="70,70,0,0"></RoundRectangle>
+            </Border.StrokeShape>
+            <Frame 
+                CornerRadius="0"  
+                Style="{StaticResource CardView}"
+                VerticalOptions="FillAndExpand">
+                <Grid RowDefinitions="Auto,*">
+                    <VerticalStackLayout Grid.Row="0" Margin="0,0">
+                        <Label Text="Inserisci i dati" Margin="10,10" FontSize="24" TextColor="{StaticResource PrimaryDark}"/>
+                        <Entry Placeholder="Nome" Margin="10,10"  FontSize="Subtitle"/>
+                        <Entry Placeholder="Cognome"  Margin="10,10"  FontSize="Subtitle"/>
+                        <Entry Placeholder="Indirizzo"  Margin="10,10"  FontSize="Subtitle"/>
+                        <Entry Placeholder="Email"  Margin="10,10"  FontSize="Subtitle"/>
+                        <Entry Placeholder="IVA/CF"  Margin="10,10"  FontSize="Subtitle"/>
+                        <!-- TODO: Replace with icons -->
+                    </VerticalStackLayout>
+                    <Button FontFamily="FontAwesome"
+                            BackgroundColor="Transparent"
+                            TextColor="{StaticResource PrimaryDark}"
+                            FontSize="50"
+                    Grid.Row="1"
+                                       Text="&#xf0a9;"
+                    Command="{Binding GoToAddInterventionCommand}"
+                    IsEnabled="{Binding IsNotBusy}"/>
+                </Grid>
+            </Frame>
+
+        </Border>
+        <!--<Grid Grid.Row="3" VerticalOptions="EndAndExpand" Margin="0,0" RowDefinitions="Auto" ColumnDefinitions="*,*,*,*" HorizontalOptions="CenterAndExpand" ColumnSpacing="30">
+            <Label Grid.Column="0"
+                    TextColor="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryDark}}"
+                   FontSize="30" FontFamily="FontAwesome" Text="&#xf2da;" Margin="0, 0, 5, 0"/>
+            <Label Grid.Column="1"
+                   FontSize="30"
+                   FontFamily="FontAwesome" 
+                   Text="&#xf2da;"
+                   Margin="0, 0, 5, 0"/>
+            <Label Grid.Column="2" FontSize="30" FontFamily="FontAwesome" Text="&#xf2da;" Margin="0, 0, 5, 0"/>
+            <Label Grid.Column="3" FontSize="30" FontFamily="FontAwesome" Text="&#xf2da;" Margin="0, 0, 5, 0"/>
+        </Grid>-->
     </Grid>
-
-
 </ContentPage>
