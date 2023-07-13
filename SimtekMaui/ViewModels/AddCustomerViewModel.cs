@@ -1,3 +1,5 @@
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -5,6 +7,7 @@ using MediatR;
 using SimtekMaui.Models;
 using SimtekMaui.Models.Query;
 using SimtekMaui.Utils;
+using CommunityToolkit.Maui.Alerts;
 using SimtekMaui.Views;
 
 namespace SimtekMaui.ViewModels;
@@ -42,20 +45,13 @@ public partial class AddCustomerViewModel : BaseViewModel
     {
         if (string.IsNullOrWhiteSpace(NewCustomer.Name) || string.IsNullOrWhiteSpace(NewCustomer.Surname) || string.IsNullOrWhiteSpace(NewCustomer.Address))
         {
-            var popup = new Popup
-            {
-                Content = new VerticalStackLayout
-                {
-                    Children =
-                    {
-                        new Label
-                        {
-                            Text = "This is a very important message!"
-                        }
-                    }
-                }
-            };
-            Shell.Current.CurrentPage.ShowPopup(popup);
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            string text = "Nome, Cognome, Indirizzo Obbligatori";
+            string actionButtonText = "OK";
+            TimeSpan duration = TimeSpan.FromSeconds(3);
+
+            var snackBar = SnackbarFactory.MakeSnackBar(SnackbarType.Error, text, actionButtonText, duration);
+            await snackBar.Show(cancellationTokenSource.Token);
             return;
         }
 

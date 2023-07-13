@@ -2,7 +2,6 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodel="clr-namespace:SimtekMaui.ViewModels"
-             xmlns:simtekDomain="clr-namespace:SimtekDomain;assembly=SimtekDomain"
              x:Class="SimtekMaui.Views.AddCustomerPage"
              x:DataType="viewmodel:AddCustomerViewModel"
              Title="Aggiungi Cliente">
@@ -30,9 +29,9 @@
                             <ScrollView HeightRequest="300">
                                 <ScrollView.Content>
                                     <VerticalStackLayout>
-                                        <Entry ReturnType="Next" Text="{Binding NewCustomer.Name}" Placeholder="Nome" Margin="10,10"  FontSize="Subtitle"/>
-                                        <Entry ReturnType="Next" Text="{Binding NewCustomer.Surname}" Placeholder="Cognome"  Margin="10,10"  FontSize="Subtitle"/>
-                                        <Entry ReturnType="Next" Text="{Binding NewCustomer.Address}" Placeholder="Indirizzo"  Margin="10,10"  FontSize="Subtitle"/>
+                                        <Entry ReturnType="Next" Text="{Binding NewCustomer.Name}" Placeholder="*Nome" Margin="10,10"  FontSize="Subtitle"/>
+                                        <Entry ReturnType="Next" Text="{Binding NewCustomer.Surname}" Placeholder="*Cognome"  Margin="10,10"  FontSize="Subtitle"/>
+                                        <Entry ReturnType="Next" Text="{Binding NewCustomer.Address}" Placeholder="*Indirizzo"  Margin="10,10"  FontSize="Subtitle"/>
                                         <Entry ReturnType="Next" Text="{Binding NewCustomer.Email}" Placeholder="Email"  Margin="10,10"  FontSize="Subtitle"/>
                                         <Entry ReturnType="Next" Text="{Binding NewCustomer.Phone}" Placeholder="Cel"  Margin="10,10"  FontSize="Subtitle"/>
                                         <Entry ReturnType="Done" Text="{Binding NewCustomer.Vat}" Placeholder="Vat"  Margin="10,10"  FontSize="Subtitle"/>
@@ -46,10 +45,10 @@
                             BackgroundColor="Transparent"
                             TextColor="{StaticResource PrimaryDark}"
                             FontSize="50"
-                    Grid.Row="1"
-                                       Text="&#xf0a9;"
-                    Command="{Binding GoToAddInterventionCommand}"
-                    IsEnabled="{Binding IsNotBusy}"/>
+                            Grid.Row="1"
+                            Text="&#xf0a9;"
+                            Command="{Binding GoToAddInterventionCommand}"
+                            IsEnabled="{Binding IsNotBusy}"/>
                 </Grid>
             </Frame>
 
