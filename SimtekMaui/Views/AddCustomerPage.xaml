@@ -25,13 +25,22 @@
                 VerticalOptions="FillAndExpand">
                 <Grid RowDefinitions="Auto,*">
                     <VerticalStackLayout Grid.Row="0" Margin="0,0">
-                        <Label Text="Inserisci i dati" Margin="10,10" FontSize="24" TextColor="{StaticResource PrimaryDark}"/>
-                        <Entry Placeholder="Nome" Margin="10,10"  FontSize="Subtitle"/>
-                        <Entry Placeholder="Cognome"  Margin="10,10"  FontSize="Subtitle"/>
-                        <Entry Placeholder="Indirizzo"  Margin="10,10"  FontSize="Subtitle"/>
-                        <Entry Placeholder="Email"  Margin="10,10"  FontSize="Subtitle"/>
-                        <Entry Placeholder="IVA/CF"  Margin="10,10"  FontSize="Subtitle"/>
-                        <!-- TODO: Replace with icons -->
+                        <VerticalStackLayout>
+                            <Label Text="Inserisci i dati" Margin="10,10" FontSize="24" TextColor="{StaticResource PrimaryDark}"/>
+                            <ScrollView HeightRequest="300">
+                                <ScrollView.Content>
+                                    <VerticalStackLayout>
+                                        <Entry ReturnType="Next" Text="{Binding NewCustomer.Name}" Placeholder="Nome" Margin="10,10"  FontSize="Subtitle"/>
+                                        <Entry ReturnType="Next" Text="{Binding NewCustomer.Surname}" Placeholder="Cognome"  Margin="10,10"  FontSize="Subtitle"/>
+                                        <Entry ReturnType="Next" Text="{Binding NewCustomer.Address}" Placeholder="Indirizzo"  Margin="10,10"  FontSize="Subtitle"/>
+                                        <Entry ReturnType="Next" Text="{Binding NewCustomer.Email}" Placeholder="Email"  Margin="10,10"  FontSize="Subtitle"/>
+                                        <Entry ReturnType="Next" Text="{Binding NewCustomer.Phone}" Placeholder="Cel"  Margin="10,10"  FontSize="Subtitle"/>
+                                        <Entry ReturnType="Done" Text="{Binding NewCustomer.Vat}" Placeholder="Vat"  Margin="10,10"  FontSize="Subtitle"/>
+                                        <!-- TODO: Replace with icons -->
+                                    </VerticalStackLayout>
+                                </ScrollView.Content>
+                            </ScrollView>
+                        </VerticalStackLayout>
                     </VerticalStackLayout>
                     <Button FontFamily="FontAwesome"
                             BackgroundColor="Transparent"

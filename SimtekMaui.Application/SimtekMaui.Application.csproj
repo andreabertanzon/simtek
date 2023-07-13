@@ -7,8 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\SimtekDomain\SimtekDomain.csproj" />
       <ProjectReference Include="..\SimtekMaui.Data\SimtekMaui.Data.csproj" />
+      <ProjectReference Include="..\SimtekMaui.Models\SimtekMaui.Models.csproj" />
     </ItemGroup>
 
 

@@ -1,4 +1,4 @@
-namespace SimtekMaui.Models;
+namespace SimtekDomain.Models;
 
 public interface IRecordClass
 {

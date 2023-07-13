@@ -1,14 +1,12 @@
 using MediatR;
-using OneOf;
-using SimtekDomain;
-using SimtekDomain.Errors;
-using SimtekDomain.InterventionCQRS;
 using SimtekMaui.Application.Mappers;
 using SimtekMaui.Data.Repositories.Abstractions;
+using SimtekMaui.Models;
+using SimtekMaui.Models.Query;
 
 namespace SimtekMaui.Application.Handlers;
 
-public class GetInterventionsQueryHandler:IRequestHandler<GetInterventionsQuery, OneOf<List<Intervention>,SimtekError>>
+public class GetInterventionsQueryHandler:IRequestHandler<GetInterventionsQuery,Result<List<Intervention>>>
 {
     private readonly IInterventionRepository _interventionRepository;
 
@@ -16,9 +14,17 @@ public class GetInterventionsQueryHandler:IRequestHandler<GetInterventionsQuery,
     {
         _interventionRepository = interventionRepository;
     }
-    public async Task<OneOf<List<Intervention>, SimtekError>> Handle(GetInterventionsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<List<Intervention>>> Handle(GetInterventionsQuery request, CancellationToken cancellationToken)
     {
-        var interventionsDto = await _interventionRepository.GetAsync(cancellationToken);
-        return interventionsDto.Select(x=>x.ToDomainModel()).ToList();
+        try
+        {
+            var interventionsDto = await _interventionRepository.GetAsync(cancellationToken);
+            var result = interventionsDto.Select(x => x.ToDomainModel()).ToList();
+
+            return Result<List<Intervention>>.Success(result);
+        }catch(Exception ex)
+        {
+            return Result<List<Intervention>>.Failure(ex);
+        }
     }
 }

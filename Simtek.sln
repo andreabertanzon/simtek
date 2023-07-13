@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimtekMaui.Data", "SimtekMa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimtekMaui.Application", "SimtekMaui.Application\SimtekMaui.Application.csproj", "{78292C10-60CE-4895-972B-CF11E6FAFB0A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimtekMaui.Models", "SimtekMaui.Models\SimtekMaui.Models.csproj", "{97FD67F9-970B-4734-8C2F-5732C28D5589}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +58,10 @@ Global
 		{78292C10-60CE-4895-972B-CF11E6FAFB0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78292C10-60CE-4895-972B-CF11E6FAFB0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78292C10-60CE-4895-972B-CF11E6FAFB0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97FD67F9-970B-4734-8C2F-5732C28D5589}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97FD67F9-970B-4734-8C2F-5732C28D5589}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97FD67F9-970B-4734-8C2F-5732C28D5589}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97FD67F9-970B-4734-8C2F-5732C28D5589}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -68,5 +74,9 @@ Global
 		{92516B8D-6537-4A3A-9195-C9BECB20ED69} = {F9691D50-92F3-4F31-9581-E810AD53D8EB}
 		{D3206C50-D70C-4715-BDC4-7C9BE9C955E9} = {F9691D50-92F3-4F31-9581-E810AD53D8EB}
 		{78292C10-60CE-4895-972B-CF11E6FAFB0A} = {F9691D50-92F3-4F31-9581-E810AD53D8EB}
+		{97FD67F9-970B-4734-8C2F-5732C28D5589} = {F9691D50-92F3-4F31-9581-E810AD53D8EB}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5E76BF77-F610-4D66-9A4E-1228612A1EB4}
 	EndGlobalSection
 EndGlobal

@@ -7,9 +7,10 @@ public partial class AddInterventionPage : ContentPage
     private readonly AddInterventionViewModel _viewModel;
 
     public AddInterventionPage(AddInterventionViewModel viewModel)
-	{
-		InitializeComponent();
+    {
+        InitializeComponent();
         _viewModel = viewModel;
         BindingContext = _viewModel;
     }
+
 }

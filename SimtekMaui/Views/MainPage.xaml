@@ -4,8 +4,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SimtekMaui.MainPage"
              xmlns:viewmodel="clr-namespace:SimtekMaui.ViewModels"
-             xmlns:model="clr-namespace:SimtekMaui.Data.Models.Intervention;assembly=SimtekMaui.Data"
              xmlns:mct="clr-namespace:CommunityToolkit.Maui.Behaviors;assembly=CommunityToolkit.Maui"
+             xmlns:models="clr-namespace:SimtekMaui.Models;assembly=SimtekMaui.Models"
              x:DataType="viewmodel:MainViewModel"
              Title="">
     <ContentPage.Behaviors>
@@ -17,53 +17,65 @@
         ColumnSpacing="5"
         RowDefinitions="Auto,*,Auto,Auto"
         RowSpacing="0">
-        <Label  FontSize="50" Text="Overview"/>
+        <Label  FontSize="50" Text="Interventi"/>
         <CollectionView
         Grid.Row="1"
             VerticalScrollBarVisibility="Always"
             ItemsSource="{Binding Interventions}"
             SelectionMode="None">
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="model:InterventionDto">
+                <DataTemplate x:DataType="models:Intervention">
                     <Frame
                         Style="{StaticResource CardView}"
                         Margin="0,5">
-                        <StackLayout>
-                            <Label Text="{Binding Title}"
+                        <Grid 
+                        MinimumHeightRequest="100"
+                            ColumnDefinitions="*,Auto" 
+                            ColumnSpacing="10"
+                            RowDefinitions="*,Auto,Auto">
+                            <StackLayout Grid.Column="0" Grid.RowSpan="3">
+                                <Label 
+                                TextColor="{StaticResource PrimaryDark}"
+                                Text="{Binding Site.Customer.Name}"
                                    FontSize="18"
-                                   FontAttributes="Bold"
-                                   Margin="10,10,10,0" />
-                            <Label Text="{Binding Description}"
+                                   FontAttributes="Bold"/>
+                                <Label Text="{Binding Site.Name}"
+                                   FontSize="16"
+                                   Margin="0,5" />
+                                <Label Text="{Binding Title}"
                                    FontSize="14"
-                                   Margin="10,10,10,5" />
-
-                            <HorizontalStackLayout
-                                FlowDirection="RightToLeft">
-                                <!-- TODO: Replace with icons -->
-                                <!--<Label FontSize="18" FontFamily="FontAwesome" Text="&#xf2da;" Margin="0, 0, 5, 0"/>-->
-                                <!--<Label FontSize="18" FontFamily="FontAwesome" Text="&#xf2da;" Margin="0, 0, 5, 0"/>-->
-                                <!--<Label FontSize="18" FontFamily="FontAwesome" Text="&#xf2da;" Margin="0, 0, 5, 0"/>-->
-                                <Label FontSize="20" FontFamily="FontAwesome" Text="&#xf2da;" Margin="0, 0, 0, 0"/>
-                            </HorizontalStackLayout>
-                        </StackLayout>
+                                   Margin="0,10,10,5" />
+                                <!--TODO: Replace with icons 
+                                <Label FontSize="18" FontFamily="FontAwesome" Text="&#xf2da;" Margin="0, 0, 5, 0"/>
+                                <Label FontSize="18" FontFamily="FontAwesome" Text="&#xf2da;" Margin="0, 0, 5, 0"/>
+                                <Label FontSize="18" FontFamily="FontAwesome" Text="&#xf2da;" Margin="0, 0, 5, 0"/>-->
+                            </StackLayout>
+                            <Label Grid.Column="1" Grid.Row="2"
+                                FontSize="20" 
+                                FontFamily="FontAwesome" 
+                                Text="&#xf2da;" 
+                                Padding="10,0,0,0"/>
+                        </Grid>
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
         <VerticalStackLayout Spacing="15" Grid.Row="2" Margin="0,10,0,10">
-            <Label Text="Riepilogo" FontSize="30" Margin="0,5"/>
-            <HorizontalStackLayout Margin="10,0,0,0">
-                <Label Text="&#xf2bb;" FontFamily="FontAwesome" 
-                       FontSize="20" 
-                       VerticalOptions="Center"
-                       Margin="10,0"/>
-                <Label Text="16h" FontSize="20"/>
+            <HorizontalStackLayout HorizontalOptions="Center" Margin="0,0,0,0">
+                <HorizontalStackLayout Spacing="10">
+                    <Label 
+                            Text="&#xf2bb;" FontFamily="FontAwesome"
+                            FontSize="20"
+                            VerticalOptions="Center"/>
+                    <Label 
+                            Text="16h" 
+                            FontSize="20"/>
+                </HorizontalStackLayout>
+                <HorizontalStackLayout Spacing="10" VerticalOptions="Center" Margin="40,0,0,0">
+                    <Label Text="&#xf283;" FontFamily="FontAwesome" FontSize="20" VerticalOptions="Center"/>
+                    <Label Text="480€" FontSize="20"/>
+                </HorizontalStackLayout>
             </HorizontalStackLayout>
-            <HorizontalStackLayout Margin="10,0,0,0">
-                <Label Text="&#xf283;" FontFamily="FontAwesome" FontSize="20" VerticalOptions="Center" Margin="10,0"/>
-                <Label Text="480€" FontSize="20"/>
-            </HorizontalStackLayout>
-
         </VerticalStackLayout>
         <Frame 
             Grid.Row="3"

@@ -1,19 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MediatR;
-using SimtekDomain;
-using SimtekDomain.InterventionCQRS;
-using SimtekMaui.Data.Models.Intervention;
-using SimtekMaui.Data.Repositories;
 using SimtekMaui.Utils;
 using CommunityToolkit.Mvvm.Input;
 using SimtekMaui.Data.Repositories.Abstractions;
+using SimtekMaui.Models;
 using SimtekMaui.Views;
+using SimtekMaui.Models.Query;
 
 namespace SimtekMaui.ViewModels
 {
@@ -35,7 +27,7 @@ namespace SimtekMaui.ViewModels
         [RelayCommand]
         async Task GoToAddIntervention()
         {
-            await Shell.Current.GoToAsync(nameof(AddCustomerPage),true);
+            await Shell.Current.GoToAsync(nameof(AddCustomerPage), true);
         }
 
         public ObservableRangeCollection<Intervention> Interventions { get; } = new();
@@ -44,7 +36,7 @@ namespace SimtekMaui.ViewModels
         {
             var request = new GetInterventionsQuery();
             var response = await _mediator.Send(request, default);
-            response.Switch(value =>
+            response.When(value =>
             {
                 Interventions.AddRange(value);
             }, err =>

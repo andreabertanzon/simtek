@@ -1,10 +1,9 @@
 ﻿using CommunityToolkit.Maui;
+using MediatR;
 using Microsoft.Extensions.Logging;
-using SimtekData.Repository.Abstractions;
 using SimtekMaui.Application;
 using SimtekMaui.Application.Infrastructure;
-using SimtekMaui.Data;
-using SimtekMaui.Data.Repositories;
+using SimtekMaui.Application.Repositories;
 using SimtekMaui.Data.Repositories.Abstractions;
 using SimtekMaui.ViewModels;
 using SimtekMaui.Views;
@@ -27,12 +26,7 @@ public static class MauiProgram
             })
             .AddPages();
         builder.AddServices();
-        builder.Services.AddMediatR(cfg =>
-        {
-            cfg.RegisterServicesFromAssembly(typeof(MediatorHook)
-                .Assembly);
-        });
-
+        builder.Services.AddMediatR(typeof(MediatorHook));
 #if DEBUG
         builder.Logging.AddDebug();
 #endif
