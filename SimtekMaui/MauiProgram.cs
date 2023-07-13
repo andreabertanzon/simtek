@@ -34,7 +34,7 @@ public static class MauiProgram
         return builder.Build();
     }
 
-    public static MauiAppBuilder AddPages(this MauiAppBuilder builder)
+    private static MauiAppBuilder AddPages(this MauiAppBuilder builder)
     {
         builder.Services.AddScoped<MainViewModel>();
         builder.Services.AddScoped<MainPage>();
@@ -42,10 +42,12 @@ public static class MauiProgram
         builder.Services.AddScoped<AddInterventionViewModel>();
         builder.Services.AddScoped<AddCustomerPage>();
         builder.Services.AddScoped<AddCustomerViewModel>();
+        builder.Services.AddScoped<AddSitePage>();
+        builder.Services.AddScoped<AddSiteViewModel>();
         return builder;
     }
 
-    public static void AddServices(this MauiAppBuilder builder)
+    private static void AddServices(this MauiAppBuilder builder)
     {
 
         builder.Services.AddScoped<ISimtekService, SimtekService>();

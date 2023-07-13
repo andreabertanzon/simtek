@@ -1,10 +1,9 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
+
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:viewmodel="clr-namespace:SimtekMaui.ViewModels"
-             x:Class="SimtekMaui.Views.AddCustomerPage"
-             x:DataType="viewmodel:AddCustomerViewModel"
-             Title="Aggiungi Cliente">
+             x:Class="SimtekMaui.Views.AddSitePage"
+             Title="Aggiungi Cantiere">
 
     <Grid Margin="0,0" ColumnDefinitions="*" RowDefinitions="*,*,*">
         <!--<Label
@@ -30,12 +29,7 @@
                                 <ScrollView.Content>
                                     <VerticalStackLayout>
                                         <Entry ReturnType="Next" Text="{Binding NewCustomer.Name}" Placeholder="*Nome" Margin="10,10"  FontSize="Subtitle"/>
-                                        <Entry ReturnType="Next" Text="{Binding NewCustomer.Surname}" Placeholder="*Cognome"  Margin="10,10"  FontSize="Subtitle"/>
                                         <Entry ReturnType="Next" Text="{Binding NewCustomer.Address}" Placeholder="*Indirizzo"  Margin="10,10"  FontSize="Subtitle"/>
-                                        <Entry ReturnType="Next" Text="{Binding NewCustomer.Email}" Placeholder="Email"  Margin="10,10"  FontSize="Subtitle"/>
-                                        <Entry ReturnType="Next" Text="{Binding NewCustomer.Phone}" Placeholder="Cel"  Margin="10,10"  FontSize="Subtitle"/>
-                                        <Entry ReturnType="Done" Text="{Binding NewCustomer.Vat}" Placeholder="Vat"  Margin="10,10"  FontSize="Subtitle"/>
-                                        <!-- TODO: Replace with icons -->
                                     </VerticalStackLayout>
                                 </ScrollView.Content>
                             </ScrollView>
@@ -66,4 +60,4 @@
             <Label Grid.Column="3" FontSize="30" FontFamily="FontAwesome" Text="&#xf2da;" Margin="0, 0, 5, 0"/>
         </Grid>-->
     </Grid>
-</ContentPage>
+</ContentPage> 

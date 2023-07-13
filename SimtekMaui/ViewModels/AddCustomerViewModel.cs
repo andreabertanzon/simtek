@@ -15,26 +15,24 @@ namespace SimtekMaui.ViewModels;
 public partial class AddCustomerViewModel : BaseViewModel
 {
     private readonly IMediator _mediator;
+    private readonly NewInterventionStateBuilder _stateBuilder;
 
-    public AddCustomerViewModel(IMediator mediator)
+    public AddCustomerViewModel(IMediator mediator, NewInterventionStateBuilder stateBuilder)
     {
         _mediator = mediator;
+        _stateBuilder = stateBuilder;
     }
 
-    [ObservableProperty] bool makeNew;
+    [ObservableProperty] private Customer _newCustomer = new("", "", "");
 
-    [ObservableProperty] Customer newCustomer = new("", "", "");
-    //public string Email { get; set; } = string.Empty;
-    //public string Phone { get; set; } = string.Empty;
-    //public string Vat { get; set; } = string.Empty;
 
     public ObservableRangeCollection<Customer> Customers { get; private set; } = new();
 
     [RelayCommand]
     public async Task LoadCustomers()
     {
+        _stateBuilder.StartTracking();
         NewCustomer = new Customer("", "", "");
-        MakeNew = false;
 
         var customers = await _mediator.Send(new GetCustomersQuery());
         customers.When(success => { Customers.AddRange(success); }, error => { InError = true; });
@@ -43,21 +41,28 @@ public partial class AddCustomerViewModel : BaseViewModel
     [RelayCommand]
     public async Task GoToAddIntervention()
     {
-        if (string.IsNullOrWhiteSpace(NewCustomer.Name) || string.IsNullOrWhiteSpace(NewCustomer.Surname) || string.IsNullOrWhiteSpace(NewCustomer.Address))
+        const string actionButtonText = "OK";
+        var duration = TimeSpan.FromSeconds(3);
+        var cancellationTokenSource = new CancellationTokenSource();
+        
+        if (string.IsNullOrWhiteSpace(NewCustomer.Name) || string.IsNullOrWhiteSpace(NewCustomer.Surname) ||
+            string.IsNullOrWhiteSpace(NewCustomer.Address))
         {
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            string text = "Nome, Cognome, Indirizzo Obbligatori";
-            string actionButtonText = "OK";
-            TimeSpan duration = TimeSpan.FromSeconds(3);
+            const string text = "Nome, Cognome, Indirizzo Obbligatori";
 
             var snackBar = SnackbarFactory.MakeSnackBar(SnackbarType.Error, text, actionButtonText, duration);
             await snackBar.Show(cancellationTokenSource.Token);
             return;
         }
 
-        await Shell.Current.GoToAsync(nameof(AddInterventionPage), true, new Dictionary<string, object>()
+        var result = _stateBuilder.AddCustomerData(NewCustomer);
+        if (!result.IsSuccess)
         {
-            { "Customer", NewCustomer }
-        });
+            const string errorText = "Errore nell'aggiunta del Cliente";
+            var errorSnackbar = SnackbarFactory.MakeSnackBar(SnackbarType.Error, errorText, actionButtonText, duration);
+            await errorSnackbar.Show(cancellationTokenSource.Token);
+        }
+
+        await Shell.Current.GoToAsync(nameof(AddSitePage), true);
     }
 }

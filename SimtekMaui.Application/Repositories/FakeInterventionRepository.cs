@@ -3,9 +3,9 @@ using SimtekMaui.Data.Repositories.Abstractions;
 
 namespace SimtekMaui.Application.Repositories;
 
-public class FakeInterventionRepository : IInterventionRepository
+public class FakeInterventionRepository() : IInterventionRepository
 {
-    private static List<InterventionDto> interventionDtos = new()
+    private static readonly List<InterventionDto> interventionDtos = new()
         {
             new InterventionDto
             {

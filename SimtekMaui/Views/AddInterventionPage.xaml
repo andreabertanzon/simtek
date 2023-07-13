@@ -16,16 +16,13 @@
 
         <Entry Grid.Row="2" 
                Placeholder="Titolo" 
-               Background="Black" 
-               TextColor="White"/>
+               />
         <Entry 
                Grid.Row="3" 
                Placeholder="Descrizione" 
-               Background="Black" 
-               TextColor="White"/>
+               />
         
         <DatePicker Grid.Row="4"
-                    Background="Black"
                     TextColor="White"
                     MinimumDate="01/01/2022"
                     MaximumDate="12/31/2022"

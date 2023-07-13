@@ -1,6 +1,6 @@
 ﻿using SimtekMaui.Data.Models;
 
-namespace SimtekMaui
+namespace SimtekMaui.Application
 {
     public class FakeCustomerRepository : ICustomerRepository
     {
