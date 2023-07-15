@@ -12,7 +12,4 @@
       <ProjectReference Include="..\SimtekMaui.Models\SimtekMaui.Models.csproj" />
     </ItemGroup>
 
-
-
-
 </Project>

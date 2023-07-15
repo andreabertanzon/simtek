@@ -1,13 +1,10 @@
-using CommunityToolkit.Maui.Alerts;
-using CommunityToolkit.Maui.Core;
-using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MediatR;
 using SimtekMaui.Models;
+using SimtekMaui.Models.Exceptions;
 using SimtekMaui.Models.Query;
 using SimtekMaui.Utils;
-using CommunityToolkit.Maui.Alerts;
 using SimtekMaui.Views;
 
 namespace SimtekMaui.ViewModels;
@@ -24,7 +21,6 @@ public partial class AddCustomerViewModel : BaseViewModel
     }
 
     [ObservableProperty] private Customer _newCustomer = new("", "", "");
-
 
     public ObservableRangeCollection<Customer> Customers { get; private set; } = new();
 
@@ -44,9 +40,18 @@ public partial class AddCustomerViewModel : BaseViewModel
         const string actionButtonText = "OK";
         var duration = TimeSpan.FromSeconds(3);
         var cancellationTokenSource = new CancellationTokenSource();
-        
-        if (string.IsNullOrWhiteSpace(NewCustomer.Name) || string.IsNullOrWhiteSpace(NewCustomer.Surname) ||
-            string.IsNullOrWhiteSpace(NewCustomer.Address))
+
+        var validateAddressResult = ValidateAddress(NewCustomer.Address);
+        if (!validateAddressResult.IsSuccess)
+        {
+            var error = validateAddressResult.Error;
+            var snackBar =
+                SnackbarFactory.MakeSnackBar(SnackbarType.Error, error.Message, actionButtonText, duration);
+            await snackBar.Show(cancellationTokenSource.Token);
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(NewCustomer.Name) || string.IsNullOrWhiteSpace(NewCustomer.Surname))
         {
             const string text = "Nome, Cognome, Indirizzo Obbligatori";
 
@@ -58,7 +63,7 @@ public partial class AddCustomerViewModel : BaseViewModel
         var result = _stateBuilder.AddCustomerData(NewCustomer);
         if (!result.IsSuccess)
         {
-            const string errorText = "Errore nell'aggiunta del Cliente";
+            const string errorText = "Errore nell'aggiunta del Cantiere";
             var errorSnackbar = SnackbarFactory.MakeSnackBar(SnackbarType.Error, errorText, actionButtonText, duration);
             await errorSnackbar.Show(cancellationTokenSource.Token);
         }

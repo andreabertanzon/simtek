@@ -5,6 +5,7 @@ using SimtekMaui.Application;
 using SimtekMaui.Application.Infrastructure;
 using SimtekMaui.Application.Repositories;
 using SimtekMaui.Data.Repositories.Abstractions;
+using SimtekMaui.Utils;
 using SimtekMaui.ViewModels;
 using SimtekMaui.Views;
 
@@ -53,5 +54,6 @@ public static class MauiProgram
         builder.Services.AddScoped<ISimtekService, SimtekService>();
         builder.Services.AddScoped<IInterventionRepository,FakeInterventionRepository>();
         builder.Services.AddScoped<ICustomerRepository, FakeCustomerRepository>();
+        builder.Services.AddSingleton<NewInterventionStateBuilder>();
     }
 }
