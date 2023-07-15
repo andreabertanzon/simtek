@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<the49:BottomSheet xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                   xmlns:the49="https://schemas.the49.com/dotnet/2023/maui"
+                   x:Name="this"
+                   Background="Transparent"
+                   x:Class="SimtekMaui.PageUtils.BottomInfo">
+    <the49:BottomSheet.Resources>
+        <Style TargetType="Button">
+            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Setter Property="TextColor" Value="{StaticResource OnBackgroundDark}" />
+            <Setter Property="HorizontalOptions" Value="StartAndExpand" />
+        </Style>
+    </the49:BottomSheet.Resources>
+    <Frame Style="{StaticResource CardView}" Background="{StaticResource PrimaryContainerDark}">
+    <VerticalStackLayout Margin="10" Spacing="16" MinimumHeightRequest="400">
+        <Label Text="Cerca cliente"/>
+        <Entry Placeholder="Hello"/> 
+    </VerticalStackLayout>
+        </Frame>
+</the49:BottomSheet>

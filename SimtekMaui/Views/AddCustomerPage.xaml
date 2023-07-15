@@ -29,7 +29,17 @@
                             <ScrollView HeightRequest="300">
                                 <ScrollView.Content>
                                     <VerticalStackLayout>
-                                        <Entry ReturnType="Next" Text="{Binding NewCustomer.Name}" Placeholder="*Nome" Margin="10,10"  FontSize="Subtitle"/>
+                                        <FlexLayout>
+                                            <Button FontFamily="FontAwesome"
+                                                    BackgroundColor="Transparent"
+                                                    TextColor="{StaticResource TertiaryDark}"
+                                                    FontSize="20"
+                                                    Text="&#xf2b9;"
+                                                    Command="{Binding OpenBottomSheetCommand}"
+                                                    IsEnabled="{Binding IsNotBusy}" />
+                                            <Editor AutoSize="TextChanges" Text="{Binding NewCustomer.Name}" Placeholder="*Nome"
+                                                    FontSize="Subtitle" FlexLayout.Grow="1"/>
+                                        </FlexLayout>
                                         <Entry ReturnType="Next" Text="{Binding NewCustomer.Surname}" Placeholder="*Cognome"  Margin="10,10"  FontSize="Subtitle"/>
                                         <Entry ReturnType="Next" Text="{Binding NewCustomer.Address}" Placeholder="*Indirizzo"  Margin="10,10"  FontSize="Subtitle"/>
                                         <Entry ReturnType="Next" Text="{Binding NewCustomer.Email}" Placeholder="Email"  Margin="10,10"  FontSize="Subtitle"/>
@@ -47,7 +57,7 @@
                             FontSize="50"
                             Grid.Row="1"
                             Text="&#xf0a9;"
-                            Command="{Binding GoToAddInterventionCommand}"
+                            Command="{Binding  GoToAddInterventionCommand}"
                             IsEnabled="{Binding IsNotBusy}"/>
                 </Grid>
             </Frame>

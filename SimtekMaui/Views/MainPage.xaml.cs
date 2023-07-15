@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Maui.Behaviors;
 using CommunityToolkit.Maui.Core;
+using SimtekMaui.PageUtils;
 using SimtekMaui.ViewModels;
 
 namespace SimtekMaui;
@@ -42,5 +43,7 @@ public partial class MainPage : ContentPage
 
         await _mainViewModel.LoadInterventionsAsync();
     }
+    
+    
     
 }

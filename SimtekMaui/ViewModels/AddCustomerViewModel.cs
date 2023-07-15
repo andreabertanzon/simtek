@@ -14,6 +14,10 @@ public partial class AddCustomerViewModel : BaseViewModel
     private readonly IMediator _mediator;
     private readonly NewInterventionStateBuilder _stateBuilder;
 
+    public delegate void ShowBottomSheetHandler();
+
+    public event ShowBottomSheetHandler? ShowBottomSheetEvent;
+
     public AddCustomerViewModel(IMediator mediator, NewInterventionStateBuilder stateBuilder)
     {
         _mediator = mediator;
@@ -41,21 +45,22 @@ public partial class AddCustomerViewModel : BaseViewModel
         var duration = TimeSpan.FromSeconds(3);
         var cancellationTokenSource = new CancellationTokenSource();
 
+        if(string.IsNullOrWhiteSpace(NewCustomer.Name) || string.IsNullOrWhiteSpace(NewCustomer.Surname))
+        {
+            const string text = "Nome, Cognome, Indirizzo Obbligatori";
+
+            var snackBar = SnackbarFactory.MakeSnackBar(SnackbarType.Error, text);
+            
+            await snackBar.Show(cancellationTokenSource.Token);
+            return;
+        }
+        
         var validateAddressResult = ValidateAddress(NewCustomer.Address);
         if (!validateAddressResult.IsSuccess)
         {
             var error = validateAddressResult.Error;
             var snackBar =
-                SnackbarFactory.MakeSnackBar(SnackbarType.Error, error.Message, actionButtonText, duration);
-            await snackBar.Show(cancellationTokenSource.Token);
-            return;
-        }
-
-        if (string.IsNullOrWhiteSpace(NewCustomer.Name) || string.IsNullOrWhiteSpace(NewCustomer.Surname))
-        {
-            const string text = "Nome, Cognome, Indirizzo Obbligatori";
-
-            var snackBar = SnackbarFactory.MakeSnackBar(SnackbarType.Error, text, actionButtonText, duration);
+                SnackbarFactory.MakeSnackBar(SnackbarType.Error, error.Message);
             await snackBar.Show(cancellationTokenSource.Token);
             return;
         }
@@ -64,10 +69,16 @@ public partial class AddCustomerViewModel : BaseViewModel
         if (!result.IsSuccess)
         {
             const string errorText = "Errore nell'aggiunta del Cantiere";
-            var errorSnackbar = SnackbarFactory.MakeSnackBar(SnackbarType.Error, errorText, actionButtonText, duration);
+            var errorSnackbar = SnackbarFactory.MakeSnackBar(SnackbarType.Error, errorText);
             await errorSnackbar.Show(cancellationTokenSource.Token);
         }
 
         await Shell.Current.GoToAsync(nameof(AddSitePage), true);
+    }
+
+    [RelayCommand]
+    public void OpenBottomSheet()
+    {
+        ShowBottomSheetEvent?.Invoke();
     }
 }

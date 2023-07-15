@@ -8,6 +8,7 @@ using SimtekMaui.Data.Repositories.Abstractions;
 using SimtekMaui.Utils;
 using SimtekMaui.ViewModels;
 using SimtekMaui.Views;
+using The49.Maui.BottomSheet;
 
 namespace SimtekMaui;
 
@@ -19,6 +20,7 @@ public static class MauiProgram
         builder
             .UseMauiApp<App>()
             .UseMauiCommunityToolkit()
+            .UseBottomSheet()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
