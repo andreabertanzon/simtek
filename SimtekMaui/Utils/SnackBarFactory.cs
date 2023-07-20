@@ -5,8 +5,10 @@ namespace SimtekMaui.Utils
 {
     public static class SnackbarFactory
     {
-        public static ISnackbar MakeSnackBar(SnackbarType snackBarType, string text, string actionButtonText, TimeSpan duration)
+        public static ISnackbar MakeSnackBar(SnackbarType snackBarType, string text, string? actionBtnTxt = null, TimeSpan? snackDuration = null)
         {
+            var actionButtonText = actionBtnTxt ?? "Ok";
+            var duration = snackDuration ?? TimeSpan.FromSeconds(3);
             SnackbarOptions snackbarOptions;
             ISnackbar snackbar;
 
@@ -32,8 +34,7 @@ namespace SimtekMaui.Utils
                         ActionButtonTextColor = Color.FromArgb("601410"),
                         CornerRadius = new CornerRadius(10),
                     };
-
-
+                    
                     snackbar = Snackbar.Make(text, null, actionButtonText, duration, snackbarOptions);
                     break;
                 default:

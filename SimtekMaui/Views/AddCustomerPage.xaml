@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
+
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodel="clr-namespace:SimtekMaui.ViewModels"
@@ -10,7 +11,7 @@
         <!--<Label
             Grid.Row="0"
             FontSize="101" FontFamily="FontAwesome" Text="&#xf2be;" Margin="0,30" HorizontalTextAlignment="Center" TextColor="{StaticResource TertiaryLight}"/> -->
-        <Image Grid.Row="0" Source="user_png.png" Aspect="AspectFill"/>
+        <Image Grid.Row="0" Source="user_png.png" Aspect="AspectFill" />
 
         <Border Grid.Row="1"
                 Background="Transparent"
@@ -18,33 +19,41 @@
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="70,70,0,0"></RoundRectangle>
             </Border.StrokeShape>
-            <Frame 
-                CornerRadius="0"  
+            <Frame
+                CornerRadius="0"
                 Style="{StaticResource CardView}"
                 VerticalOptions="FillAndExpand">
                 <Grid RowDefinitions="Auto,*">
                     <VerticalStackLayout Grid.Row="0" Margin="0,0">
                         <VerticalStackLayout>
-                            <Label Text="Inserisci i dati" Margin="10,10" FontSize="24" TextColor="{StaticResource PrimaryDark}"/>
+                            <HorizontalStackLayout>
+                                <Button FontFamily="FontAwesome"
+                                        BackgroundColor="Transparent"
+                                        TextColor="{StaticResource TertiaryDark}"
+                                        FontSize="20"
+                                        Text="&#xf2b9;"
+                                        Command="{Binding OpenBottomSheetCommand}"
+                                        IsEnabled="{Binding IsNotBusy}" />
+                                <Label Text="Inserisci i dati" Margin="10,10" FontSize="24"
+                                       TextColor="{StaticResource PrimaryDark}" />
+                            </HorizontalStackLayout>
                             <ScrollView HeightRequest="300">
                                 <ScrollView.Content>
                                     <VerticalStackLayout>
-                                        <FlexLayout>
-                                            <Button FontFamily="FontAwesome"
-                                                    BackgroundColor="Transparent"
-                                                    TextColor="{StaticResource TertiaryDark}"
-                                                    FontSize="20"
-                                                    Text="&#xf2b9;"
-                                                    Command="{Binding OpenBottomSheetCommand}"
-                                                    IsEnabled="{Binding IsNotBusy}" />
-                                            <Editor AutoSize="TextChanges" Text="{Binding NewCustomer.Name}" Placeholder="*Nome"
-                                                    FontSize="Subtitle" FlexLayout.Grow="1"/>
-                                        </FlexLayout>
-                                        <Entry ReturnType="Next" Text="{Binding NewCustomer.Surname}" Placeholder="*Cognome"  Margin="10,10"  FontSize="Subtitle"/>
-                                        <Entry ReturnType="Next" Text="{Binding NewCustomer.Address}" Placeholder="*Indirizzo"  Margin="10,10"  FontSize="Subtitle"/>
-                                        <Entry ReturnType="Next" Text="{Binding NewCustomer.Email}" Placeholder="Email"  Margin="10,10"  FontSize="Subtitle"/>
-                                        <Entry ReturnType="Next" Text="{Binding NewCustomer.Phone}" Placeholder="Cel"  Margin="10,10"  FontSize="Subtitle"/>
-                                        <Entry ReturnType="Done" Text="{Binding NewCustomer.Vat}" Placeholder="Vat"  Margin="10,10"  FontSize="Subtitle"/>
+
+                                        <Editor AutoSize="TextChanges" Margin="10,10" Text="{Binding NewCustomer.Name}"
+                                                Placeholder="*Nome"
+                                                FontSize="Subtitle" FlexLayout.Grow="1" />
+                                        <Entry ReturnType="Next" Text="{Binding NewCustomer.Surname}"
+                                               Placeholder="*Cognome" Margin="10,10" FontSize="Subtitle" />
+                                        <Entry ReturnType="Next" Text="{Binding NewCustomer.Address}"
+                                               Placeholder="*Indirizzo" Margin="10,10" FontSize="Subtitle" />
+                                        <Entry ReturnType="Next" Text="{Binding NewCustomer.Email}" Placeholder="Email"
+                                               Margin="10,10" FontSize="Subtitle" />
+                                        <Entry ReturnType="Next" Text="{Binding NewCustomer.Phone}" Placeholder="Cel"
+                                               Margin="10,10" FontSize="Subtitle" />
+                                        <Entry ReturnType="Done" Text="{Binding NewCustomer.Vat}" Placeholder="Vat"
+                                               Margin="10,10" FontSize="Subtitle" />
                                         <!-- TODO: Replace with icons -->
                                     </VerticalStackLayout>
                                 </ScrollView.Content>
@@ -58,7 +67,7 @@
                             Grid.Row="1"
                             Text="&#xf0a9;"
                             Command="{Binding  GoToAddInterventionCommand}"
-                            IsEnabled="{Binding IsNotBusy}"/>
+                            IsEnabled="{Binding IsNotBusy}" />
                 </Grid>
             </Frame>
 

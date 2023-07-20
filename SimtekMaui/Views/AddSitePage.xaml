@@ -26,24 +26,26 @@
                 <Grid RowDefinitions="Auto,*">
                     <VerticalStackLayout Grid.Row="0" Margin="0,0">
                         <VerticalStackLayout Margin="10,10">
-                            <Label Text="Inserisci i dati" Margin="10,10" FontSize="24"
-                                   TextColor="{StaticResource PrimaryDark}" />
+                            <HorizontalStackLayout>
+                                <Button FontFamily="FontAwesome"
+                                        BackgroundColor="Transparent"
+                                        TextColor="{StaticResource TertiaryDark}"
+                                        FontSize="20"
+                                        Text="&#xf2b9;"
+                                        Command="{Binding AddAddressFromCustomerCommand}"
+                                        IsEnabled="{Binding IsNotBusy}" />
+                                <Label Text="Inserisci i dati" Margin="10,10" FontSize="24"
+                                       TextColor="{StaticResource PrimaryDark}" />
+                            </HorizontalStackLayout>
                             <ScrollView HeightRequest="300">
                                 <ScrollView.Content>
                                     <VerticalStackLayout HorizontalOptions="Fill">
                                         <Entry ReturnType="Next" Text="{Binding Name}" Placeholder="*Nome"
                                                FontSize="Subtitle" />
-                                        <FlexLayout>
-                                            <Button FontFamily="FontAwesome"
-                                                    BackgroundColor="Transparent"
-                                                    TextColor="{StaticResource TertiaryDark}"
-                                                    FontSize="20"
-                                                    Text="&#xf2b9;"
-                                                    Command="{Binding AddAddressFromCustomerCommand}"
-                                                    IsEnabled="{Binding IsNotBusy}" />
-                                            <Editor AutoSize="TextChanges" Text="{Binding Address}" Placeholder="*Indirizzo"
-                                                   FontSize="Subtitle" FlexLayout.Grow="1"/>
-                                        </FlexLayout>
+
+                                        <Entry Text="{Binding Address}"
+                                               Placeholder="*Indirizzo"
+                                               FontSize="Subtitle" FlexLayout.Grow="1" />
                                     </VerticalStackLayout>
                                 </ScrollView.Content>
                             </ScrollView>
