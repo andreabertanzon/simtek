@@ -75,6 +75,12 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Compile Update="PageUtils\BottomCustomerInfo.xaml.cs">
+        <DependentUpon>BottomCustomerInfo.xaml</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
       <MauiXaml Update="Views\AddCustomerPage.xaml">
         <Generator>MSBuild:Compile</Generator>
       </MauiXaml>

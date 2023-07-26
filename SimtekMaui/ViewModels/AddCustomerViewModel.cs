@@ -6,6 +6,7 @@ using SimtekMaui.Models.Exceptions;
 using SimtekMaui.Models.Query;
 using SimtekMaui.Utils;
 using SimtekMaui.Views;
+using System.Collections.ObjectModel;
 
 namespace SimtekMaui.ViewModels;
 
@@ -27,6 +28,7 @@ public partial class AddCustomerViewModel : BaseViewModel
     [ObservableProperty] private Customer _newCustomer = new("", "", "");
 
     public ObservableRangeCollection<Customer> Customers { get; private set; } = new();
+
 
     [RelayCommand]
     public async Task LoadCustomers()

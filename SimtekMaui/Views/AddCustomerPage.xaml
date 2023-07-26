@@ -40,7 +40,6 @@
                             <ScrollView HeightRequest="300">
                                 <ScrollView.Content>
                                     <VerticalStackLayout>
-
                                         <Editor AutoSize="TextChanges" Margin="10,10" Text="{Binding NewCustomer.Name}"
                                                 Placeholder="*Nome"
                                                 FontSize="Subtitle" FlexLayout.Grow="1" />

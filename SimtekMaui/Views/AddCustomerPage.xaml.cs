@@ -30,7 +30,7 @@ public partial class AddCustomerPage : ContentPage
         if (showingModal) return;
 
         showingModal = true;
-        var page = new BottomInfo
+        var page = new BottomCustomerInfo(_viewModel)
         {
             HasBackdrop = true
         };
