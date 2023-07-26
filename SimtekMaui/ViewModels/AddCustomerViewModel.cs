@@ -31,13 +31,21 @@ public partial class AddCustomerViewModel : BaseViewModel
 
 
     [RelayCommand]
-    public async Task LoadCustomers()
+    public async Task LoadCustomersAsync()
     {
+        var cancellationTokenSource = new CancellationTokenSource();
+
+        IsBusy = true;
+        
         _stateBuilder.StartTracking();
         NewCustomer = new Customer("", "", "");
 
-        var customers = await _mediator.Send(new GetCustomersQuery());
-        customers.When(success => { Customers.AddRange(success); }, error => { InError = true; });
+        var customers = await _mediator.Send(new GetCustomersQuery(), cancellationTokenSource.Token);
+        customers.When(
+            success => { Customers.AddRange(success); },
+            error => { InError = true; });
+        
+        IsBusy = false;
     }
 
     [RelayCommand]

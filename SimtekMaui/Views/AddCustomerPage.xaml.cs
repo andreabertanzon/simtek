@@ -19,7 +19,7 @@ public partial class AddCustomerPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await _viewModel.LoadCustomers();
+        await _viewModel.LoadCustomersAsync();
         _viewModel.ShowBottomSheetEvent += OpenModalSheet;
     }
 
