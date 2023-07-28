@@ -48,6 +48,8 @@ public class NewInterventionStateBuilder
         return _newInterventionState?.Customer is null ? "" : _newInterventionState.Customer.Address;
     }
 
+    public Guid? GetCustomerId() => _newInterventionState?.Customer?.Id;
+
     public Result<NewInterventionState> Build()
     {
         if (_newInterventionState is null)

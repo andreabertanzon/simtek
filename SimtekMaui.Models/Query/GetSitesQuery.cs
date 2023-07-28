@@ -2,4 +2,4 @@ using MediatR;
 
 namespace SimtekMaui.Models.Query;
 
-public record GetSitesQuery():IRequest<Result<List<Site>>>;
+public record GetSitesQuery(Guid CustomerId):IRequest<Result<List<Site>>>;

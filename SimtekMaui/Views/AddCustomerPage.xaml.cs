@@ -7,7 +7,7 @@ namespace SimtekMaui.Views;
 public partial class AddCustomerPage : ContentPage
 {
     private readonly AddCustomerViewModel _viewModel;
-    private bool showingModal = false;
+    private bool _showingModal = false;
 
     public AddCustomerPage(AddCustomerViewModel viewModel)
     {
@@ -23,13 +23,13 @@ public partial class AddCustomerPage : ContentPage
         _viewModel.ShowBottomSheetEvent += OpenModalSheet;
     }
 
-    private void FinishedShowingModal(object? obj,DismissOrigin origin) => showingModal = false;
+    private void FinishedShowingModal(object? obj,DismissOrigin origin) => _showingModal = false;
     
     private async void OpenModalSheet()
     {
-        if (showingModal) return;
+        if (_showingModal) return;
 
-        showingModal = true;
+        _showingModal = true;
         var page = new BottomCustomerInfo(_viewModel)
         {
             HasBackdrop = true

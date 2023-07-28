@@ -39,23 +39,24 @@ public static class MauiProgram
 
     private static MauiAppBuilder AddPages(this MauiAppBuilder builder)
     {
-        builder.Services.AddScoped<MainViewModel>();
-        builder.Services.AddScoped<MainPage>();
-        builder.Services.AddScoped<AddInterventionPage>();
-        builder.Services.AddScoped<AddInterventionViewModel>();
-        builder.Services.AddScoped<AddCustomerPage>();
-        builder.Services.AddScoped<AddCustomerViewModel>();
-        builder.Services.AddScoped<AddSitePage>();
-        builder.Services.AddScoped<AddSiteViewModel>();
+        builder.Services.AddTransient<MainViewModel>();
+        builder.Services.AddTransient<MainPage>();
+        builder.Services.AddTransient<AddInterventionPage>();
+        builder.Services.AddTransient<AddInterventionViewModel>();
+        builder.Services.AddTransient<AddCustomerPage>();
+        builder.Services.AddTransient<AddCustomerViewModel>();
+        builder.Services.AddTransient<AddSitePage>();
+        builder.Services.AddTransient<AddSiteViewModel>();
         return builder;
     }
 
     private static void AddServices(this MauiAppBuilder builder)
     {
 
-        builder.Services.AddScoped<ISimtekService, SimtekService>();
-        builder.Services.AddScoped<IInterventionRepository,FakeInterventionRepository>();
-        builder.Services.AddScoped<ICustomerRepository, FakeCustomerRepository>();
+        builder.Services.AddTransient<ISimtekService, SimtekService>();
+        builder.Services.AddTransient<IInterventionRepository,FakeInterventionRepository>();
+        builder.Services.AddTransient<ISiteRepository, FakeSiteRepository>();
+        builder.Services.AddTransient<ICustomerRepository, FakeCustomerRepository>();
         builder.Services.AddSingleton<NewInterventionStateBuilder>();
     }
 }

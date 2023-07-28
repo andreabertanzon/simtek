@@ -15,28 +15,35 @@ public partial class AddSiteViewModel : BaseViewModel
     private readonly NewInterventionStateBuilder _stateBuilder;
     private readonly IMediator _mediator;
 
+    public delegate void ShowBottomSheetHandler();
+
+    public event ShowBottomSheetHandler? ShowBottomSheetEvent;
     public ObservableRangeCollection<Site> Sites { get; private set; } = new();
-    
+
     public AddSiteViewModel(NewInterventionStateBuilder stateBuilder, IMediator mediator)
     {
         _stateBuilder = stateBuilder;
         _mediator = mediator;
     }
-    
+
     [RelayCommand]
     public async Task LoadSiteAsync()
     {
-
         IsBusy = true;
-        
-        var customers = await _mediator.Send(new GetSitesQuery());
+
+        var customerId = _stateBuilder.GetCustomerId();
+        if (customerId is null)
+        {
+            //TODO: Handle error case properly.
+            this.InError = true;
+            IsBusy = false;
+            return;
+        }
+        var customers = await _mediator.Send(new GetSitesQuery(CustomerId:customerId.Value));
         customers.When(
-            success =>
-            {
-                Sites.AddRange(success);
-            }, 
+            success => { Sites.AddRange(success); },
             error => { InError = true; });
-        
+
         IsBusy = false;
     }
 
@@ -50,11 +57,12 @@ public partial class AddSiteViewModel : BaseViewModel
         var validateAddress = ValidateAddress(Address);
         if (!validateAddress.IsSuccess)
         {
-            var snackBar = SnackbarFactory.MakeSnackBar(SnackbarType.Error, validateAddress.Error.Message, actionButtonText, duration);
+            var snackBar = SnackbarFactory.MakeSnackBar(SnackbarType.Error, validateAddress.Error.Message,
+                actionButtonText, duration);
             await snackBar.Show(cancellationTokenSource.Token);
             return;
         }
-        
+
         if (string.IsNullOrWhiteSpace(Name))
         {
             const string text = "Nome e Indirizzo Obbligatori";
@@ -79,5 +87,11 @@ public partial class AddSiteViewModel : BaseViewModel
     public void AddAddressFromCustomer()
     {
         Address = _stateBuilder.GetAddressFromCustomer();
+    }
+
+    [RelayCommand]
+    public void OpenBottomSheet()
+    {
+        ShowBottomSheetEvent?.Invoke();
     }
 }
