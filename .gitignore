@@ -1,7 +1,6 @@
-obj
 bin
 .idea
 .vs
 *.user
 data
-appsettings.Development.json
+css/output.css

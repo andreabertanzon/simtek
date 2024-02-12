@@ -1,0 +1,25 @@
+package templates
+
+templ Index() {
+	<html>
+		<head>
+			<title>Go app super</title>
+			<link href="/css/output.css" rel="stylesheet" type="text/css"/>
+			<style>
+				div.htmx-swapping {
+					opacity: 0;
+					transition: opacity 1s ease-out;
+				}
+
+				div.htmx-revealing {
+					opacity: 0;
+					transition: opacity 1s ease-in;
+				}
+			</style>
+		</head>
+		<body class="h-screen">
+			@Hello("Andrea")
+			<script src="https://unpkg.com/htmx.org"></script>
+		</body>
+	</html>
+}
