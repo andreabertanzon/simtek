@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.btn-primary {
+    @apply bg-nord10 text-nord0 font-semibold py-3 px-6 rounded-md hover:bg-nord11 focus:ring-2 focus:ring-nord10;
+}
+
+.btn-secondary {
+    @apply bg-nord3 text-nord6 font-medium py-2.5 px-5 rounded-md hover:bg-nord2 focus:ring-2 focus:ring-nord3;
+}
