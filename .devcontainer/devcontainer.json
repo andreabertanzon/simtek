@@ -13,7 +13,7 @@
   // "features": {},
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  "forwardPorts": [8080],
+  "forwardPorts": ["6007:6006"],
 
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "go install github.com/cosmtrek/air@latest && go install github.com/a-h/templ/cmd/templ@latest",
