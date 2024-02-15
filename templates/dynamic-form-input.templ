@@ -1,0 +1,9 @@
+package templates
+
+templ DynamicFormInput(inputType string) {
+	if inputType == "material" {
+		<input class="mt-2 text-4xl" type="text" name="materials[]" placeholder="Material"/>
+	} else if inputType == "worker" {
+		<input class="mt-2 text-4xl" type="text" name="workers[]" placeholder="Operatore"/>
+	}
+}

@@ -9,3 +9,31 @@
 .btn-secondary {
     @apply bg-nord3 text-nord6 font-medium py-2.5 px-5 rounded-md hover:bg-nord2 focus:ring-2 focus:ring-nord3;
 }
+
+.btn-tertiary {
+    @apply bg-nord0 text-nord10 font-semibold py-3 px-6 rounded-md hover:bg-nord1 focus:ring-2 focus:ring-nord0;
+}
+
+.btn-danger {
+    @apply bg-nord11 text-nord0 font-semibold py-3 px-6 rounded-md hover:bg-nord12 focus:ring-2 focus:ring-nord11;
+}
+
+.btn-disabled {
+    @apply bg-nord3 text-nord6 font-medium py-2.5 px-5 rounded-md cursor-not-allowed;
+}
+
+.btn-outline-primary {
+    @apply border-2 border-nord10 text-nord10 font-semibold py-3 px-6 rounded-md hover:bg-nord10 hover:text-nord0 focus:ring-2 focus:ring-nord10;
+}
+
+.btn-outline-secondary {
+    @apply border-2 border-nord3 text-nord3 font-medium py-2.5 px-5 rounded-md hover:bg-nord3 hover:text-nord6 focus:ring-2 focus:ring-nord3;
+}
+
+.btn-outline-tertiary {
+    @apply border-2 border-nord0 text-nord0 font-semibold py-3 px-6 rounded-md hover:bg-nord0 hover:text-nord10 focus:ring-2 focus:ring-nord0;
+}
+
+.btn-outline-danger {
+    @apply border-2 border-nord11 text-nord11 font-semibold py-3 px-6 rounded-md hover:bg-nord11 hover:text-nord0 focus:ring-2 focus:ring-nord11;
+}

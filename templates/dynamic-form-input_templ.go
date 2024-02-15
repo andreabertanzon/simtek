@@ -10,7 +10,7 @@ import "context"
 import "io"
 import "bytes"
 
-func MaterialInput() templ.Component {
+func DynamicFormInput(inputType string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -23,9 +23,16 @@ func MaterialInput() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input class=\"mt-2 text-4xl\" type=\"text\" name=\"materials[]\" placeholder=\"Material\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
+		if inputType == "material" {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input class=\"mt-2 text-4xl\" type=\"text\" name=\"materials[]\" placeholder=\"Material\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		} else if inputType == "worker" {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input class=\"mt-2 text-4xl\" type=\"text\" name=\"workers[]\" placeholder=\"Operatore\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
 		}
 		if !templ_7745c5c3_IsBuffer {
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteTo(templ_7745c5c3_W)

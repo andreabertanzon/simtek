@@ -23,20 +23,20 @@ func Index(date string) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<html><head><title>Go app super</title><link href=\"/css/output.css\" rel=\"stylesheet\" type=\"text/css\"><style>\n\t\t\t\tdiv.htmx-swapping {\n\t\t\t\t\topacity: 0;\n\t\t\t\t\ttransition: opacity 1s ease-out;\n\t\t\t\t}\n\n\t\t\t\tdiv.htmx-revealing {\n\t\t\t\t\topacity: 0;\n\t\t\t\t\ttransition: opacity 1s ease-in;\n\t\t\t\t}\n\n\t\t\t\tdiv#main-content {\n\t\t\t\t\tpadding-left: 1rem; /* Adjust as needed */\n\t\t\t\t\tpadding-right: 1rem; /* Adjust as needed */\n\t\t\t\t}\n\t\t\t</style></head><body class=\"h-screen\"><div id=\"main-content\" class=\"h-screen w-screen p-2 flex flex-col items-center\"><div id=\"action-container\" class=\"flex mt-8 px-8\"><p class=\"text-6xl mr-2\">Oggi: ")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<html><head><title>Go app super</title><link href=\"/css/output.css\" rel=\"stylesheet\" type=\"text/css\"><style>\n\t\t\t\tdiv.htmx-swapping {\n\t\t\t\t\topacity: 0;\n\t\t\t\t\ttransition: opacity 1s ease-out;\n\t\t\t\t}\n\n\t\t\t\tdiv.htmx-revealing {\n\t\t\t\t\topacity: 0;\n\t\t\t\t\ttransition: opacity 1s ease-in;\n\t\t\t\t}\n\n\t\t\t\tdiv#main-content {\n\t\t\t\t\tpadding-left: 1rem; /* Adjust as needed */\n\t\t\t\t\tpadding-right: 1rem; /* Adjust as needed */\n\t\t\t\t}\n\t\t\t</style></head><body class=\"h-screen\"><div id=\"main-content\" class=\"h-screen w-screen p-2 flex flex-col items-center\"><div id=\"action-container\" class=\"flex mt-8 px-8 cursor-pointer\" hx-get=\"/new-intervention\" hx-target=\"#intervention-content\" hx-trigger=\"click, keyup[ctrlKey&amp;&amp;key==&#39;/&#39;] from:body\" hx-swap=\"innerHTML swap:200ms\"><p class=\"text-6xl mr-2\">Oggi: ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(date)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/index.templ`, Line: 27, Col: 42}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/index.templ`, Line: 34, Col: 42}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><svg class=\"cursor-pointer\" width=\"48\" height=\"48\" xmlns=\"http://www.w3.org/2000/svg\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" hx-get=\"/new-intervention\" hx-target=\"#intervention-content\" hx-trigger=\"click, keyup[ctrlKey&amp;&amp;key==&#39;/&#39;] from:body\" hx-swap=\"innerHTML swap:200ms\"><path d=\"M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm7 14h-5v5h-4v-5h-5v-4h5v-5h4v5h5v4z\"></path></svg></div><div id=\"intervention-content\" class=\"p-4 mb-4 overflow-auto mt-4 w-full h-auto\"><p class=\"mt-8 text-4xl\">Nessun Intervento</p></div></div><script src=\"https://unpkg.com/htmx.org\"></script></body></html>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><svg class=\"cursor-pointer\" width=\"48\" height=\"48\" xmlns=\"http://www.w3.org/2000/svg\" fill-rule=\"evenodd\" clip-rule=\"evenodd\"><path d=\"M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm7 14h-5v5h-4v-5h-5v-4h5v-5h4v5h5v4z\"></path></svg></div><div id=\"intervention-content\" class=\"p-4 mb-4 overflow-auto mt-4 w-full h-auto\"><p class=\"mt-8 text-4xl\">Nessun Intervento</p></div></div><script src=\"https://unpkg.com/htmx.org\"></script></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
