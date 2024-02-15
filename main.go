@@ -5,17 +5,12 @@ import (
 	"log"
 	"time"
 
+	"github.com/andreabertanzon/simtek/data"
+	"github.com/andreabertanzon/simtek/models"
 	"github.com/andreabertanzon/simtek/templates"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
-
-type Intervention struct {
-	Site         string   `form:"site"`
-	Intervention string   `form:"intervention"`
-	Materials    []string `form:"materials[]"`
-	Workers      []string `form:"workers[]"`
-}
 
 func main() {
 	e := echo.New()
@@ -34,6 +29,9 @@ func main() {
 
 	e.GET("/dynamic-input", func(c echo.Context) error {
 		formType := c.QueryParam("type")
+		if formType == "" {
+			return c.Redirect(302, "/")
+		}
 		component := templates.DynamicFormInput(formType)
 		component.Render(context.Background(), c.Response().Writer)
 		return nil
@@ -46,12 +44,23 @@ func main() {
 	})
 
 	e.POST("/new-intervention", func(c echo.Context) error {
-		intervention := new(Intervention)
+		intervention := new(models.Intervention)
 		if err := c.Bind(intervention); err != nil {
 			log.Println(err)
 			return err
 		}
-		return c.JSON(200, intervention)
+		interventionRepository := data.NewInterventionRepository()
+		err := interventionRepository.AddIntervention(*intervention)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		interventions, err := interventionRepository.GetInterventions()
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		return c.JSON(200, interventions)
 	})
 
 	e.Static("/css", "css")

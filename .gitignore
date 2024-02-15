@@ -2,5 +2,4 @@ bin
 .idea
 .vs
 *.user
-data
 css/output.css
