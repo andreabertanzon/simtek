@@ -20,7 +20,7 @@ templ AddInterventionForm() {
 		<button
 			class="btn-secondary rounded p-2 mt-2 mr-2 text-4xl"
 			type="button"
-			hx-get="/new-worker-input"
+			hx-get="/dynamic-input?type=worker"
 			hx-target="#workers-container"
 			hx-swap="beforeend"
 		>+Operatore</button>
@@ -31,14 +31,22 @@ templ AddInterventionForm() {
 			<button
 				class="btn-secondary rounded p-2 mt-2 mr-2 text-4xl"
 				type="button"
-				hx-get="/new-material-input"
+				hx-get="/dynamic-input?type=material"
 				hx-target="#materials-container"
 				hx-swap="beforeend"
 			>+Materiale</button>
 			<button
-				class="btn-primary rounded p-2 mt-2 text-4xl"
+				class="btn-primary rounded p-2 mr-2 mt-2 text-4xl"
 				type="submit"
 			>Avanti</button>
+			<button
+				class="rounded border-2 p-2 mt-2 text-4xl btn-outline-danger"
+				hx-get="/"
+				hx-target="#main-content"
+				hx-boost="true"
+			>
+				Annulla
+			</button>
 		</div>
 	</form>
 }

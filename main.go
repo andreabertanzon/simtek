@@ -32,14 +32,9 @@ func main() {
 		return nil
 	})
 
-	e.GET("/new-material-input", func(c echo.Context) error {
-		component := templates.MaterialInput()
-		component.Render(context.Background(), c.Response().Writer)
-		return nil
-	})
-
-	e.GET("/new-worker-input", func(c echo.Context) error {
-		component := templates.WorkerInput()
+	e.GET("/dynamic-input", func(c echo.Context) error {
+		formType := c.QueryParam("type")
+		component := templates.DynamicFormInput(formType)
 		component.Render(context.Background(), c.Response().Writer)
 		return nil
 	})

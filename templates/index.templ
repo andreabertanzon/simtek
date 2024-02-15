@@ -24,7 +24,14 @@ templ Index(date string) {
 		</head>
 		<body class="h-screen">
 			<div id="main-content" class="h-screen w-screen p-2 flex flex-col items-center">
-				<div id="action-container" class="flex mt-8 px-8">
+				<div
+					id="action-container"
+					class="flex mt-8 px-8 cursor-pointer"
+					hx-get="/new-intervention"
+					hx-target="#intervention-content"
+					hx-trigger="click, keyup[ctrlKey&&key=='/'] from:body"
+					hx-swap="innerHTML swap:200ms"
+				>
 					<p class="text-6xl mr-2">Oggi: { date }</p>
 					<svg
 						class="cursor-pointer"
@@ -33,10 +40,6 @@ templ Index(date string) {
 						xmlns="http://www.w3.org/2000/svg"
 						fill-rule="evenodd"
 						clip-rule="evenodd"
-						hx-get="/new-intervention"
-						hx-target="#intervention-content"
-						hx-trigger="click, keyup[ctrlKey&&key=='/'] from:body"
-						hx-swap="innerHTML swap:200ms"
 					>
 						<path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm7 14h-5v5h-4v-5h-5v-4h5v-5h4v5h5v4z"></path>
 					</svg>
