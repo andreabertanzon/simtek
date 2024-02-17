@@ -1,0 +1,12 @@
+package templates
+
+import "github.com/andreabertanzon/simtek/models"
+
+templ InterventionContainer(interventions []models.Intervention) {
+	// create a rounded card container usind NORD theme
+	<div class="flex flex-col w-full">
+		for _, intervention := range interventions {
+			@InterventionCard(intervention)
+		}
+	</div>
+}

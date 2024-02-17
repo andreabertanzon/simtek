@@ -44,13 +44,13 @@ func main() {
 	})
 
 	e.POST("/new-intervention", func(c echo.Context) error {
-		intervention := new(models.Intervention)
-		if err := c.Bind(intervention); err != nil {
+		interventionInput := new(models.InterventionInput)
+		if err := c.Bind(interventionInput); err != nil {
 			log.Println(err)
 			return err
 		}
 		interventionRepository := data.NewInterventionRepository()
-		err := interventionRepository.AddIntervention(*intervention)
+		err := interventionRepository.AddIntervention(interventionInput.ToDomainModel())
 		if err != nil {
 			log.Println(err)
 			return err
@@ -60,7 +60,10 @@ func main() {
 			log.Println(err)
 			return err
 		}
-		return c.JSON(200, interventions)
+
+		component := templates.InterventionContainer(interventions)
+		component.Render(context.Background(), c.Response().Writer)
+		return nil
 	})
 
 	e.Static("/css", "css")
