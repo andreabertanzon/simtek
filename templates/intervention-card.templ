@@ -17,8 +17,17 @@ templ materials(intervention models.Intervention) {
 	}
 }
 
+func interventionTimestamp(intervention models.Intervention) string {
+	return "/modify-intervention/" + intervention.Timestamp
+}
+
 templ InterventionCard(intervention models.Intervention) {
-	<div class="bg-nord4 rounded-lg shadow-md p-6 mb-2">
+	<div
+		class="bg-nord4 rounded-lg shadow-md p-6 mb-2"
+		hx-get="{{interventionTimestamp(intervention)}}"
+		hx-target="#intervention-content"
+		hx-swap="innerHTML swap:200ms"
+	>
 		<h3 class="font-bold text-nord15 mb-3 text-4xl">{ intervention.Site }</h3>
 		<div class="flex items-center gap-2 mb-4">
 			<svg height="48px" width="48px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

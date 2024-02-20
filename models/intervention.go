@@ -1,5 +1,7 @@
 package models
 
+import "fmt"
+
 type Intervention struct {
 	Site         string           `json:"site"`
 	Descriptions []string         `json:"descriptions"`
@@ -17,4 +19,25 @@ func (intervention *Intervention) TotalHours() int {
 		}
 	}
 	return totalHours
+}
+
+func (intervention *Intervention) ToViewModel() InterventionInput {
+	var interventionInput InterventionInput
+	interventionInput.Site = intervention.Site
+
+	for _, description := range intervention.Descriptions {
+		interventionInput.Intervention += description + "\n"
+	}
+
+	interventionInput.Materials = append(interventionInput.Materials, intervention.Materials...)
+
+	for _, worker := range intervention.Workers {
+		for name, hours := range worker {
+			interventionInput.Workers = append(interventionInput.Workers, name+" "+fmt.Sprintf("%v", hours))
+		}
+	}
+
+	interventionInput.Timestamp = intervention.Timestamp
+
+	return interventionInput
 }

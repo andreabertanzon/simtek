@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
@@ -62,6 +63,21 @@ func main() {
 		}
 
 		component := templates.InterventionContainer(interventions)
+		component.Render(context.Background(), c.Response().Writer)
+		return nil
+	})
+
+	e.GET("/modify-intervention/:timestamp", func(c echo.Context) error {
+		interventionRepository := data.NewInterventionRepository()
+		timestamp := c.Param("timestamp")
+		fmt.Println("Timestamp:", timestamp)
+		intervention, err := interventionRepository.GetIntervention(timestamp)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+
+		component := templates.ModifyIntervention(intervention.ToViewModel())
 		component.Render(context.Background(), c.Response().Writer)
 		return nil
 	})

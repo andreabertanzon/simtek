@@ -11,6 +11,7 @@ type InterventionInput struct {
 	Intervention string   `form:"intervention"`
 	Materials    []string `form:"materials[]"`
 	Workers      []string `form:"workers[]"`
+	Timestamp    string
 }
 
 // Converts the InterventionInput to a Intervention domain model

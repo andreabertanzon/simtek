@@ -1,6 +1,10 @@
 package data
 
-import "github.com/andreabertanzon/simtek/models"
+import (
+	"errors"
+
+	"github.com/andreabertanzon/simtek/models"
+)
 
 var interventions []models.Intervention
 
@@ -18,4 +22,13 @@ func (ir *InterventionRepositoryImpl) AddIntervention(intervention models.Interv
 
 func (ir *InterventionRepositoryImpl) GetInterventions() ([]models.Intervention, error) {
 	return interventions, nil
+}
+
+func (ir *InterventionRepositoryImpl) GetIntervention(timestamp string) (models.Intervention, error) {
+	for _, intervention := range interventions {
+		if intervention.Timestamp == timestamp {
+			return intervention, nil
+		}
+	}
+	return models.Intervention{}, errors.New("intervention not found")
 }

@@ -7,4 +7,5 @@ type InterventionRepository interface {
 	AddIntervention(intervention models.Intervention) error
 	// GetInterventions returns all the interventions in the repository
 	GetInterventions() ([]models.Intervention, error)
+	GetIntervention(timestamp string) (models.Intervention, error)
 }
