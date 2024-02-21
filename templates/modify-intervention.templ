@@ -16,16 +16,34 @@ templ ModifyIntervention(intervention models.Intervention) {
 	>
 		<div class="flex flex-col">
 			<label for="site" class="text-4xl">Cantiere</label>
-			<input class="mt-2 p-2 border text-4xl" type="text" name="site" required value={ intervention.ToViewModel().Site }/>
+			<input
+				class="mt-2 p-2 border text-4xl"
+				type="text"
+				name="site"
+				required
+				value={ intervention.ToViewModel().Site }
+			/>
 			<label for="intervention" class="text-4xl mt-2">Intervento</label>
-			<textarea rows="6" class="mt-2 text-4xl p-2 border min-h-52" type="text" name="intervention" required>{ intervention.ToViewModel().Intervention }</textarea>
+			<textarea
+				rows="6"
+				class="mt-2 text-4xl p-2 border min-h-52"
+				type="text"
+				name="intervention"
+				required
+			>
+				{ intervention.ToViewModel().Intervention }
+			</textarea>
 		</div>
 		<div class="flex flex-col mt-4" id="workers-container">
 			<p class="text-4xl">Operatori</p>
 			for _,worker := range intervention.ToViewModel().Workers {
-				<div class="flex flex-row">
-					<input class="mt-2 p-2 border text-4xl" type="text" name="worker" required value={ worker }/>
-				</div>
+				<input
+					class="mt-2 p-2 border text-4xl"
+					type="text"
+					name="workers[]"
+					required
+					value={ worker }
+				/>
 			}
 		</div>
 		<button
@@ -37,6 +55,15 @@ templ ModifyIntervention(intervention models.Intervention) {
 		>+Operatore</button>
 		<div class="flex flex-col mt-4" id="materials-container">
 			<p class="text-4xl">Materiali</p>
+			for _,material := range intervention.ToViewModel().Materials {
+				<input
+					class="mt-2 p-2 border text-4xl"
+					type="text"
+					name="materials[]"
+					required
+					value={ material }
+				/>
+			}
 		</div>
 		<div class="flex">
 			<button

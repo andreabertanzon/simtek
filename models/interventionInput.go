@@ -15,7 +15,7 @@ type InterventionInput struct {
 }
 
 // Converts the InterventionInput to a Intervention domain model
-func (interventionInput *InterventionInput) ToDomainModel() Intervention {
+func (interventionInput *InterventionInput) ToDomainModel(timestamp string) Intervention {
 	var intervention Intervention
 	intervention.Site = interventionInput.Site
 	descriptions := strings.Split(interventionInput.Intervention, "\n")
@@ -54,7 +54,11 @@ func (interventionInput *InterventionInput) ToDomainModel() Intervention {
 	}
 
 	intervention.Workers = workers
-	intervention.Timestamp = time.Now().Format("02-01-2006:15:04:05")
+	if timestamp != "" {
+		intervention.Timestamp = timestamp
+	} else {
+		intervention.Timestamp = time.Now().Format("02-01-2006:15:04:05")
+	}
 
 	return intervention
 }

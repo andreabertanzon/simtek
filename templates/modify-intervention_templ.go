@@ -52,7 +52,7 @@ func ModifyIntervention(intervention models.Intervention) templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(intervention.ToViewModel().Intervention)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/modify-intervention.templ`, Line: 20, Col: 146}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/modify-intervention.templ`, Line: 33, Col: 45}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -63,7 +63,7 @@ func ModifyIntervention(intervention models.Intervention) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		for _, worker := range intervention.ToViewModel().Workers {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex flex-row\"><input class=\"mt-2 p-2 border text-4xl\" type=\"text\" name=\"worker\" required value=\"")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input class=\"mt-2 p-2 border text-4xl\" type=\"text\" name=\"workers[]\" required value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -71,12 +71,30 @@ func ModifyIntervention(intervention models.Intervention) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><button class=\"btn-secondary rounded p-2 mt-2 mr-2 text-4xl\" type=\"button\" hx-get=\"/dynamic-input?type=worker\" hx-target=\"#workers-container\" hx-swap=\"beforeend\">+Operatore</button><div class=\"flex flex-col mt-4\" id=\"materials-container\"><p class=\"text-4xl\">Materiali</p></div><div class=\"flex\"><button class=\"btn-secondary rounded p-2 mt-2 mr-2 text-4xl\" type=\"button\" hx-get=\"/dynamic-input?type=material\" hx-target=\"#materials-container\" hx-swap=\"beforeend\">+Materiale</button> <button class=\"btn-primary rounded p-2 mr-2 mt-2 text-4xl\" type=\"submit\">Avanti</button> <button class=\"rounded border-2 p-2 mt-2 text-4xl btn-outline-danger\" hx-get=\"/\" hx-target=\"#main-content\" hx-boost=\"true\">Annulla</button></div></form>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><button class=\"btn-secondary rounded p-2 mt-2 mr-2 text-4xl\" type=\"button\" hx-get=\"/dynamic-input?type=worker\" hx-target=\"#workers-container\" hx-swap=\"beforeend\">+Operatore</button><div class=\"flex flex-col mt-4\" id=\"materials-container\"><p class=\"text-4xl\">Materiali</p>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		for _, material := range intervention.ToViewModel().Materials {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input class=\"mt-2 p-2 border text-4xl\" type=\"text\" name=\"materials[]\" required value=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(material))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"flex\"><button class=\"btn-secondary rounded p-2 mt-2 mr-2 text-4xl\" type=\"button\" hx-get=\"/dynamic-input?type=material\" hx-target=\"#materials-container\" hx-swap=\"beforeend\">+Materiale</button> <button class=\"btn-primary rounded p-2 mr-2 mt-2 text-4xl\" type=\"submit\">Avanti</button> <button class=\"rounded border-2 p-2 mt-2 text-4xl btn-outline-danger\" hx-get=\"/\" hx-target=\"#main-content\" hx-boost=\"true\">Annulla</button></div></form>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

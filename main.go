@@ -13,6 +13,8 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
+var repo data.InterventionRepository = data.NewSqliteInterventionRepository()
+
 func main() {
 	e := echo.New()
 
@@ -23,7 +25,6 @@ func main() {
 	e.GET("/", func(c echo.Context) error {
 		// get the current date with the format DD-MM-YYYY
 		today := time.Now().Format("02-01-2006")
-		repo := data.NewInterventionRepository()
 		interventions, err := repo.GetInterventions()
 
 		if err != nil {
@@ -57,13 +58,12 @@ func main() {
 			log.Println(err)
 			return err
 		}
-		interventionRepository := data.NewInterventionRepository()
-		err := interventionRepository.AddIntervention(interventionInput.ToDomainModel())
+		err := repo.AddIntervention(interventionInput.ToDomainModel(""))
 		if err != nil {
 			log.Println(err)
 			return err
 		}
-		interventions, err := interventionRepository.GetInterventions()
+		interventions, err := repo.GetInterventions()
 		if err != nil {
 			log.Println(err)
 			return err
@@ -75,10 +75,9 @@ func main() {
 	})
 
 	e.GET("/modify-intervention/:timestamp", func(c echo.Context) error {
-		interventionRepository := data.NewInterventionRepository()
 		timestamp := c.Param("timestamp")
 		fmt.Println("Timestamp To look for:", timestamp)
-		intervention, err := interventionRepository.GetIntervention(timestamp)
+		intervention, err := repo.GetIntervention(timestamp)
 		if err != nil {
 			log.Println(err)
 			return err
@@ -90,7 +89,6 @@ func main() {
 	})
 
 	e.PUT("/intervention/:timestamp", func(c echo.Context) error {
-		interventionRepository := data.NewInterventionRepository()
 		timestamp := c.Param("timestamp")
 		fmt.Println("Timestamp To look for:", timestamp)
 
@@ -100,13 +98,13 @@ func main() {
 			return err
 		}
 
-		err := interventionRepository.UpdateIntervention(timestamp, interventionInput.ToDomainModel())
+		err := repo.UpdateIntervention(timestamp, interventionInput.ToDomainModel(timestamp))
 		if err != nil {
 			log.Println(err)
 			return err
 		}
 
-		interventions, err := interventionRepository.GetInterventions()
+		interventions, err := repo.GetInterventions()
 		if err != nil {
 			log.Println(err)
 			return err
