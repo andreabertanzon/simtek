@@ -1,6 +1,8 @@
 package templates
 
-templ Index(date string) {
+import "github.com/andreabertanzon/simtek/models"
+
+templ Index(date string, interventions []models.Intervention) {
 	<html>
 		<head>
 			<title>Go app super</title>
@@ -45,7 +47,7 @@ templ Index(date string) {
 					</svg>
 				</div>
 				<div id="intervention-content" class="p-4 mb-4 overflow-auto mt-4 w-full h-auto">
-					<p class="mt-8 text-4xl">Nessun Intervento</p>
+					@InterventionContainer(interventions)
 				</div>
 			</div>
 			<script src="https://unpkg.com/htmx.org"></script>

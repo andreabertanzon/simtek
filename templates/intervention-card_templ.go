@@ -61,7 +61,15 @@ func InterventionCard(intervention models.Intervention) templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"bg-nord4 rounded-lg shadow-md p-6 mb-2\" hx-get=\"{{interventionTimestamp(intervention)}}\" hx-target=\"#intervention-content\" hx-swap=\"innerHTML swap:200ms\"><h3 class=\"font-bold text-nord15 mb-3 text-4xl\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"bg-nord4 rounded-lg shadow-md p-6 mb-2\" hx-get=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(interventionTimestamp(intervention)))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#intervention-content\" hx-swap=\"innerHTML swap:200ms\"><h3 class=\"font-bold text-nord15 mb-3 text-4xl\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -2,23 +2,27 @@ package templates
 
 import "github.com/andreabertanzon/simtek/models"
 
-templ ModifyIntervention(intervention models.InterventionInput) {
+func interventionPut(intervention models.Intervention) string {
+	return "/intervention/" + intervention.Timestamp
+}
+
+templ ModifyIntervention(intervention models.Intervention) {
 	<form
 		class="flex flex-col htmx-swapping:opacity-0 transition-opacity duration-700"
 		id="add-todo-form"
-		hx-post="/new-intervention"
+		hx-put={ interventionPut(intervention) }
 		hx-target="#intervention-content"
 		hx-swap="innerHTML"
 	>
 		<div class="flex flex-col">
 			<label for="site" class="text-4xl">Cantiere</label>
-			<input class="mt-2 p-2 border text-4xl" type="text" name="site" required value={ intervention.Site }/>
+			<input class="mt-2 p-2 border text-4xl" type="text" name="site" required value={ intervention.ToViewModel().Site }/>
 			<label for="intervention" class="text-4xl mt-2">Intervento</label>
-			<textarea rows="6" class="mt-2 text-4xl p-2 border min-h-52" type="text" name="intervention" value={ intervention.Intervention } required></textarea>
+			<textarea rows="6" class="mt-2 text-4xl p-2 border min-h-52" type="text" name="intervention" required>{ intervention.ToViewModel().Intervention }</textarea>
 		</div>
 		<div class="flex flex-col mt-4" id="workers-container">
 			<p class="text-4xl">Operatori</p>
-			for _,worker := range intervention.Workers {
+			for _,worker := range intervention.ToViewModel().Workers {
 				<div class="flex flex-row">
 					<input class="mt-2 p-2 border text-4xl" type="text" name="worker" required value={ worker }/>
 				</div>

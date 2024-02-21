@@ -23,7 +23,14 @@ func main() {
 	e.GET("/", func(c echo.Context) error {
 		// get the current date with the format DD-MM-YYYY
 		today := time.Now().Format("02-01-2006")
-		helloComp := templates.Index(today)
+		repo := data.NewInterventionRepository()
+		interventions, err := repo.GetInterventions()
+
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		helloComp := templates.Index(today, interventions)
 		helloComp.Render(context.Background(), c.Response().Writer)
 		return nil
 	})
@@ -70,14 +77,42 @@ func main() {
 	e.GET("/modify-intervention/:timestamp", func(c echo.Context) error {
 		interventionRepository := data.NewInterventionRepository()
 		timestamp := c.Param("timestamp")
-		fmt.Println("Timestamp:", timestamp)
+		fmt.Println("Timestamp To look for:", timestamp)
 		intervention, err := interventionRepository.GetIntervention(timestamp)
 		if err != nil {
 			log.Println(err)
 			return err
 		}
 
-		component := templates.ModifyIntervention(intervention.ToViewModel())
+		component := templates.ModifyIntervention(intervention)
+		component.Render(context.Background(), c.Response().Writer)
+		return nil
+	})
+
+	e.PUT("/intervention/:timestamp", func(c echo.Context) error {
+		interventionRepository := data.NewInterventionRepository()
+		timestamp := c.Param("timestamp")
+		fmt.Println("Timestamp To look for:", timestamp)
+
+		interventionInput := new(models.InterventionInput)
+		if err := c.Bind(interventionInput); err != nil {
+			log.Println(err)
+			return err
+		}
+
+		err := interventionRepository.UpdateIntervention(timestamp, interventionInput.ToDomainModel())
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+
+		interventions, err := interventionRepository.GetInterventions()
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+
+		component := templates.InterventionContainer(interventions)
 		component.Render(context.Background(), c.Response().Writer)
 		return nil
 	})

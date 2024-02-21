@@ -12,7 +12,11 @@ import "bytes"
 
 import "github.com/andreabertanzon/simtek/models"
 
-func ModifyIntervention(intervention models.InterventionInput) templ.Component {
+func interventionPut(intervention models.Intervention) string {
+	return "/intervention/" + intervention.Timestamp
+}
+
+func ModifyIntervention(intervention models.Intervention) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -25,27 +29,40 @@ func ModifyIntervention(intervention models.InterventionInput) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form class=\"flex flex-col htmx-swapping:opacity-0 transition-opacity duration-700\" id=\"add-todo-form\" hx-post=\"/new-intervention\" hx-target=\"#intervention-content\" hx-swap=\"innerHTML\"><div class=\"flex flex-col\"><label for=\"site\" class=\"text-4xl\">Cantiere</label> <input class=\"mt-2 p-2 border text-4xl\" type=\"text\" name=\"site\" required value=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form class=\"flex flex-col htmx-swapping:opacity-0 transition-opacity duration-700\" id=\"add-todo-form\" hx-put=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(intervention.Site))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(interventionPut(intervention)))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"> <label for=\"intervention\" class=\"text-4xl mt-2\">Intervento</label> <textarea rows=\"6\" class=\"mt-2 text-4xl p-2 border min-h-52\" type=\"text\" name=\"intervention\" value=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#intervention-content\" hx-swap=\"innerHTML\"><div class=\"flex flex-col\"><label for=\"site\" class=\"text-4xl\">Cantiere</label> <input class=\"mt-2 p-2 border text-4xl\" type=\"text\" name=\"site\" required value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(intervention.Intervention))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(intervention.ToViewModel().Site))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" required></textarea></div><div class=\"flex flex-col mt-4\" id=\"workers-container\"><p class=\"text-4xl\">Operatori</p>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"> <label for=\"intervention\" class=\"text-4xl mt-2\">Intervento</label> <textarea rows=\"6\" class=\"mt-2 text-4xl p-2 border min-h-52\" type=\"text\" name=\"intervention\" required>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		for _, worker := range intervention.Workers {
+		var templ_7745c5c3_Var2 string
+		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(intervention.ToViewModel().Intervention)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/modify-intervention.templ`, Line: 20, Col: 146}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</textarea></div><div class=\"flex flex-col mt-4\" id=\"workers-container\"><p class=\"text-4xl\">Operatori</p>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		for _, worker := range intervention.ToViewModel().Workers {
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex flex-row\"><input class=\"mt-2 p-2 border text-4xl\" type=\"text\" name=\"worker\" required value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

@@ -24,7 +24,7 @@ func interventionTimestamp(intervention models.Intervention) string {
 templ InterventionCard(intervention models.Intervention) {
 	<div
 		class="bg-nord4 rounded-lg shadow-md p-6 mb-2"
-		hx-get="{{interventionTimestamp(intervention)}}"
+		hx-get={interventionTimestamp(intervention)}
 		hx-target="#intervention-content"
 		hx-swap="innerHTML swap:200ms"
 	>
