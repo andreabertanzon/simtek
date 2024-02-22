@@ -94,14 +94,14 @@ func ModifyIntervention(intervention models.Intervention) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><button class=\"btn-secondary rounded p-2 mt-2 mb-4 mr-2 text-4xl\" type=\"button\" hx-get=\"/dynamic-input?type=material\" hx-target=\"#materials-container\" hx-swap=\"beforeend\">+Materiale</button><div class=\"flex flex-col mt-4\"><label for=\"notes\" class=\"text-4xl\">Note</label> <textarea rows=\"4\" class=\"mt-2 text-4xl p-2 border min-h-52\" type=\"text\" name=\"notes\" required>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><button class=\"btn-secondary rounded p-2 mt-2 mb-4 mr-2 text-4xl\" type=\"button\" hx-get=\"/dynamic-input?type=material\" hx-target=\"#materials-container\" hx-swap=\"beforeend\">+Materiale</button><div class=\"flex flex-col mt-4\"><label for=\"notes\" class=\"text-4xl\">Note</label> <textarea rows=\"4\" class=\"mt-2 text-4xl p-2 border min-h-52\" type=\"text\" name=\"notes\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(intervention.Notes)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/modify-intervention.templ`, Line: 77, Col: 24}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/modify-intervention.templ`, Line: 82, Col: 24}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
