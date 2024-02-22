@@ -7,6 +7,7 @@ type Intervention struct {
 	Descriptions []string         `json:"descriptions"`
 	Materials    []string         `json:"materials"`
 	Workers      []map[string]int `json:"workers"`
+	Notes        string           `json:"notes"`
 	Timestamp    string           `json:"timestamp"`
 }
 
@@ -36,6 +37,8 @@ func (intervention *Intervention) ToViewModel() InterventionInput {
 			interventionInput.Workers = append(interventionInput.Workers, name+" "+fmt.Sprintf("%v", hours))
 		}
 	}
+
+	interventionInput.Notes = intervention.Notes
 
 	interventionInput.Timestamp = intervention.Timestamp
 

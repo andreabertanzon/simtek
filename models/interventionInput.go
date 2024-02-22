@@ -11,6 +11,7 @@ type InterventionInput struct {
 	Intervention string   `form:"intervention"`
 	Materials    []string `form:"materials[]"`
 	Workers      []string `form:"workers[]"`
+	Notes        string   `form:"notes"`
 	Timestamp    string
 }
 
@@ -59,6 +60,8 @@ func (interventionInput *InterventionInput) ToDomainModel(timestamp string) Inte
 	} else {
 		intervention.Timestamp = time.Now().Format("02-01-2006:15:04:05")
 	}
+
+	intervention.Notes = interventionInput.Notes
 
 	return intervention
 }

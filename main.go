@@ -31,7 +31,7 @@ func main() {
 			log.Println(err)
 			return err
 		}
-		helloComp := templates.Index(today, interventions)
+		helloComp := templates.IndexCopy(today, interventions)
 		helloComp.Render(context.Background(), c.Response().Writer)
 		return nil
 	})

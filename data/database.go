@@ -27,7 +27,6 @@ func NewDatabase() (*Database, error) {
 		details text
 	);
 	`
-
 	_, err = db.Exec(sqlStmt)
 	if err != nil {
 		return nil, err
@@ -40,6 +39,7 @@ func (d *Database) AddIntervention(intervention models.Intervention) error {
 	if err != nil {
 		return err
 	}
+	defer db.Close()
 
 	details, err := json.Marshal(intervention)
 	if err != nil {
@@ -61,6 +61,7 @@ func (d *Database) GetInterventions() ([]models.Intervention, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer db.Close()
 
 	rows, err := db.Query("SELECT * FROM interventions", today)
 	if err != nil {
@@ -94,6 +95,7 @@ func (d *Database) GetIntervention(timestamp string) (models.Intervention, error
 	if err != nil {
 		return models.Intervention{}, err
 	}
+	defer db.Close()
 
 	var id int
 	var details string
@@ -116,6 +118,7 @@ func (d *Database) UpdateIntervention(timestamp string, intervention models.Inte
 	if err != nil {
 		return err
 	}
+	defer db.Close()
 
 	details, err := json.Marshal(intervention)
 	if err != nil {
