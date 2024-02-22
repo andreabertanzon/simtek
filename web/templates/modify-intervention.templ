@@ -74,7 +74,12 @@ templ ModifyIntervention(intervention models.Intervention) {
 		>+Materiale</button>
 		<div class="flex flex-col mt-4">
 			<label for="notes" class="text-4xl">Note</label>
-			<textarea rows="4" class="mt-2 text-4xl p-2 border min-h-52" type="text" name="notes" required>
+			<textarea
+				rows="4"
+				class="mt-2 text-4xl p-2 border min-h-52"
+				type="text"
+				name="notes"
+			>
 				{ intervention.Notes }
 			</textarea>
 		</div>
