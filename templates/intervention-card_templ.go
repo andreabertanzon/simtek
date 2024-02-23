@@ -45,7 +45,7 @@ func materials(intervention data.Intervention) templ.Component {
 }
 
 func interventionTimestamp(intervention data.Intervention) string {
-	return "/modify-intervention/" + intervention.Timestamp
+	return "/modify-intervention/" + intervention.Guid
 }
 
 func InterventionCard(intervention data.Intervention) templ.Component {

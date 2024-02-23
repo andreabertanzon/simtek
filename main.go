@@ -151,7 +151,14 @@ func main() {
 			return err
 		}
 
-		interventions, err := repo.GetInterventions(guid)
+		stateRepo := data.NewStateRepository()
+		state, err := stateRepo.GetState()
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+
+		interventions, err := repo.GetInterventions(state)
 		if err != nil {
 			log.Println(err)
 			return err
