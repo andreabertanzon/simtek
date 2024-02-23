@@ -10,9 +10,9 @@ import "context"
 import "io"
 import "bytes"
 
-import "github.com/andreabertanzon/simtek/models"
+import "github.com/andreabertanzon/simtek/data"
 
-func Index(date string, interventions []models.Intervention) templ.Component {
+func Index(date string, interventions []data.Intervention) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -25,14 +25,14 @@ func Index(date string, interventions []models.Intervention) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<html><head><title>Go app super</title><link href=\"/css/output.css\" rel=\"stylesheet\" type=\"text/css\"><style>\n\t\t\t\tdiv.htmx-swapping {\n\t\t\t\t\topacity: 0;\n\t\t\t\t\ttransition: opacity 1s ease-out;\n\t\t\t\t}\n\n\t\t\t\tdiv.htmx-revealing {\n\t\t\t\t\topacity: 0;\n\t\t\t\t\ttransition: opacity 1s ease-in;\n\t\t\t\t}\n\n\t\t\t\tdiv#main-content {\n\t\t\t\t\tpadding-left: 1rem; /* Adjust as needed */\n\t\t\t\t\tpadding-right: 1rem; /* Adjust as needed */\n\t\t\t\t}\n\t\t\t</style></head><body class=\"h-screen\"><div id=\"main-content\" class=\"h-screen w-screen p-2 flex flex-col items-center\"><div id=\"action-container\" class=\"flex mt-8 px-8 cursor-pointer\" hx-get=\"/new-intervention\" hx-target=\"#intervention-content\" hx-trigger=\"click, keyup[ctrlKey&amp;&amp;key==&#39;/&#39;] from:body\" hx-swap=\"innerHTML swap:200ms\"><p class=\"text-6xl mr-2\">Oggi: ")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<html><head><title>Go app super</title><link href=\"/css/output.css\" rel=\"stylesheet\" type=\"text/css\"><style>\n\t\t\t\tdiv.htmx-swapping {\n\t\t\t\t\topacity: 0;\n\t\t\t\t\ttransition: opacity 1s ease-out;\n\t\t\t\t}\n\n\t\t\t\tdiv.htmx-revealing {\n\t\t\t\t\topacity: 0;\n\t\t\t\t\ttransition: opacity 1s ease-in;\n\t\t\t\t}\n\n\t\t\t\tdiv#main-content {\n\t\t\t\t\tpadding-left: 1rem; /* Adjust as needed */\n\t\t\t\t\tpadding-right: 1rem; /* Adjust as needed */\n\t\t\t\t}\n\t\t\t</style></head><body id=\"body\" class=\"h-screen\"><div id=\"main-content\" class=\"h-screen w-screen p-2 flex flex-col items-center\"><div id=\"action-container\" class=\"flex mt-8 px-8 cursor-pointer\" hx-get=\"/new-intervention\" hx-target=\"#intervention-content\" hx-trigger=\"click, keyup[ctrlKey&amp;&amp;key==&#39;/&#39;] from:body\" hx-swap=\"innerHTML swap:200ms\"><p id=\"date\" class=\"text-6xl mr-2\" hx-get=\"/select-date\" hx-target=\"#date\" hx-swap=\"outerHTML\">Oggi: ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(date)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/index.templ`, Line: 36, Col: 42}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/index.templ`, Line: 42, Col: 18}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {

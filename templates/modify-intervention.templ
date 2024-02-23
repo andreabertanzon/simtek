@@ -1,12 +1,12 @@
 package templates
 
-import "github.com/andreabertanzon/simtek/models"
+import "github.com/andreabertanzon/simtek/data"
 
-func interventionPut(intervention models.Intervention) string {
-	return "/intervention/" + intervention.Timestamp
+func interventionPut(intervention data.Intervention) string {
+	return "/intervention/" + intervention.Guid
 }
 
-templ ModifyIntervention(intervention models.Intervention) {
+templ ModifyIntervention(intervention data.Intervention) {
 	<form
 		class="flex flex-col htmx-swapping:opacity-0 transition-opacity duration-700"
 		id="add-todo-form"

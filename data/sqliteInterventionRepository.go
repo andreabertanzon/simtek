@@ -1,7 +1,5 @@
 package data
 
-import "github.com/andreabertanzon/simtek/models"
-
 type SqliteInterventionRepository struct {
 }
 
@@ -9,7 +7,7 @@ func NewSqliteInterventionRepository() *SqliteInterventionRepository {
 	return &SqliteInterventionRepository{}
 }
 
-func (ir *SqliteInterventionRepository) AddIntervention(intervention models.Intervention) error {
+func (ir *SqliteInterventionRepository) AddIntervention(intervention Intervention) error {
 	db, err := NewDatabase()
 	if err != nil {
 		return err
@@ -18,29 +16,29 @@ func (ir *SqliteInterventionRepository) AddIntervention(intervention models.Inte
 	return db.AddIntervention(intervention)
 }
 
-func (ir *SqliteInterventionRepository) GetInterventions() ([]models.Intervention, error) {
+func (ir *SqliteInterventionRepository) GetInterventions(guid string) ([]Intervention, error) {
 	db, err := NewDatabase()
 	if err != nil {
 		return nil, err
 	}
 
-	return db.GetInterventions()
+	return db.GetInterventions(guid)
 }
 
-func (ir *SqliteInterventionRepository) GetIntervention(timestamp string) (models.Intervention, error) {
+func (ir *SqliteInterventionRepository) GetIntervention(guid string) (Intervention, error) {
 	db, err := NewDatabase()
 	if err != nil {
-		return models.Intervention{}, err
+		return Intervention{}, err
 	}
 
-	return db.GetIntervention(timestamp)
+	return db.GetIntervention(guid)
 }
 
-func (ir *SqliteInterventionRepository) UpdateIntervention(timestamp string, intervention models.Intervention) error {
+func (ir *SqliteInterventionRepository) UpdateIntervention(guid string, intervention Intervention) error {
 	db, err := NewDatabase()
 	if err != nil {
 		return err
 	}
 
-	return db.UpdateIntervention(timestamp, intervention)
+	return db.UpdateIntervention(guid, intervention)
 }

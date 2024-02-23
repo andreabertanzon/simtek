@@ -1,8 +1,8 @@
 package templates
 
-import "github.com/andreabertanzon/simtek/models"
+import "github.com/andreabertanzon/simtek/data"
 
-templ Index(date string, interventions []models.Intervention) {
+templ Index(date string, interventions []data.Intervention) {
 	<html>
 		<head>
 			<title>Go app super</title>
@@ -24,7 +24,7 @@ templ Index(date string, interventions []models.Intervention) {
 				}
 			</style>
 		</head>
-		<body class="h-screen">
+		<body id="body" class="h-screen">
 			<div id="main-content" class="h-screen w-screen p-2 flex flex-col items-center">
 				<div
 					id="action-container"
@@ -34,7 +34,13 @@ templ Index(date string, interventions []models.Intervention) {
 					hx-trigger="click, keyup[ctrlKey&&key=='/'] from:body"
 					hx-swap="innerHTML swap:200ms"
 				>
-					<p class="text-6xl mr-2">Oggi: { date }</p>
+					<p
+						id="date"
+						class="text-6xl mr-2"
+						hx-get="/select-date"
+						hx-target="#date"
+						hx-swap="outerHTML"
+					>Oggi: { date }</p>
 					<svg
 						class="cursor-pointer"
 						width="48"

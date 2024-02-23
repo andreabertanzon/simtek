@@ -10,10 +10,10 @@ import "context"
 import "io"
 import "bytes"
 
-import "github.com/andreabertanzon/simtek/models"
+import "github.com/andreabertanzon/simtek/data"
 import "strconv"
 
-func materials(intervention models.Intervention) templ.Component {
+func materials(intervention data.Intervention) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -44,11 +44,11 @@ func materials(intervention models.Intervention) templ.Component {
 	})
 }
 
-func interventionTimestamp(intervention models.Intervention) string {
+func interventionTimestamp(intervention data.Intervention) string {
 	return "/modify-intervention/" + intervention.Timestamp
 }
 
-func InterventionCard(intervention models.Intervention) templ.Component {
+func InterventionCard(intervention data.Intervention) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {

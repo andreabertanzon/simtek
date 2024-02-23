@@ -1,8 +1,8 @@
 package templates
 
-import "github.com/andreabertanzon/simtek/models"
+import "github.com/andreabertanzon/simtek/data"
 
-templ IndexCopy(date string, interventions []models.Intervention) {
+templ IndexCopy(date string, interventions []data.Intervention) {
 	<html>
 		<head>
 			<title>Go app super</title>
@@ -41,7 +41,14 @@ templ IndexCopy(date string, interventions []models.Intervention) {
 						</svg>
 					</div>
 					<div class="col-span-8">
-						<p class="text-6xl font-bold">{ date }</p>
+						// <p
+						// 	id="date"
+						// 	class="text-6xl mr-2"
+						// 	hx-get="/date"
+						// 	hx-target="#date"
+						// 	hx-swap="outerHTML"
+						// >{ date }</p>
+						@DateInput(date)
 					</div>
 					<div class="col-span-2">
 						<svg

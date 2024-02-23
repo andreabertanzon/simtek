@@ -1,8 +1,9 @@
-package models
+package data
 
 import "fmt"
 
 type Intervention struct {
+	Guid         string           `json:"guid"`
 	Site         string           `json:"site"`
 	Descriptions []string         `json:"descriptions"`
 	Materials    []string         `json:"materials"`
@@ -41,6 +42,7 @@ func (intervention *Intervention) ToViewModel() InterventionInput {
 	interventionInput.Notes = intervention.Notes
 
 	interventionInput.Timestamp = intervention.Timestamp
+	interventionInput.Guid = intervention.Guid
 
 	return interventionInput
 }

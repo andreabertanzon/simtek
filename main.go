@@ -4,11 +4,10 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"time"
 
 	"github.com/andreabertanzon/simtek/data"
-	"github.com/andreabertanzon/simtek/models"
 	"github.com/andreabertanzon/simtek/templates"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -16,6 +15,11 @@ import (
 var repo data.InterventionRepository = data.NewSqliteInterventionRepository()
 
 func main() {
+	// stateRepo := data.NewStateRepository()
+	// err := stateRepo.UpsertState(time.Now().Format("2006-01-02"))
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 	e := echo.New()
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
@@ -24,15 +28,44 @@ func main() {
 
 	e.GET("/", func(c echo.Context) error {
 		// get the current date with the format DD-MM-YYYY
-		today := time.Now().Format("02-01-2006")
-		interventions, err := repo.GetInterventions()
+
+		// upsert state
+		stateRepo := data.NewStateRepository()
+		state, err := stateRepo.GetState()
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+
+		interventions, err := repo.GetInterventions(state)
 
 		if err != nil {
 			log.Println(err)
 			return err
 		}
-		helloComp := templates.IndexCopy(today, interventions)
+		helloComp := templates.IndexCopy(state, interventions)
 		helloComp.Render(context.Background(), c.Response().Writer)
+		return nil
+	})
+
+	e.PUT("/date", func(c echo.Context) error {
+		stateRepo := data.NewStateRepository()
+		date := c.FormValue("date")
+		err := stateRepo.UpsertState(date)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+
+		interventionRepo := data.NewSqliteInterventionRepository()
+		interventions, err := interventionRepo.GetInterventions(date)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+
+		template := templates.IndexCopy(date, interventions)
+		template.Render(context.Background(), c.Response().Writer)
 		return nil
 	})
 
@@ -53,17 +86,29 @@ func main() {
 	})
 
 	e.POST("/new-intervention", func(c echo.Context) error {
-		interventionInput := new(models.InterventionInput)
+		interventionInput := new(data.InterventionInput)
 		if err := c.Bind(interventionInput); err != nil {
 			log.Println(err)
 			return err
 		}
-		err := repo.AddIntervention(interventionInput.ToDomainModel(""))
+
+		guid := uuid.New().String()
+		interventionInput.Guid = guid
+
+		err := repo.AddIntervention(interventionInput.ToDomainModel())
 		if err != nil {
 			log.Println(err)
 			return err
 		}
-		interventions, err := repo.GetInterventions()
+
+		stateRepo := data.NewStateRepository()
+		state, err := stateRepo.GetState()
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+
+		interventions, err := repo.GetInterventions(state)
 		if err != nil {
 			log.Println(err)
 			return err
@@ -74,10 +119,10 @@ func main() {
 		return nil
 	})
 
-	e.GET("/modify-intervention/:timestamp", func(c echo.Context) error {
-		timestamp := c.Param("timestamp")
-		fmt.Println("Timestamp To look for:", timestamp)
-		intervention, err := repo.GetIntervention(timestamp)
+	e.GET("/modify-intervention/:guid", func(c echo.Context) error {
+		guid := c.Param("guid")
+		fmt.Println("guid To look for:", guid)
+		intervention, err := repo.GetIntervention(guid)
 		if err != nil {
 			log.Println(err)
 			return err
@@ -88,23 +133,25 @@ func main() {
 		return nil
 	})
 
-	e.PUT("/intervention/:timestamp", func(c echo.Context) error {
-		timestamp := c.Param("timestamp")
-		fmt.Println("Timestamp To look for:", timestamp)
+	e.PUT("/intervention/:guid", func(c echo.Context) error {
+		guid := c.Param("guid")
+		fmt.Println("Timestamp To look for:", guid)
 
-		interventionInput := new(models.InterventionInput)
+		interventionInput := new(data.InterventionInput)
 		if err := c.Bind(interventionInput); err != nil {
 			log.Println(err)
 			return err
 		}
 
-		err := repo.UpdateIntervention(timestamp, interventionInput.ToDomainModel(timestamp))
+		interventionInput.Guid = guid
+
+		err := repo.UpdateIntervention(guid, interventionInput.ToDomainModel())
 		if err != nil {
 			log.Println(err)
 			return err
 		}
 
-		interventions, err := repo.GetInterventions()
+		interventions, err := repo.GetInterventions(guid)
 		if err != nil {
 			log.Println(err)
 			return err

@@ -10,13 +10,13 @@ import "context"
 import "io"
 import "bytes"
 
-import "github.com/andreabertanzon/simtek/models"
+import "github.com/andreabertanzon/simtek/data"
 
-func interventionPut(intervention models.Intervention) string {
-	return "/intervention/" + intervention.Timestamp
+func interventionPut(intervention data.Intervention) string {
+	return "/intervention/" + intervention.Guid
 }
 
-func ModifyIntervention(intervention models.Intervention) templ.Component {
+func ModifyIntervention(intervention data.Intervention) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
