@@ -2,14 +2,24 @@ package templates
 
 templ DateInput(date string) {
 	if date == "" {
-		<form hx-put="/date" hx-target="body" hx-swap="outerHTML" class="htmx-swapping:opacity-0 transition-opacity duration-700">
-			<input type="date" class="text-6xl mr-2" name="date"/>
+		<form
+			hx-put="/date"
+			hx-target="body"
+			hx-swap="outerHTML"
+			class="flex items-center justify-center align-middle htmx-swapping:opacity-0 transition-opacity duration-700"
+		>
+			<input type="date" class="text-6xl text-center border-none" name="date"/>
 			<button type="submit">Update Date</button>
 		</form>
 	} else {
-		<form hx-put="/date" hx-target="body" hx-swap="outerHTML" class="htmx-swapping:opacity-0 transition-opacity duration-700">
-			<input type="date" class="text-6xl mr-2" value={ date } name="date"/>
-			<button type="submit">Update Date</button>
+		<form
+			hx-put="/date"
+			hx-target="body"
+			hx-swap="outerHTML"
+			class="flex items-center justify-center align-middle htmx-swapping:opacity-0 transition-opacity duration-700"
+		>
+			<input type="date" class="text-6xl text-center border border-none rounded-lg w-8 m-0" value={ date } name="date"/>
+			<button class="btn-outline-danger" type="submit">Update</button>
 		</form>
 	}
 }

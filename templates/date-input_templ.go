@@ -24,12 +24,12 @@ func DateInput(date string) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if date == "" {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form hx-put=\"/date\" hx-target=\"body\" hx-swap=\"outerHTML\" class=\"htmx-swapping:opacity-0 transition-opacity duration-700\"><input type=\"date\" class=\"text-6xl mr-2\" name=\"date\"> <button type=\"submit\">Update Date</button></form>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form hx-put=\"/date\" hx-target=\"body\" hx-swap=\"outerHTML\" class=\"flex items-center justify-center align-middle htmx-swapping:opacity-0 transition-opacity duration-700\"><input type=\"date\" class=\"text-6xl text-center border-none\" name=\"date\"> <button type=\"submit\">Update Date</button></form>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form hx-put=\"/date\" hx-target=\"body\" hx-swap=\"outerHTML\" class=\"htmx-swapping:opacity-0 transition-opacity duration-700\"><input type=\"date\" class=\"text-6xl mr-2\" value=\"")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form hx-put=\"/date\" hx-target=\"body\" hx-swap=\"outerHTML\" class=\"flex items-center justify-center align-middle htmx-swapping:opacity-0 transition-opacity duration-700\"><input type=\"date\" class=\"text-6xl text-center border border-none rounded-lg w-8 m-0\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -37,7 +37,7 @@ func DateInput(date string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" name=\"date\"> <button type=\"submit\">Update Date</button></form>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" name=\"date\"> <button class=\"btn-outline-danger\" type=\"submit\">Update</button></form>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
