@@ -2,7 +2,11 @@ package templates
 
 templ DynamicFormInput(inputType string) {
 	if inputType == "material" {
-		<input class="mt-2 text-4xl" type="text" name="materials[]" placeholder="Material"/>
+		<div class="flex flex-wrap gap-2 border border-1 rounded border-grey-500 p-2">
+			<input class="mt-2 text-4xl" type="text" name="materials[]" placeholder="Materiale" required/>
+			<input class="mt-2 text-4xl max-w-48" type="text" name="umeasure[]" placeholder="u.m." required/>
+			<input class="mt-2 text-4xl max-w-48" type="number" name="quantity[]" placeholder="Quantità" required/>
+		</div>
 	} else if inputType == "worker" {
 		<input class="mt-2 text-4xl" type="text" name="workers[]" placeholder="Operatore"/>
 	}

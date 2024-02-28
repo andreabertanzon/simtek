@@ -92,6 +92,9 @@ func main() {
 			return err
 		}
 
+		log.Printf("Raw form data: %+v\n", c.Request().Form)
+		log.Printf("Intervention Input (After Binding): %+v", interventionInput)
+
 		guid := uuid.New().String()
 		interventionInput.Guid = guid
 

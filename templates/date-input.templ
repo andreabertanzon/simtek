@@ -18,7 +18,7 @@ templ DateInput(date string) {
 			hx-swap="outerHTML"
 			class="flex items-center justify-center align-middle htmx-swapping:opacity-0 transition-opacity duration-700"
 		>
-			<input type="date" class="text-6xl text-center border border-none rounded-lg w-8 m-0" value={ date } name="date"/>
+			<input type="date" class="text-4xl text-center border border-none rounded-lg m-0" value={ date } name="date"/>
 			<button class="btn-outline-danger" type="submit">Update</button>
 		</form>
 	}

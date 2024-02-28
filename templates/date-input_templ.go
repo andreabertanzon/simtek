@@ -29,7 +29,7 @@ func DateInput(date string) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form hx-put=\"/date\" hx-target=\"body\" hx-swap=\"outerHTML\" class=\"flex items-center justify-center align-middle htmx-swapping:opacity-0 transition-opacity duration-700\"><input type=\"date\" class=\"text-6xl text-center border border-none rounded-lg w-8 m-0\" value=\"")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form hx-put=\"/date\" hx-target=\"body\" hx-swap=\"outerHTML\" class=\"flex items-center justify-center align-middle htmx-swapping:opacity-0 transition-opacity duration-700\"><input type=\"date\" class=\"text-4xl text-center border border-none rounded-lg m-0\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

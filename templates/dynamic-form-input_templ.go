@@ -24,7 +24,7 @@ func DynamicFormInput(inputType string) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if inputType == "material" {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input class=\"mt-2 text-4xl\" type=\"text\" name=\"materials[]\" placeholder=\"Material\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex flex-wrap gap-2 border border-1 rounded border-grey-500 p-2\"><input class=\"mt-2 text-4xl\" type=\"text\" name=\"materials[]\" placeholder=\"Materiale\" required> <input class=\"mt-2 text-4xl max-w-48\" type=\"text\" name=\"umeasure[]\" placeholder=\"u.m.\" required> <input class=\"mt-2 text-4xl max-w-48\" type=\"number\" name=\"quantity[]\" placeholder=\"Quantità\" required></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
