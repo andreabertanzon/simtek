@@ -1,5 +1,8 @@
 package templates
 
+import "github.com/andreabertanzon/simtek/data"
+import "strconv"
+
 templ DynamicFormInput(inputType string) {
 	if inputType == "material" {
 		<div class="flex flex-wrap gap-2 border border-1 rounded border-grey-500 p-2">
@@ -10,4 +13,14 @@ templ DynamicFormInput(inputType string) {
 	} else if inputType == "worker" {
 		<input class="mt-2 text-4xl" type="text" name="workers[]" placeholder="Operatore"/>
 	}
+}
+
+templ DynamicFormInputContent(interventionInput data.InterventionInput){
+	for i, input := range interventionInput.Materials {
+		<div class="flex flex-wrap gap-2 border border-1 rounded border-grey-500 p-2">
+			<input class="mt-2 text-4xl" type="text" name="materials[]" placeholder="Materiale" required value={input}/>
+			<input class="mt-2 text-4xl max-w-48" type="text" name="umeasure[]" placeholder="u.m." required value={interventionInput.Umeasure[i]}/>
+			<input class="mt-2 text-4xl max-w-48" type="number" name="quantity[]" placeholder="Quantità" required value={strconv.Itoa(interventionInput.Quantity[i])}/>
+		</div>
+	}	
 }

@@ -55,15 +55,7 @@ templ ModifyIntervention(intervention data.Intervention) {
 		>+Operatore</button>
 		<div class="flex flex-col mt-4" id="materials-container">
 			<p class="text-4xl">Materiali</p>
-			for _,material := range intervention.ToViewModel().Materials {
-				<input
-					class="mt-2 p-2 border text-4xl"
-					type="text"
-					name="materials[]"
-					required
-					value={ material }
-				/>
-			}
+			@DynamicFormInputContent(intervention.ToViewModel())	
 		</div>
 		<button
 			class="btn-secondary rounded p-2 mt-2 mb-4 mr-2 text-4xl"

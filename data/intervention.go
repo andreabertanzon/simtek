@@ -1,6 +1,10 @@
 package data
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
 
 type Intervention struct {
 	Guid         string           `json:"guid"`
@@ -31,7 +35,18 @@ func (intervention *Intervention) ToViewModel() InterventionInput {
 		interventionInput.Intervention += description + "\n"
 	}
 
-	interventionInput.Materials = append(interventionInput.Materials, intervention.Materials...)
+	for _, material := range intervention.Materials {
+		materialParts := strings.Split(material, "|")
+		if len(materialParts) == 3 {
+			qty, err := strconv.Atoi(materialParts[2])
+			if err != nil {
+				qty = 0
+			}
+			interventionInput.Quantity = append(interventionInput.Quantity, qty)
+			interventionInput.Umeasure = append(interventionInput.Umeasure, materialParts[1])
+			interventionInput.Materials = append(interventionInput.Materials, materialParts[0])
+		}
+	}
 
 	for _, worker := range intervention.Workers {
 		for name, hours := range worker {
