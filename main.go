@@ -92,7 +92,6 @@ func main() {
 			return err
 		}
 
-		log.Printf("Raw form data: %+v\n", c.Request().Form)
 		log.Printf("Intervention Input (After Binding): %+v", interventionInput)
 
 		guid := uuid.New().String()
@@ -124,7 +123,7 @@ func main() {
 
 	e.GET("/modify-intervention/:guid", func(c echo.Context) error {
 		guid := c.Param("guid")
-		fmt.Println("guid To look for:", guid)
+		fmt.Println("Started Modifying intervention:", guid)
 		intervention, err := repo.GetIntervention(guid)
 		if err != nil {
 			log.Println(err)
@@ -138,7 +137,7 @@ func main() {
 
 	e.PUT("/intervention/:guid", func(c echo.Context) error {
 		guid := c.Param("guid")
-		fmt.Println("Timestamp To look for:", guid)
+		fmt.Println("UPDATING intervention:", guid)
 
 		interventionInput := new(data.InterventionInput)
 		if err := c.Bind(interventionInput); err != nil {

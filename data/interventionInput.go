@@ -1,6 +1,7 @@
 package data
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -69,6 +70,7 @@ func (interventionInput *InterventionInput) ToDomainModel() Intervention {
 	}
 
 	intervention.Timestamp = timestamp
+	fmt.Printf("Adding %s to db with Timestamp: %s", intervention.Guid, intervention.Timestamp)
 
 	intervention.Workers = workers
 

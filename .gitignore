@@ -4,3 +4,4 @@ bin
 *.user
 css/output.css
 *.db
+cli_tools/*
