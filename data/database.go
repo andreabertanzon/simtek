@@ -39,7 +39,7 @@ func NewDatabase() (*Database, error) {
 		last_updated text
 	);
 	`
-	db.Exec(createStateTable)
+	_, err = db.Exec(createStateTable)
 	if err != nil {
 		return nil, err
 	}

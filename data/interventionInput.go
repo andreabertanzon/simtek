@@ -26,7 +26,15 @@ func (interventionInput *InterventionInput) ToDomainModel() Intervention {
 	var intervention Intervention
 	intervention.Site = interventionInput.Site
 	descriptions := strings.Split(interventionInput.Intervention, "\n")
-	intervention.Descriptions = descriptions
+	cleanedDescriptions := make([]string, len(descriptions))
+	for _, description := range descriptions {
+		if description == "" || description == " " {
+			continue
+		}
+		cleanedDescriptions = append(cleanedDescriptions, description)
+	}
+
+	intervention.Descriptions = cleanedDescriptions
 
 	for i, material := range interventionInput.Materials {
 		if material == "" {
@@ -46,7 +54,8 @@ func (interventionInput *InterventionInput) ToDomainModel() Intervention {
 			if workerName == "" {
 				workerName = "Simone"
 			}
-			workerHours, err := strconv.Atoi(splittedWorker[1])
+			hoursString := strings.Replace(",", ".", splittedWorker[1], -1)
+			workerHours, err := strconv.Atoi(hoursString)
 			if err != nil {
 				workerHours = 0
 			}

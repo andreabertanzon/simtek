@@ -4,22 +4,37 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
+	"time"
 
 	"github.com/andreabertanzon/simtek/data"
 	"github.com/andreabertanzon/simtek/templates"
 	"github.com/google/uuid"
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
+type Config struct {
+	DbUrl      string
+	DbToken    string
+	ServerPort string
+	ServerUrl  string
+}
+
 var repo data.InterventionRepository = data.NewSqliteInterventionRepository()
 
 func main() {
-	// stateRepo := data.NewStateRepository()
-	// err := stateRepo.UpsertState(time.Now().Format("2006-01-02"))
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	config := getConfig()
+	StartServer(config)
+}
+
+func StartServer(config *Config) {
+	stateRepo := data.NewStateRepository()
+	err := stateRepo.UpsertState(time.Now().Format("2006-01-02"))
+	if err != nil {
+		log.Fatal(err)
+	}
 	e := echo.New()
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
@@ -172,5 +187,21 @@ func main() {
 	})
 
 	e.Static("/css", "css")
-	e.Logger.Fatal(e.Start(":6006"))
+	e.Logger.Fatal(e.Start(config.ServerUrl + ":" + config.ServerPort))
+}
+
+func getConfig() *Config {
+	err := godotenv.Load("./.config/vars.env")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	log.Println("Config loaded")
+
+	config := &Config{
+		DbUrl:      os.Getenv("DB_URL"),
+		DbToken:    os.Getenv("DB_TOKEN"),
+		ServerPort: os.Getenv("PORT"),
+		ServerUrl:  os.Getenv("SERVER_URL"),
+	}
+	return config
 }
