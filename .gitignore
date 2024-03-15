@@ -5,3 +5,4 @@ bin
 css/output.css
 *.db
 cli_tools/*
+.config/*
