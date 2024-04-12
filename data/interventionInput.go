@@ -11,13 +11,13 @@ import (
 
 type InterventionInput struct {
 	Guid         string
-	Site         string   `form:"site"`
-	Intervention string   `form:"intervention"`
-	Materials    []string `form:"materials[]"`
-	Quantity     []int    `form:"quantity[]"`
-	Umeasure     []string `form:"umeasure[]"`
-	Workers      []string `form:"workers[]"`
-	Notes        string   `form:"notes"`
+	Site         string    `form:"site"`
+	Intervention string    `form:"intervention"`
+	Materials    []string  `form:"materials[]"`
+	Quantity     []float32 `form:"quantity[]"`
+	Umeasure     []string  `form:"umeasure[]"`
+	Workers      []string  `form:"workers[]"`
+	Notes        string    `form:"notes"`
 	Timestamp    string
 }
 
@@ -26,9 +26,9 @@ func (interventionInput *InterventionInput) ToDomainModel() Intervention {
 	var intervention Intervention
 	intervention.Site = interventionInput.Site
 	descriptions := strings.Split(interventionInput.Intervention, "\n")
-	cleanedDescriptions := make([]string, len(descriptions))
+	var cleanedDescriptions []string
 	for _, description := range descriptions {
-		if description == "" || description == " " {
+		if description == "" || description == " " || description == "\n" {
 			continue
 		}
 		cleanedDescriptions = append(cleanedDescriptions, description)
@@ -42,11 +42,11 @@ func (interventionInput *InterventionInput) ToDomainModel() Intervention {
 		}
 		umeasure := interventionInput.Umeasure[i]
 		quantity := interventionInput.Quantity[i]
-		materialAndQuantityStr := material + "|" + umeasure + "|" + strconv.Itoa(quantity)
+		materialAndQuantityStr := material + "|" + umeasure + "|" + strconv.FormatFloat(float64(quantity), 'f', -1, 32)
 		intervention.Materials = append(intervention.Materials, materialAndQuantityStr)
 	}
 
-	workers := make([]map[string]int, 0)
+	workers := make([]map[string]float32, 0)
 	for _, worker := range interventionInput.Workers {
 		splittedWorker := strings.Split(worker, " ")
 		if len(splittedWorker) > 1 {
@@ -54,21 +54,23 @@ func (interventionInput *InterventionInput) ToDomainModel() Intervention {
 			if workerName == "" {
 				workerName = "Simone"
 			}
-			hoursString := strings.Replace(",", ".", splittedWorker[1], -1)
-			workerHours, err := strconv.Atoi(hoursString)
+			hoursString := strings.Replace(".", ".", splittedWorker[1], -1)
+			workerHoursFloat64, err := strconv.ParseFloat(hoursString, 32)
 			if err != nil {
-				workerHours = 0
+				fmt.Println(err)
+				workerHoursFloat64 = 0
 			}
+			workerHours := float32(workerHoursFloat64)
 
-			workers = append(workers, map[string]int{workerName: workerHours})
+			workers = append(workers, map[string]float32{workerName: workerHours})
 		} else if len(splittedWorker) == 1 {
 			workerName := splittedWorker[0]
 			if workerName == "" {
 				workerName = "Simone"
 			}
-			workers = append(workers, map[string]int{workerName: 0})
+			workers = append(workers, map[string]float32{workerName: 0})
 		} else {
-			workers = append(workers, map[string]int{"Simone": 0})
+			workers = append(workers, map[string]float32{"Simone": 0})
 		}
 	}
 

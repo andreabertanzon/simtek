@@ -92,7 +92,7 @@ templ InterventionCard(intervention data.Intervention) {
 			<p class="font-semibold text-nord0 text-2xl">
 				Ore Spese: 
 				<span class="text-nord0">
-					{ strconv.Itoa(intervention.TotalHours()) }
+					{ 	strconv.FormatFloat(float64(intervention.TotalHours()), 'f', 2, 32) }
 				</span>
 			</p>
 			<div class="flex">

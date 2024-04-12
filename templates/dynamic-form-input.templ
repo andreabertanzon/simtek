@@ -8,7 +8,7 @@ templ DynamicFormInput(inputType string) {
 		<div class="flex flex-wrap gap-2 border border-1 rounded border-grey-500 p-2">
 			<input class="mt-2 text-4xl" type="text" name="materials[]" placeholder="Materiale" required/>
 			<input class="mt-2 text-4xl max-w-48" type="text" name="umeasure[]" placeholder="u.m." required/>
-			<input class="mt-2 text-4xl max-w-48" type="number" name="quantity[]" placeholder="Quantità" required/>
+			<input class="mt-2 text-4xl max-w-48" type="number" step=".1" name="quantity[]" placeholder="Quantità" required/>
 		</div>
 	} else if inputType == "worker" {
 		<input class="mt-2 text-4xl" type="text" name="workers[]" placeholder="Operatore"/>
@@ -20,7 +20,7 @@ templ DynamicFormInputContent(interventionInput data.InterventionInput){
 		<div class="flex flex-wrap gap-2 border border-1 rounded border-grey-500 p-2">
 			<input class="mt-2 text-4xl" type="text" name="materials[]" placeholder="Materiale" required value={input}/>
 			<input class="mt-2 text-4xl max-w-48" type="text" name="umeasure[]" placeholder="u.m." required value={interventionInput.Umeasure[i]}/>
-			<input class="mt-2 text-4xl max-w-48" type="number" name="quantity[]" placeholder="Quantità" required value={strconv.Itoa(interventionInput.Quantity[i])}/>
+            <input class="mt-2 text-4xl max-w-48" type="number" name="quantity[]" placeholder="Quantità" step=".1"  required value={strconv.FormatFloat(float64(interventionInput.Quantity[i]), 'f', 1, 32)}/>
 		</div>
 	}	
 }

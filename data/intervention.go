@@ -7,18 +7,18 @@ import (
 )
 
 type Intervention struct {
-	Guid         string           `json:"guid"`
-	Site         string           `json:"site"`
-	Descriptions []string         `json:"descriptions"`
-	Materials    []string         `json:"materials"`
-	Workers      []map[string]int `json:"workers"`
-	Notes        string           `json:"notes"`
-	Timestamp    string           `json:"timestamp"`
+	Guid         string               `json:"guid"`
+	Site         string               `json:"site"`
+	Descriptions []string             `json:"descriptions"`
+	Materials    []string             `json:"materials"`
+	Workers      []map[string]float32 `json:"workers"`
+	Notes        string               `json:"notes"`
+	Timestamp    string               `json:"timestamp"`
 }
 
 // Returns the total hours of the intervention
-func (intervention *Intervention) TotalHours() int {
-	totalHours := 0
+func (intervention *Intervention) TotalHours() float32 {
+	var totalHours float32 = 0
 	for _, worker := range intervention.Workers {
 		for _, hours := range worker {
 			totalHours += hours
@@ -38,11 +38,11 @@ func (intervention *Intervention) ToViewModel() InterventionInput {
 	for _, material := range intervention.Materials {
 		materialParts := strings.Split(material, "|")
 		if len(materialParts) == 3 {
-			qty, err := strconv.Atoi(materialParts[2])
+			qty, err := strconv.ParseFloat(materialParts[2], 32)
 			if err != nil {
 				qty = 0
 			}
-			interventionInput.Quantity = append(interventionInput.Quantity, qty)
+			interventionInput.Quantity = append(interventionInput.Quantity, float32(qty))
 			interventionInput.Umeasure = append(interventionInput.Umeasure, materialParts[1])
 			interventionInput.Materials = append(interventionInput.Materials, materialParts[0])
 		}

@@ -161,6 +161,7 @@ func StartServer(config *Config) {
 		}
 
 		interventionInput.Guid = guid
+		log.Println("Intervention Input (After Binding):", interventionInput)
 
 		err := repo.UpdateIntervention(guid, interventionInput.ToDomainModel())
 		if err != nil {
