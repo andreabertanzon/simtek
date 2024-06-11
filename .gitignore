@@ -9,3 +9,4 @@ cli_tools/*
 **bin/
 **obj/
 obj/**
+obj
