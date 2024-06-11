@@ -6,3 +6,6 @@ css/output.css
 *.db
 cli_tools/*
 .config/*
+**bin/
+**obj/
+obj/**

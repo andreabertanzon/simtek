@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simtek.Blazor", "Simtek.Blazor\Simtek.Blazor.csproj", "{F0DCB6BC-6CDE-4493-8B48-A87D151A23A5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simtek.Domain", "Simtek.Domain\Simtek.Domain.csproj", "{D1FB7880-8C08-4C2B-A550-B40F9D04BA66}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{F0DCB6BC-6CDE-4493-8B48-A87D151A23A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0DCB6BC-6CDE-4493-8B48-A87D151A23A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F0DCB6BC-6CDE-4493-8B48-A87D151A23A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1FB7880-8C08-4C2B-A550-B40F9D04BA66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1FB7880-8C08-4C2B-A550-B40F9D04BA66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1FB7880-8C08-4C2B-A550-B40F9D04BA66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1FB7880-8C08-4C2B-A550-B40F9D04BA66}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
