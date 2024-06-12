@@ -1,10 +1,23 @@
+using Microsoft.EntityFrameworkCore;
+using Simtek.Application.Queries;
+using Simtek.Application.Repositories;
+using Simtek.Application.Repositories.Interfaces;
 using Simtek.Blazor.Components;
+using Simtek.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddDbContextFactory<SimtekContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Simtek"));
+});
+
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddMediatR(x=> x.RegisterServicesFromAssemblies(typeof(GetCustomersQuery).Assembly));
 
 var app = builder.Build();
 

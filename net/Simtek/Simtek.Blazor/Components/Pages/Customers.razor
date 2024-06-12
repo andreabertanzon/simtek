@@ -1,0 +1,73 @@
+﻿@page "/customers"
+
+@attribute [StreamRendering]
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@inject IMediator _mediator
+
+ <PageTitle>Clienti</PageTitle>
+
+<h1>Clienti</h1>
+
+@if (_customers == null)
+{
+    <p>
+        <em>Caricamento...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Cognome</th>
+            <th>indirizzo</th>
+            <th>città</th>
+            <th>email</th>
+            <th>telefono</th>
+            <th>vat</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var customer in _customers)
+        {
+            <tr>
+                <td>@customer.Name</td>
+                <td>@customer.Surname</td>
+                <td>@customer.Address</td>
+                <td>@customer.City</td>
+                <td>@customer.Email</td>
+                <td>@customer.Phone</td>
+                <td>@customer.Vat</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Domain.Customer[]? _customers;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Simulate asynchronous loading to demonstrate streaming rendering
+        await Task.Delay(500);
+
+        (await _mediator.Send(new GetCustomersQuery())).When(
+            onSuccess: x => this._customers = x.ToArray(),
+            onFailure: x =>
+            {
+                Console.WriteLine(x);
+                _customers = Array.Empty<Domain.Customer>();
+            });
+    }
+
+    private class WeatherForecast
+    {
+        public DateOnly Date { get; set; }
+        public int TemperatureC { get; set; }
+        public string? Summary { get; set; }
+        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    }
+
+}

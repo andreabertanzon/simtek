@@ -15,7 +15,7 @@ public class CustomerRepository(IDbContextFactory<SimtekContext> contextFactory)
         await using var context = await contextFactory.CreateDbContextAsync(cancellationToken);
         var customers = context
             .Customers
-            .Where(predicate ?? (_ => true));
+            .Where(predicate ?? (_ => true)).ToArray();
         return customers.ToDomain();
     }
 

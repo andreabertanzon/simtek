@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Simtek.Application\Simtek.Application.csproj" />
       <ProjectReference Include="..\Simtek.Domain\Simtek.Domain.csproj" />
     </ItemGroup>
 
