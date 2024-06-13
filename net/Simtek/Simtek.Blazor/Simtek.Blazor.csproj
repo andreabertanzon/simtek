@@ -11,4 +11,8 @@
       <ProjectReference Include="..\Simtek.Domain\Simtek.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid" Version="8.0.6" />
+    </ItemGroup>
+
 </Project>

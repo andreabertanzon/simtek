@@ -31,7 +31,26 @@ public class CustomerRepository(IDbContextFactory<SimtekContext> contextFactory)
     public async Task CreateCustomerAsync(Domain.Customer customer, CancellationToken cancellationToken = default)
     {
         await using var context = await contextFactory.CreateDbContextAsync(cancellationToken);
-        context.Customers.Add(customer.ToData());
+        if (context.Customers.Any(x => x.Name == customer.Name && x.Surname == customer.Surname))
+        {
+            context.Customers.Update(customer.ToData());
+            await context.SaveChangesAsync(cancellationToken);
+            return;
+        }
+
+        context.Customers.Add(
+            new Data.Customer()
+            {
+                Name = customer.Name,
+                Email = customer.Email,
+                Phone = customer.Phone,
+                Address = customer.Address,
+                City = customer.City,
+                Zip = customer.Zip,
+                Vat = customer.Vat,
+                Surname = customer.Surname
+            }
+        );
         await context.SaveChangesAsync(cancellationToken);
     }
 

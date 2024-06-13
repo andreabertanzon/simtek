@@ -1,0 +1,92 @@
+@page "/EditCustomer/{Id:int}"
+@using Simtek.Application.Commands
+@using Simtek.Domain
+@attribute [StreamRendering]
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+@inject NavigationManager NavigationManager
+@inject IMediator _mediator
+@if (Id == -1)
+{
+    <h3>Crea Cliente</h3>
+}
+else
+{
+    <h3>Modifica Cliente</h3>
+}
+
+<EditForm Model="customer" OnSubmit="HandleSubmit">
+    <div class="form-group">
+        <label for="name">Nome</label>
+        <InputText id="name" class="form-control" @bind-Value="customer.Name"></InputText>
+    </div>
+    <div class="form-group">
+        <label for="surname">Cognome</label>
+        <InputText id="surname" class="form-control" @bind-Value="customer.Surname"></InputText>
+    </div>
+    <div class="form-group">
+        <label for="address">Indirizzo</label>
+        <InputText id="address" class="form-control" @bind-Value="customer.Address"></InputText>
+    </div>
+    <div class="form-group">
+        <label for="city">Città</label>
+        <InputText id="city" class="form-control" @bind-Value="customer.City"></InputText>
+    </div>
+    <div class="form-group">
+        <label for="cap">CAP</label>
+        <InputText id="cap" class="form-control" @bind-Value="customer.Zip"></InputText>
+    </div>
+    <div class="form-group">
+        <label for="email">Email</label>
+        <InputText id="email" class="form-control" @bind-Value="customer.Email"></InputText>
+    </div>
+    <div class="form-group">
+        <label for="phone">Telefono</label>
+        <InputText id="phone" class="form-control" @bind-Value="customer.Phone"></InputText>
+    </div>
+    <div class="form-group">
+        <label for="vat">Partita IVA</label>
+        <InputText id="vat" class="form-control" @bind-Value="customer.Vat"></InputText>
+    </div>
+    <button class="btn btn-primary" type="submit">Save</button>
+</EditForm>
+
+@code {
+    [Parameter] public int? Id { get; set; }
+
+    [SupplyParameterFromForm]
+    Customer customer { get; set; } = new()
+    {
+        Name = string.Empty,
+        Id = 0,
+        Surname = string.Empty
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id.HasValue)
+        {
+            var getCustomerOperation = await _mediator.Send(new GetCustomerQuery() { Id = Id.Value });
+            getCustomerOperation.When(
+                onSuccess: c => customer = c,
+                onFailure: e => Console.WriteLine(e)
+            );
+        }
+        else
+        {
+            customer = new Customer
+            {
+                Id = 0,
+                Surname = string.Empty
+            };
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        var result = await _mediator.Send(new CreateCustomerCommand() { Customer = customer });
+        NavigationManager.NavigateTo("customers");
+    }
+
+}
+

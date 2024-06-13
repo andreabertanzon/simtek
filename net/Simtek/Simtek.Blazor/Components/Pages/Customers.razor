@@ -1,10 +1,12 @@
 ﻿@page "/customers"
-
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Simtek.Domain
 @attribute [StreamRendering]
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @inject IMediator _mediator
+@inject NavigationManager NavigationManager
 
- <PageTitle>Clienti</PageTitle>
+<PageTitle>Clienti</PageTitle>
 
 <h1>Clienti</h1>
 
@@ -16,37 +18,36 @@
 }
 else
 {
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Nome</th>
-            <th>Cognome</th>
-            <th>indirizzo</th>
-            <th>città</th>
-            <th>email</th>
-            <th>telefono</th>
-            <th>vat</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var customer in _customers)
-        {
-            <tr>
-                <td>@customer.Name</td>
-                <td>@customer.Surname</td>
-                <td>@customer.Address</td>
-                <td>@customer.City</td>
-                <td>@customer.Email</td>
-                <td>@customer.Phone</td>
-                <td>@customer.Vat</td>
-            </tr>
-        }
-        </tbody>
-    </table>
+    <div class="flex-column my-2">
+        <input placeholder="Cerca..." type="search" @bind="_nameFilter" @bind:event="oninput" autofocus/>
+    </div>
+    <QuickGrid Class="table" Items="FilteredCustomers" Pagination="_state">
+        <PropertyColumn Property="customer => customer.Name" Sortable="true">
+        </PropertyColumn>
+        <PropertyColumn Property="customer => customer.Surname" Sortable="true"/>
+        <PropertyColumn Property="customer => customer.Address"/>
+        <PropertyColumn Property="customer => customer.City"/>
+        <PropertyColumn Property="customer => customer.Zip"/>
+        <PropertyColumn Property="customer => customer.Email"/>
+        <PropertyColumn Property="customer => customer.Phone"/>
+        <PropertyColumn Property="customer => customer.Vat"/>
+        <TemplateColumn Context="customer">
+            <button class="btn btn-primary" @onclick="() => NavigateToEditCustomer(customer.Id)"><span class="bi bi-plus-square-fill-nav-menu"></span></button>
+        </TemplateColumn>
+    </QuickGrid>
+    <Paginator State="_state"/>
+    <button class="btn btn-primary" @onclick="() => NavigateToEditCustomer(-1)">Crea Cliente</button>
 }
 
 @code {
-    private Domain.Customer[]? _customers;
+    private IQueryable<Customer>? _customers;
+
+    private IQueryable<Domain.Customer>? FilteredCustomers => _customers?.Where(x =>
+        (x.Name != null && x.Name.Contains(_nameFilter, StringComparison.OrdinalIgnoreCase)) ||
+        x.Surname.Contains(_nameFilter, StringComparison.OrdinalIgnoreCase));
+    
+    private PaginationState _state = new() { ItemsPerPage = 10 };
+    private string _nameFilter = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -54,20 +55,17 @@ else
         await Task.Delay(500);
 
         (await _mediator.Send(new GetCustomersQuery())).When(
-            onSuccess: x => this._customers = x.ToArray(),
+            onSuccess: x => this._customers = x.AsQueryable(),
             onFailure: x =>
             {
                 Console.WriteLine(x);
-                _customers = Array.Empty<Domain.Customer>();
+                _customers = Array.Empty<Domain.Customer>().AsQueryable();
             });
     }
-
-    private class WeatherForecast
+    
+    private void NavigateToEditCustomer(int? id)
     {
-        public DateOnly Date { get; set; }
-        public int TemperatureC { get; set; }
-        public string? Summary { get; set; }
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        NavigationManager.NavigateTo($"EditCustomer/{id}");
     }
 
 }
