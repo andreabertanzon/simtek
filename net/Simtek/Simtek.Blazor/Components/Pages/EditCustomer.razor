@@ -15,44 +15,55 @@ else
     <h3>Modifica Cliente</h3>
 }
 
-<EditForm Model="customer" OnSubmit="HandleSubmit">
+<EditForm Model="customer" OnValidSubmit="HandleSubmit" FormName="create-customer" Enhance>
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
     <div class="form-group">
         <label for="name">Nome</label>
         <InputText id="name" class="form-control" @bind-Value="customer.Name"></InputText>
+        <ValidationMessage For="() => customer.Name"/>
     </div>
     <div class="form-group">
         <label for="surname">Cognome</label>
         <InputText id="surname" class="form-control" @bind-Value="customer.Surname"></InputText>
+        <ValidationMessage For="() => customer.Surname" class="text-danger"/>
     </div>
     <div class="form-group">
         <label for="address">Indirizzo</label>
         <InputText id="address" class="form-control" @bind-Value="customer.Address"></InputText>
+        <ValidationMessage For="() => customer.Address" class="text-danger"/>
     </div>
     <div class="form-group">
         <label for="city">Città</label>
         <InputText id="city" class="form-control" @bind-Value="customer.City"></InputText>
+        <ValidationMessage For="() => customer.City" class="text-danger"/>
     </div>
     <div class="form-group">
         <label for="cap">CAP</label>
         <InputText id="cap" class="form-control" @bind-Value="customer.Zip"></InputText>
+        <ValidationMessage For="() => customer.Zip" class="text-danger"/>
     </div>
     <div class="form-group">
         <label for="email">Email</label>
         <InputText id="email" class="form-control" @bind-Value="customer.Email"></InputText>
+        <ValidationMessage For="() => customer.Email" class="text-danger"/>
     </div>
     <div class="form-group">
         <label for="phone">Telefono</label>
         <InputText id="phone" class="form-control" @bind-Value="customer.Phone"></InputText>
+        <ValidationMessage For="() => customer.Phone" class="text-danger"/>
     </div>
     <div class="form-group">
         <label for="vat">Partita IVA</label>
         <InputText id="vat" class="form-control" @bind-Value="customer.Vat"></InputText>
+        <ValidationMessage For="() => customer.Vat" class="text-danger"/>
     </div>
     <button class="btn btn-primary" type="submit">Save</button>
 </EditForm>
 
 @code {
     [Parameter] public int? Id { get; set; }
+    private EditContext? editContext;
 
     [SupplyParameterFromForm]
     Customer customer { get; set; } = new()
@@ -62,9 +73,11 @@ else
         Surname = string.Empty
     };
 
+    private ValidationMessageStore? messageStore;
+
     protected override async Task OnInitializedAsync()
     {
-        if (Id.HasValue)
+        if (Id != -1)
         {
             var getCustomerOperation = await _mediator.Send(new GetCustomerQuery() { Id = Id.Value });
             getCustomerOperation.When(
@@ -80,6 +93,18 @@ else
                 Surname = string.Empty
             };
         }
+
+        editContext = new(customer);
+        editContext.OnValidationRequested += HandleValidationRequested;
+        messageStore = new ValidationMessageStore(editContext);
+    }
+
+    private void HandleValidationRequested(object? sender,
+        ValidationRequestedEventArgs args)
+    {
+        messageStore?.Clear();
+        messageStore?.Add(() => customer.Surname, "Cognome non può essere vuoto");
+        messageStore?.Add(() => customer.Email, "email non può essere vuoto");
     }
 
     private async Task HandleSubmit()
@@ -89,4 +114,3 @@ else
     }
 
 }
-

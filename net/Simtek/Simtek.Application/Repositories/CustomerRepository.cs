@@ -42,7 +42,7 @@ public class CustomerRepository(IDbContextFactory<SimtekContext> contextFactory)
             new Data.Customer()
             {
                 Name = customer.Name,
-                Email = customer.Email,
+                Email = customer.Email ?? "email@mancalemail.com",
                 Phone = customer.Phone,
                 Address = customer.Address,
                 City = customer.City,

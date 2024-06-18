@@ -19,9 +19,19 @@
 else
 {
     <div class="flex-column my-2">
-        <input placeholder="Cerca..." type="search" @bind="_nameFilter" @bind:event="oninput" autofocus/>
+        <input class="form-control" placeholder="Cerca..." type="search" @bind="_nameFilter" @bind:event="oninput" autofocus/>
     </div>
     <QuickGrid Class="table" Items="FilteredCustomers" Pagination="_state">
+        <TemplateColumn Title="Azioni Cliente" Context="customer">
+            <div class="flex flex-row align-content-center justify-content-center">
+                <button class="btn btn-dark" @onclick="() => NavigateToEditCustomer(customer.Id)">
+                    <i class="bi bi-pencil-square"></i>
+                </button>
+                <button class="btn btn-secondary" @onclick="() => NavigateToEditCustomer(customer.Id)">
+                    <i class="bi bi-info-square"></i>
+                </button>
+            </div>
+        </TemplateColumn>
         <PropertyColumn Property="customer => customer.Name" Sortable="true">
         </PropertyColumn>
         <PropertyColumn Property="customer => customer.Surname" Sortable="true"/>
@@ -31,12 +41,10 @@ else
         <PropertyColumn Property="customer => customer.Email"/>
         <PropertyColumn Property="customer => customer.Phone"/>
         <PropertyColumn Property="customer => customer.Vat"/>
-        <TemplateColumn Context="customer">
-            <button class="btn btn-primary" @onclick="() => NavigateToEditCustomer(customer.Id)"><span class="bi bi-plus-square-fill-nav-menu"></span></button>
-        </TemplateColumn>
+
     </QuickGrid>
     <Paginator State="_state"/>
-    <button class="btn btn-primary" @onclick="() => NavigateToEditCustomer(-1)">Crea Cliente</button>
+    <button class="btn btn-primary" @onclick="() => NavigateToEditCustomer(-1)"><i class="bi bi-journal-plus"></i> Crea Cliente</button>
 }
 
 @code {
@@ -45,7 +53,7 @@ else
     private IQueryable<Domain.Customer>? FilteredCustomers => _customers?.Where(x =>
         (x.Name != null && x.Name.Contains(_nameFilter, StringComparison.OrdinalIgnoreCase)) ||
         x.Surname.Contains(_nameFilter, StringComparison.OrdinalIgnoreCase));
-    
+
     private PaginationState _state = new() { ItemsPerPage = 10 };
     private string _nameFilter = "";
 
@@ -62,7 +70,7 @@ else
                 _customers = Array.Empty<Domain.Customer>().AsQueryable();
             });
     }
-    
+
     private void NavigateToEditCustomer(int? id)
     {
         NavigationManager.NavigateTo($"EditCustomer/{id}");

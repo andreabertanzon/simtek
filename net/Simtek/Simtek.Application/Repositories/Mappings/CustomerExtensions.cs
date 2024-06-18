@@ -48,7 +48,7 @@ public static class CustomerExtensions
             Zip = entity.Zip,
             Vat = entity.Vat,
             Phone = entity.Phone,
-            Email = entity.Email,
+            Email = entity.Email ?? "mail@mancalemail.com",
         };
     }
 }
