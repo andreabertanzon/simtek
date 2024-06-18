@@ -24,6 +24,7 @@ public class CustomerRepository(IDbContextFactory<SimtekContext> contextFactory)
         await using var context = await contextFactory.CreateDbContextAsync(cancellationToken);
         var customer = await context
             .Customers
+            .Include(x=> x.Sites)
             .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
         return customer?.ToDomain() ?? throw new Exception();
     }

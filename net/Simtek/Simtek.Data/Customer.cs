@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Simtek.Data;
+﻿namespace Simtek.Data;
 
 public partial class Customer
 {
@@ -26,4 +23,6 @@ public partial class Customer
     public DateTime? Creationdate { get; set; }
 
     public bool Stored { get; set; }
+
+    public virtual ICollection<Site> Sites { get; set; } = new List<Site>();
 }

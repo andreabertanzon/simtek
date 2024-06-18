@@ -33,6 +33,7 @@ public static class CustomerExtensions
             Vat = entity.Vat,
             Phone = entity.Phone,
             Email = entity.Email,
+            Sites = entity.Sites.ToDomain().ToList(),
         };
     }
     
