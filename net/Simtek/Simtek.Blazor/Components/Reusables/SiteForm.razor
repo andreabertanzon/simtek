@@ -1,0 +1,41 @@
+@using Simtek.Domain
+
+<EditForm Model="site" OnValidSubmit="HandleSubmit" FormName="create-site" Enhance>
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <div class="form-group">
+        <label for="name">Nome</label>
+        <InputText id="name" class="form-control" @bind-Value="site.Name"></InputText>
+        <ValidationMessage For="() => site.Name"/>
+    </div>
+    <div class="form-group">
+        <label for="address">Indirizzo</label>
+        <InputText id="address" class="form-control" @bind-Value="site.Address"></InputText>
+        <ValidationMessage For="() => site.Address"/>
+    </div>
+
+    <div class="form-group">
+        <label for="city">Città</label>
+        <InputText id="city" class="form-control" @bind-Value="site.City"></InputText>
+        <ValidationMessage For="() => site.City"/>
+    </div>
+
+    <div class="form-group">
+        <label for="cap">CAP</label>
+        <InputText id="cap" class="form-control" @bind-Value="site.ZipCode"></InputText>
+        <ValidationMessage For="() => site.ZipCode"/>
+    </div>
+    <button class="btn btn-primary" type="submit">Save</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public Site site { get; set; }
+    [Parameter] public Func<Site,Task> OnSubmit { get; set; }
+
+    private async Task HandleSubmit()
+    {
+        await OnSubmit(site);
+    }
+
+}

@@ -1,3 +1,5 @@
+using Simtek.Data;
+
 namespace Simtek.Application.Repositories.Mappings;
 
 public static class SitesExtensions
@@ -11,6 +13,33 @@ public static class SitesExtensions
             Address = x.Address,
             City = x.City,
             ZipCode = x.Zip,
+            CustomerId = x.CustomerId,
         });
+    }
+    
+    public static Domain.Site ToDomain(this Site entity)
+    {
+        return new Domain.Site
+        {
+            Id = entity.Id,
+            Name = entity.Name,
+            Address = entity.Address,
+            City = entity.City,
+            ZipCode = entity.Zip,
+            CustomerId = entity.CustomerId,
+        };
+    }
+    
+    public static Data.Site ToData(this Domain.Site entity)
+    {
+        return new Data.Site
+        {
+            Id = entity.Id,
+            Name = entity.Name,
+            Address = entity.Address,
+            City = entity.City,
+            Zip = entity.ZipCode,
+            CustomerId = entity.CustomerId,
+        };
     }
 }

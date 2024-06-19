@@ -17,6 +17,7 @@ builder.Services.AddDbContextFactory<SimtekContext>(options =>
 });
 
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<ISiteRepository, SiteRepository>();
 builder.Services.AddMediatR(x=> x.RegisterServicesFromAssemblies(typeof(GetCustomersQuery).Assembly));
 
 var app = builder.Build();

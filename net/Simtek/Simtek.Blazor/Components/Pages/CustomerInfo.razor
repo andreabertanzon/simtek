@@ -4,6 +4,7 @@
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 @inject IMediator _mediator
+@inject NavigationManager NavigationManager
 
 <h3 class="mb-4">@Customer?.FullName</h3>
 
@@ -70,6 +71,7 @@
         </table>
     </div>
 }
+<button class="btn btn-primary" @onclick="() =>AddSite(-1)"><i class="bi bi-journal-plus"></i> Aggiungi Cantiere</button>
 
 <h3 class="my-5">Interventi Aperti</h3>
 
@@ -84,6 +86,11 @@
             onSuccess: c => Customer = c,
             onFailure: e => Console.WriteLine(e)
         );
+    }
+
+    private async Task AddSite(int i)
+    {
+        if (Customer != null) NavigationManager.NavigateTo($"/EditSite/{Customer.Id}/{i}");
     }
 
 }

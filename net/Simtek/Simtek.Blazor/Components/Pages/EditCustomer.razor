@@ -16,7 +16,7 @@ else
     <h3>Modifica Cliente</h3>
 }
 
-<CustomerForm customer="Customer" OnSubmit="HandleSubmit" />
+<CustomerForm customer="Customer" OnSubmit="c=>HandleSubmit(c)" />
 
 @code {
     [Parameter] public int? Id { get; set; }
@@ -49,23 +49,16 @@ else
                 Surname = string.Empty
             };
         }
-
-        // editContext = new(Customer);
-        // editContext.OnValidationRequested += HandleValidationRequested;
-        // messageStore = new ValidationMessageStore(editContext);
     }
 
-    // private void HandleValidationRequested(object? sender,
-    //     ValidationRequestedEventArgs args)
-    // {
-    //     messageStore?.Clear();
-    //     messageStore?.Add(() => Customer.Surname, "Cognome non può essere vuoto");
-    //     messageStore?.Add(() => Customer.Email, "email non può essere vuoto");
-    // }
 
-    private async Task HandleSubmit()
+    private async Task HandleSubmit(Customer customer)
     {
-        var result = await _mediator.Send(new CreateCustomerCommand() { Customer = Customer });
+        var result = await _mediator.Send(new CreateCustomerCommand() { Customer = customer });
+        result.When(
+            onSuccess: (x) => NavigationManager.NavigateTo("customers"),
+            onFailure: e => Console.WriteLine(e)
+        );
         NavigationManager.NavigateTo("customers");
     }
 

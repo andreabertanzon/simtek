@@ -1,0 +1,63 @@
+@page "/EditSite/{CustomerId:int}/{SiteId:int}"
+@using Simtek.Application.Commands
+@using Simtek.Domain
+@using Simtek.Blazor.Components.Reusables
+@attribute [StreamRendering]
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+@inject IMediator _mediator
+@inject NavigationManager NavigationManager
+
+<h3>EditSite</h3>
+
+@if (SiteId == -1)
+{
+    <h3>Crea Cantiere</h3>
+}
+else
+{
+    <h3>Modifica Cantiere</h3>
+}
+
+<SiteForm site="Site" OnSubmit="async site => await HandleSubmit(site)"/>
+
+@code {
+    [Parameter] public int CustomerId { get; set; }
+    [Parameter] public int SiteId { get; set; }
+    
+    Site Site { get; set; }
+   
+    
+    protected override async Task OnInitializedAsync()
+    {
+        if (SiteId != -1)
+        {
+            var getSiteOperation = await _mediator.Send(new GetSiteQuery() { Id = SiteId });
+            getSiteOperation.When(
+                onSuccess: s => Site = s,
+                onFailure: e => Console.WriteLine(e)
+            );
+        }
+        else
+        {
+            Site = new Site
+            {
+                Name = string.Empty,
+                Address = string.Empty,
+                City = string.Empty,
+                ZipCode = string.Empty,
+                CustomerId = CustomerId,
+                Id = 0
+            };
+        }
+    }
+
+    private async Task HandleSubmit(Site s)
+    {
+        var result = await _mediator.Send(new CreateSiteCommand() { Site = s });
+        result.When(
+            onSuccess: (x) => NavigationManager.NavigateTo($"/CustomerInfo/{CustomerId}"),
+            onFailure: e => Console.WriteLine(e)
+        );
+    }
+}
