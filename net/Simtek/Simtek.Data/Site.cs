@@ -21,4 +21,6 @@ public partial class Site
     public bool Stored { get; set; }
 
     public virtual Customer Customer { get; set; } = null!;
+
+    public virtual ICollection<Intervention> Interventions { get; set; } = new List<Intervention>();
 }

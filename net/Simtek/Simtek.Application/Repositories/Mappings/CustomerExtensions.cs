@@ -17,6 +17,7 @@ public static class CustomerExtensions
             Vat = x.Vat,
             Phone = x.Phone,
             Email = x.Email,
+            Sites = x.Sites.ToDomain().ToList()
         });
     }
     

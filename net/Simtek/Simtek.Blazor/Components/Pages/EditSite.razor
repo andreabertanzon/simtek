@@ -8,8 +8,6 @@
 @inject IMediator _mediator
 @inject NavigationManager NavigationManager
 
-<h3>EditSite</h3>
-
 @if (SiteId == -1)
 {
     <h3>Crea Cantiere</h3>
@@ -19,7 +17,12 @@ else
     <h3>Modifica Cantiere</h3>
 }
 
-<SiteForm site="Site" OnSubmit="async site => await HandleSubmit(site)"/>
+@if (Site != null)
+{
+    <SiteForm site="Site" OnSubmit="async site => await HandleSubmit(site)"/>
+}else{
+    <p>Caricamento...</p>
+}
 
 @code {
     [Parameter] public int CustomerId { get; set; }

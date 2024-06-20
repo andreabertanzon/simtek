@@ -1,0 +1,167 @@
+@page "/CreateIntervention"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Simtek.Domain
+@attribute [StreamRendering]
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+@inject IMediator _mediator
+
+<h3 class="mb-4">Nuovo Intervento</h3>
+
+
+@if (_customers == null)
+{
+    <p>Loading ...</p>
+}
+else if (State.CurrentStep == InterventionStep.CustomerSelection)
+{
+    <h4>Seleziona Cliente</h4>
+
+    <div class="flex-column my-2">
+        <input class="form-control" placeholder="Cerca..." type="search" @bind="_nameFilter" @bind:event="oninput" autofocus/>
+    </div>
+    <QuickGrid Class="table" Items="FilteredCustomers" Pagination="_state">
+        <TemplateColumn Title="Azioni Cliente" Context="customer">
+            <div class="flex flex-row align-content-center justify-content-center">
+                <button class="btn btn-dark" @onclick="()=>MoveToSiteSelection(customer)">
+                    <i class="bi bi-pencil-square"></i>
+                </button>
+            </div>
+        </TemplateColumn>
+        <PropertyColumn Property="customer => customer.Name" Sortable="true">
+        </PropertyColumn>
+        <PropertyColumn Property="customer => customer.Surname" Sortable="true"/>
+        <PropertyColumn Property="customer => customer.Address"/>
+        <PropertyColumn Property="customer => customer.City"/>
+        <PropertyColumn Property="customer => customer.Zip"/>
+        <PropertyColumn Property="customer => customer.Email"/>
+        <PropertyColumn Property="customer => customer.Phone"/>
+        <PropertyColumn Property="customer => customer.Vat"/>
+
+    </QuickGrid>
+    <Paginator State="_state"/>
+}
+else if (State.CurrentStep == InterventionStep.SiteSelection)
+{
+    <h4>Site Selection</h4>
+    <div class="flex-column my-2">
+        <input class="form-control" placeholder="Cerca..." type="search" @bind="_nameFilter" @bind:event="oninput" autofocus/>
+    </div>
+    <QuickGrid Class="table" Items="FilteredSites" Pagination="_state">
+        <TemplateColumn Title="Azioni" Context="site">
+            <div class="flex flex-row align-content-center justify-content-center">
+                <button class="btn btn-dark" @onclick="() => MoveToInterventionCreation(site)">
+                    <i class="bi bi-pencil-square"></i>
+                </button>
+            </div>
+        </TemplateColumn>
+        <PropertyColumn Property="site => site.Name" Sortable="true">
+        </PropertyColumn>
+        <PropertyColumn Property="site => site.Address"/>
+        <PropertyColumn Property="site => site.City"/>
+        <PropertyColumn Property="site => site.ZipCode"/>
+
+    </QuickGrid>
+    <Paginator State="_state"/>
+}
+else if (State.CurrentStep == InterventionStep.InterventionCreation)
+{
+    <h4>Intervention Creation</h4>
+}
+
+@code {
+
+    private InterventionState State { get; set; } = new InterventionState();
+
+    private IQueryable<Customer>? _customers;
+    private IQueryable<Site>? _sites;
+
+    private IQueryable<Domain.Customer>? FilteredCustomers => _customers?.Where(x =>
+        (x.Name != null && x.Name.Contains(_nameFilter, StringComparison.OrdinalIgnoreCase)) ||
+        x.Surname.Contains(_nameFilter, StringComparison.OrdinalIgnoreCase) || x.FullName.Contains(_nameFilter, StringComparison.OrdinalIgnoreCase));
+
+    private IQueryable<Site>? FilteredSites => _sites?.Where(x =>
+        (x.Name.Contains(_nameFilter, StringComparison.OrdinalIgnoreCase)) ||
+        x.Address.Contains(_nameFilter, StringComparison.OrdinalIgnoreCase));
+
+    private PaginationState _state = new() { ItemsPerPage = 10 };
+    private string _nameFilter = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        (await _mediator.Send(new GetCustomersQuery())).When(
+            onSuccess: x =>
+            {
+                _customers = x.AsQueryable();
+                State.CurrentStep = InterventionStep.CustomerSelection;
+            },
+            onFailure: x =>
+            {
+                Console.WriteLine(x);
+                _customers = Array.Empty<Domain.Customer>().AsQueryable();
+            });
+    }
+    
+    private void MoveToSiteSelection(Customer customer)
+    {
+        State.SelectedCustomer = customer;
+        _nameFilter = string.Empty; 
+        State.NextStep(); 
+        _sites = customer.Sites.AsQueryable();
+    }
+    
+    private void MoveToInterventionCreation(Site site)
+    {
+        State.SelectedSite = site;
+        _nameFilter = string.Empty;
+        State.NextStep();
+    }
+
+    private class InterventionState
+    {
+        public InterventionStep CurrentStep { get; set; } = InterventionStep.Loading;
+        public bool ShowEditCustomer { get; set; }
+
+        public Customer SelectedCustomer { get; set; } = new()
+        {
+            Id = 0,
+            Name = null,
+            Surname = string.Empty,
+            Email = null,
+            Phone = null,
+            Address = null,
+            City = null,
+            Vat = null,
+            Zip = null,
+            Sites = []
+        };
+
+        public Site? SelectedSite { get; set; }
+
+        public Intervention Intervention { get; set; } = new Intervention
+        {
+            Id = 0,
+            Date = DateTime.Now,
+            Description = [],
+            Notes = null,
+            ReportGenerated = false,
+            Site = null,
+            Operators = [],
+            Materials = []
+        };
+
+        public void NextStep()
+        {
+            CurrentStep++;
+        }
+    }
+
+    private enum InterventionStep
+    {
+        Loading = -1,
+        CustomerSelection = 0,
+        SiteSelection = 1,
+        InterventionCreation = 2
+    }
+
+}

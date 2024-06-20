@@ -7,7 +7,7 @@ public sealed class Intervention
     public IEnumerable<string> Description { get; set; } = [];
     public string? Notes { get; set; }
     public bool ReportGenerated { get; set; } = false;
-    public Site Site { get; set; }
-    public IEnumerable<Operator> Operators { get; set; } = [];
+    public required Site Site { get; set; }
+    public Dictionary<Operator, decimal> Operators { get; set; } = [];
     public Dictionary<string, double> Materials { get; set; } = new();
 }
