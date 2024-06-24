@@ -42,4 +42,16 @@ public class OperationResult<T>
         }
     }
     
+    public void WhenAsync(Action<Task<T>> onSuccess, Action<Exception> onFailure)
+    {
+        if (IsSuccess)
+        {
+            onSuccess(Task.FromResult(Data));
+        }
+        else
+        {
+            onFailure(Error!);
+        }
+    }
+    
 }

@@ -1,10 +1,10 @@
 namespace Simtek.Application.Repositories.Mappings;
 
-public static class OperatorsExtensions
+public static class WorkerExtensions
 {
-    public static Domain.Operator ToDomain(this Data.Worker worker)
+    public static Domain.Worker ToDomain(this Data.Worker worker)
     {
-        return new Domain.Operator
+        return new Domain.Worker
         {
             Id = worker.Id,
             Name = worker.Name,

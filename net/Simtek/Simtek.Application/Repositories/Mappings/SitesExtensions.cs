@@ -17,7 +17,7 @@ public static class SitesExtensions
         });
     }
     
-    public static Domain.Site ToDomain(this Site entity)
+    public static Domain.Site ToDomain(this Site entity, Customer? customer = null)
     {
         return new Domain.Site
         {

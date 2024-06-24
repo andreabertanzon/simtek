@@ -1,0 +1,90 @@
+@using Simtek.Domain
+@inject IMediator _mediator
+
+<EditForm Model="Intervention" Enhance OnValidSubmit="HandleSubmit">
+    <hr/>
+    <h4 class="mt-4">Select Operator</h4>
+    @foreach (var operatorInfo in _operators)
+    {
+        <div class="flex-row my-2">
+            <label>@operatorInfo.Worker.Name</label>
+            <InputNumber @bind-Value="operatorInfo.Value"></InputNumber>
+        </div>
+    }
+
+    <h4 class="mt-4">Descrizione</h4>
+    <div class="form-group">
+        <InputTextArea id="description" class="form-control" @bind-Value="Intervention.Description"></InputTextArea>
+    </div>
+
+    <h4 class="mt-2">Materiale</h4>
+    @foreach (var material in Intervention.Materials)
+    {
+        <div class="card flex-row flex-wrap p-3 my-2">
+            <div class="mx-1">
+                <label>Nome</label>
+                <InputText class="form-control" @bind-Value="material.Name"></InputText>
+            </div>
+            <div class="mx-1">
+                <label>U.M.</label>
+                <InputText class="form-control" @bind-Value="material.UnitMeasure"></InputText>
+            </div>
+            <div class="mx-1">
+                <label>Qta</label>
+                <InputNumber class="form-control" @bind-Value="material.Quantity"></InputNumber>
+            </div>
+            <div class="mx-1 flex-column">
+                <label>Azioni</label>
+                <button class="form-control btn btn-danger" type="button" @onclick="() => RemoveMaterial(material)">Rimuovi</button>
+            </div>
+        </div>
+    }
+    <button class="btn btn-secondary" type="button" @onclick="AddMaterial">+Materiale</button>
+
+    <h5 class="mt-3">Note Eventuali</h5>
+    <div class="form-group">
+        <InputTextArea id="notes" class="form-control" @bind-Value="Intervention.Notes"></InputTextArea>
+    </div>
+
+    <button class="mt-3 btn btn-primary" type="submit">Salva</button>
+</EditForm>
+
+@code {
+    [Parameter] public Intervention Intervention { get; set; }
+    [Parameter] public Func<Intervention, Task> OnSubmit { get; set; }
+    private List<OperatorInfo> _operators;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var getOperatorsOperation = await _mediator.Send(new GetWorkersQuery());
+        getOperatorsOperation.When(
+            onSuccess: x => _operators = x.Select(worker => new OperatorInfo { Worker = worker,  Value = 0.0M }).ToList(),
+            onFailure: x => Console.WriteLine(x)
+        );
+    }
+
+    public async Task HandleSubmit()
+    {
+        var operatorsToAdd = _operators.Where(x => x.Value != 0.0M).ToDictionary(x => x.Worker, x => x.Value);
+        Intervention.Operators = operatorsToAdd;
+        await OnSubmit(Intervention);
+    }
+
+    private class OperatorInfo
+    {
+        public Worker Worker { get; set; }
+        public bool IsSelected { get; set; }
+        public decimal Value { get; set; }
+    }
+
+    private void AddMaterial()
+    {
+        Intervention.Materials.Add(new Material());
+    }
+
+    private void RemoveMaterial(Material material)
+    {
+        Intervention.Materials.Remove(material);
+    }
+
+}

@@ -1,6 +1,6 @@
 namespace Simtek.Domain;
 
-public sealed class Operator
+public sealed class Worker
 {
     public int Id { get; set; }
     public string Name { get; set; }

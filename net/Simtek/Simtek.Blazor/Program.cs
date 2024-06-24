@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using Simtek.Application.Queries;
 using Simtek.Application.Repositories;
 using Simtek.Application.Repositories.Interfaces;
@@ -16,8 +17,12 @@ builder.Services.AddDbContextFactory<SimtekContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Simtek"));
 });
 
+builder.Services.AddSerilog(logger => logger.WriteTo.Console());
+
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<ISiteRepository, SiteRepository>();
+builder.Services.AddScoped<IWorkerRepository, WorkerRepository>();
+builder.Services.AddScoped<IInterventionRepository, InterventionRepository>();
 builder.Services.AddMediatR(x=> x.RegisterServicesFromAssemblies(typeof(GetCustomersQuery).Assembly));
 
 var app = builder.Build();

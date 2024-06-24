@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Simtek.Data;
+using Simtek.Domain;
+using Worker = Simtek.Data.Worker;
 
 namespace Simtek.Application.Repositories.Mappings;
 
@@ -11,11 +12,23 @@ public static class InterventionExtensions
       return new Domain.Intervention
       {
          Id = intervention.Id,
-         Description = intervention.Description.Split("\n"),
+         Description = intervention.Description,
          Date = intervention.Date,
          Operators = workers.Select(iw => new {Key=iw.ToDomain(), Value=iw.PricePerHour}).ToDictionary(iw => iw.Key, iw => iw.Value),
          Site = intervention.Site.ToDomain(),
-         Materials = JsonSerializer.Deserialize<Dictionary<string, double>>(intervention.Material ?? "{}") ?? new Dictionary<string, double>()
+         Materials = JsonSerializer.Deserialize<List<Material>>(intervention.Material ?? "{}") ?? []
       };
    } 
+   
+   public static Data.Intervention ToData(this Domain.Intervention intervention)
+   {
+      return new Data.Intervention
+      {
+         Id = intervention.Id,
+         Description = intervention.Description,
+         Date = intervention.Date,
+         Material = JsonSerializer.Serialize(intervention.Materials),
+         SiteId = intervention.Site.Id
+      };
+   }
 }

@@ -1,10 +1,14 @@
 @page "/CreateIntervention"
 @using Microsoft.AspNetCore.Components.QuickGrid
+@using Simtek.Application.Commands
 @using Simtek.Domain
+@using Simtek.Blazor.Components.Reusables
 @attribute [StreamRendering]
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 @inject IMediator _mediator
+@inject NavigationManager NavigationManager
+@inject ILogger<CreateIntervention> _logger
 
 <h3 class="mb-4">Nuovo Intervento</h3>
 
@@ -23,7 +27,7 @@ else if (State.CurrentStep == InterventionStep.CustomerSelection)
     <QuickGrid Class="table" Items="FilteredCustomers" Pagination="_state">
         <TemplateColumn Title="Azioni Cliente" Context="customer">
             <div class="flex flex-row align-content-center justify-content-center">
-                <button class="btn btn-dark" @onclick="()=>MoveToSiteSelection(customer)">
+                <button class="btn btn-dark" @onclick="() => MoveToSiteSelection(customer)">
                     <i class="bi bi-pencil-square"></i>
                 </button>
             </div>
@@ -43,7 +47,7 @@ else if (State.CurrentStep == InterventionStep.CustomerSelection)
 }
 else if (State.CurrentStep == InterventionStep.SiteSelection)
 {
-    <h4>Site Selection</h4>
+    <h4>Seleziona Cantiere</h4>
     <div class="flex-column my-2">
         <input class="form-control" placeholder="Cerca..." type="search" @bind="_nameFilter" @bind:event="oninput" autofocus/>
     </div>
@@ -66,12 +70,13 @@ else if (State.CurrentStep == InterventionStep.SiteSelection)
 }
 else if (State.CurrentStep == InterventionStep.InterventionCreation)
 {
-    <h4>Intervention Creation</h4>
+    <h4>Intervento</h4>
+    <InterventionForm Intervention="State.Intervention" OnSubmit="HandleSubmit"/>
 }
 
 @code {
 
-    private InterventionState State { get; set; } = new InterventionState();
+    private InterventionState State { get; set; } = new();
 
     private IQueryable<Customer>? _customers;
     private IQueryable<Site>? _sites;
@@ -101,20 +106,43 @@ else if (State.CurrentStep == InterventionStep.InterventionCreation)
                 _customers = Array.Empty<Domain.Customer>().AsQueryable();
             });
     }
-    
+
     private void MoveToSiteSelection(Customer customer)
     {
         State.SelectedCustomer = customer;
-        _nameFilter = string.Empty; 
-        State.NextStep(); 
+        _nameFilter = string.Empty;
+        State.NextStep();
         _sites = customer.Sites.AsQueryable();
     }
-    
+
     private void MoveToInterventionCreation(Site site)
     {
         State.SelectedSite = site;
+        State.Intervention.Site = site;
         _nameFilter = string.Empty;
         State.NextStep();
+    }
+
+    public async Task HandleSubmit(Intervention intervention)
+    {
+        _logger.LogInformation(State.Intervention.Description);
+        
+        var interventionOperatorsWithNoValue = State.Intervention.Operators.Where(x => x.Value == 0.0M).Select(x => x.Key).ToList();
+        
+        foreach (var operatorToRemove in interventionOperatorsWithNoValue)
+        {
+            State.Intervention.Operators.Remove(operatorToRemove);
+        }
+        
+        var result = await _mediator.Send(new CreateInterventionCommand() { Intervention = intervention });
+        result.When(
+            onSuccess: (x) =>
+            {
+                _logger.LogInformation("Intervention created with ID {0}", intervention.Id);
+                NavigationManager.NavigateTo($"/customers");
+            },
+            onFailure: e => _logger.LogError(e, "Error while creating intervention")
+        );
     }
 
     private class InterventionState
@@ -142,7 +170,7 @@ else if (State.CurrentStep == InterventionStep.InterventionCreation)
         {
             Id = 0,
             Date = DateTime.Now,
-            Description = [],
+            Description = string.Empty,
             Notes = null,
             ReportGenerated = false,
             Site = null,
