@@ -12,11 +12,25 @@ public class GetInterventionsQueryHandler(IInterventionRepository interventionRe
     {
         try
         {
+            Func<Data.Intervention, bool>? predicate = null;
+            
+            if (request.CustomerId is not null)
+            {
+                predicate = i => i.Site.CustomerId == request.CustomerId;
+            }
+            else if (request.StartDate is not null && request.EndDate is not null)
+            {
+                predicate = x=> x.Date >= request.StartDate && x.Date <= request.EndDate;
+            }
+            else if (request.CustomerId is not null && request.StartDate is not null && request.EndDate is not null)
+            {
+                predicate = x=> x.Site.CustomerId == request.CustomerId && x.Date >= request.StartDate && x.Date <= request.EndDate;
+            }
             var interventions = await interventionRepository.GetInterventionsAsync(
                 request.Page,
                 request.PageSize,
                 cancellationToken,
-                i => i.Site.CustomerId == request.CustomerId,
+                predicate,
                 request.IncludeCustomer);
             return OperationResult<IEnumerable<Intervention>>.Success(interventions);
         }
@@ -24,6 +38,5 @@ public class GetInterventionsQueryHandler(IInterventionRepository interventionRe
         {
             return OperationResult<IEnumerable<Intervention>>.Failure(e);
         }
-        throw new NotImplementedException();
     }
 }

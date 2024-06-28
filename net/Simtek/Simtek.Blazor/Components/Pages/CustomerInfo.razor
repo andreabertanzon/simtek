@@ -133,7 +133,7 @@
                 
                 getInterventionsOperation.When(
                     onSuccess: x => Interventions = x.AsQueryable(),
-                    onFailure: e => Console.WriteLine(e)
+                    onFailure: e => _logger.LogError(e, "Error while getting interventions")
                 );
                 
                 InterventionsProvider = async req =>
@@ -142,11 +142,11 @@
                     return GridItemsProviderResult.From(items: interventions, totalItemCount: interventions.Count);
                 };
             },
-            onFailure: e => Console.WriteLine(e)
+            onFailure: e => _logger.LogError(e, "Error while getting customer")
         );
     }
-    
-    public async Task<List<Intervention>> GetInterventions(int pageNumber, int pageSize)
+
+    private async Task<List<Intervention>> GetInterventions(int pageNumber, int pageSize)
     {
         var getInterventionsOperation = await _mediator.Send(new GetInterventionsQuery()
         {

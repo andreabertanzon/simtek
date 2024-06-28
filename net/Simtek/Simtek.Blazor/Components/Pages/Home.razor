@@ -1,7 +1,146 @@
 ﻿@page "/"
+@using Simtek.Domain
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Simtek.Application.Commands
+@attribute [StreamRendering]
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@inject IMediator _mediator
+@inject ILogger<Home> _logger
+@inject IJSRuntime JSRuntime
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Interventi</h1>
+<!-- date picker to select a date -->
+<input type="date" @bind="_startDate"/>
+<input type="date" @bind="_endDate"/>
+<button class="btn btn-primary" type="button" @onclick="() => Filter()">Filtra</button>
 
-Welcome to your new app.
+<!-- display all the interventions filtered by date -->
+<QuickGrid Class="table" ItemsProvider="_interventionsProvider">
+    
+    <PropertyColumn Property="intervention => intervention.Site.CustomerName" Title="Cliente" Sortable="true">
+        <ColumnOptions>
+            <input type="search" @bind="customerNameFilter" @bind:event="oninput"/>
+            <button type="button" class="btn btn-primary" @onclick="Filter">Filtra</button>
+        </ColumnOptions>
+    </PropertyColumn>
+    <PropertyColumn Property="intervention => intervention.Site.Name" Title="Cantiere" Sortable="true"/>
+    <PropertyColumn Property="intervention => intervention.ItalianDate" Title="Data" Sortable="true"/>
+    <TemplateColumn Align="Align.Center" Title="Resoconto" Context="intervention">
+        @if (intervention.ReportGenerated)
+        {
+            <i class="bi bi-check-square"></i>
+        }
+        else
+        {
+        <i class="bi bi-x-square"></i>
+        }
+    </TemplateColumn>
+    <TemplateColumn Title="Azioni" Context="intervention">
+        <button class="btn btn-outline-secondary" @onclick="()=>NavigateToEditIntervention(intervention.Id)"><i class="bi bi-pencil-square"></i></button>
+        <button class="btn btn-outline-secondary" @onclick="async ()=>await DowloadIntervention(intervention.Id)"><i class="bi bi-download"></i></button>
+        @* <button class="btn btn-danger" @onclick="async ()=>await DeleteIntervention(intervention.Id)"><i class="bi bi-x-square"></i></button> *@
+    </TemplateColumn>
+</QuickGrid>
+<Paginator State="_state"/>
+
+@code{
+
+    DateTime _startDate = DateTime.Today;
+    DateTime _endDate = DateTime.Now;
+
+    GridItemsProvider<Intervention> _interventionsProvider;
+    string customerNameFilter = "";
+    string siteNameFilter = "";
+
+    PaginationState _state = new() { ItemsPerPage = 10 };
+
+    protected override async Task OnInitializedAsync()
+    {
+        _interventionsProvider = new GridItemsProvider<Intervention>(async req =>
+        {
+            var getInterventionsOperation = await _mediator.Send(new GetInterventionsQuery()
+            {
+                IncludeCustomer = true,
+                Page = req.StartIndex,
+                PageSize = req.Count ?? 10,
+                StartDate = _startDate,
+                EndDate = _endDate
+            });
+
+            List<Intervention> intvs = [];
+
+            getInterventionsOperation.When(
+                onSuccess: x => intvs = x
+                    .Where(intv => intv.Site.CustomerName != null && intv.Site.CustomerName
+                        .Contains(customerNameFilter, StringComparison.InvariantCultureIgnoreCase))
+                    .ToList(),
+                onFailure: e => _logger.LogError(e, "Error while getting interventions")
+            );
+
+            return GridItemsProviderResult.From(items: intvs, totalItemCount: req.Count ?? 10);
+        });
+    }
+
+    private void Filter()
+    {
+        _interventionsProvider = new GridItemsProvider<Intervention>(async req =>
+        {
+            var getInterventionsOperation = await _mediator.Send(new GetInterventionsQuery()
+            {
+                IncludeCustomer = true,
+                Page = req.StartIndex,
+                PageSize = req.Count ?? 10,
+                StartDate = _startDate,
+                EndDate = _endDate
+            });
+
+            List<Intervention> intvs = [];
+
+            getInterventionsOperation.When(
+                onSuccess: x => intvs = x
+                    .Where(intv => intv.Site.CustomerName != null && intv.Site.CustomerName
+                        .Contains(customerNameFilter, StringComparison.InvariantCultureIgnoreCase))
+                    .ToList(),
+                onFailure: e => _logger.LogError(e, "Error while getting interventions")
+            );
+
+            return GridItemsProviderResult.From(items: intvs, totalItemCount: req.Count ?? 10);
+        });
+    }
+
+    private void NavigateToEditIntervention(int interventionId)
+    {
+        _logger.LogInformation("Navigate to edit intervention: {interventionId}", interventionId);
+    }
+
+    private async Task DeleteIntervention(int interventionId)
+    {
+        _logger.LogInformation("Delete intervention: {interventionId}", interventionId);
+    }
+
+    private async Task DowloadIntervention(int interventionId)
+    {
+        var result = await _mediator.Send(new GenerateExcelCommand()
+        {
+            InterventionId = interventionId
+        });
+        
+        if (!result.IsSuccess)
+        {
+            _logger.LogError(exception:result.Error,"Error while generating excel for intervention {interventionId}", interventionId);
+        }
+        else
+        {
+            var stream = result.Data;
+            var bytes = new byte[stream.Length];
+            await stream.ReadAsync(bytes, 0, (int)stream.Length);
+            await JSRuntime.InvokeVoidAsync("downloadFile", $"Intervento_{interventionId}.xlsx", Convert.ToBase64String(bytes));
+            
+        }
+
+
+    }
+
+}

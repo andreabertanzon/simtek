@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Simtek.Application.Repositories.Mappings;
 using Simtek.Data;
+using Simtek.Domain;
 using Intervention = Simtek.Domain.Intervention;
 
 namespace Simtek.Application.Repositories;
@@ -12,8 +13,8 @@ public class InterventionRepository (IDbContextFactory<SimtekContext> contextFac
     {
         await using var context = await contextFactory.CreateDbContextAsync(cancellationToken);
         
-        if (includeCustomer)
-        {
+        // if (includeCustomer)
+        // {
             var interventions = context.Interventions
                 .Include(i => i.Site)
                 .ThenInclude(x=>x.Customer)
@@ -24,24 +25,39 @@ public class InterventionRepository (IDbContextFactory<SimtekContext> contextFac
                 .Take(pageSize)
                 .ToList();
             return interventions.Select(i => i.ToDomain(i.InterventionWorkers.Select(iw => iw.Worker)));
+        // }
+        // else
+        // {
+        //     var interventions = context.Interventions
+        //         .Include(i => i.Site)
+        //         .Include(i => i.InterventionWorkers)
+        //         .ThenInclude(iw => iw.Worker)
+        //         .Where(predicate ?? (_ => true))
+        //         .Skip(page * pageSize)
+        //         .Take(pageSize)
+        //         .ToList();
+        //     return interventions.Select(i => i.ToDomain(i.InterventionWorkers.Select(iw => iw.Worker)));
+        // }
+    }
+
+    public async Task<Intervention> GetInterventionAsync(int id, CancellationToken cancellationToken = default)
+    {
+        var context = await contextFactory.CreateDbContextAsync(cancellationToken);
+        var intervention = await context.Interventions
+            .Include(i => i.Site)
+            .ThenInclude(x=>x.Customer)
+            .Include(i => i.InterventionWorkers)
+            .ThenInclude(iw => iw.Worker)
+            .FirstOrDefaultAsync(i => i.Id == id, cancellationToken);
+
+        if (intervention is not null)
+        {
+            return intervention.ToDomain(intervention.InterventionWorkers.Select(iw => iw.Worker));
         }
         else
         {
-            var interventions = context.Interventions
-                .Include(i => i.Site)
-                .Include(i => i.InterventionWorkers)
-                .ThenInclude(iw => iw.Worker)
-                .Where(predicate ?? (_ => true))
-                .Skip(page * pageSize)
-                .Take(pageSize)
-                .ToList();
-            return interventions.Select(i => i.ToDomain(i.InterventionWorkers.Select(iw => iw.Worker)));
+            throw new NoDataFoundException("Intervention not found.");
         }
-    }
-
-    public Task<Intervention> GetInterventionAsync(int id, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
     }
 
     public async Task<Intervention> CreateInterventionAsync(Intervention intervention, CancellationToken cancellationToken = default)

@@ -16,6 +16,20 @@
 <body>
 <Routes/>
 <script src="_framework/blazor.web.js"></script>
+<script>
+window.downloadFile = function (filename, base64Data) {
+    var data = atob(base64Data);
+    var bytes = new Uint8Array(data.length);
+    for (var i = 0; i < data.length; i++) {
+        bytes[i] = data.charCodeAt(i);
+    }
+    var blob = new Blob([bytes.buffer], { type: 'application/octet-stream' });
+    var link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+};
+</script>
 </body>
 
 </html>

@@ -15,6 +15,7 @@ public class SiteRepository(
         await using var context = await contextFactory.CreateDbContextAsync(cancellationToken);
         var sites = context
             .Sites
+            .Include(x=>x.Customer)
             .Where(predicate ?? (_ => true)).ToArray();
 
         return sites.ToDomain();
@@ -27,7 +28,7 @@ public class SiteRepository(
             .Sites
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         
-        return site?.ToDomain() ?? throw new NoDataFoundException("Site not found");
+        return site?.ToDomainWithNoIntervention() ?? throw new NoDataFoundException("Site not found");
     }
 
     public async Task CreateSiteAsync(Site site, CancellationToken cancellationToken = default)

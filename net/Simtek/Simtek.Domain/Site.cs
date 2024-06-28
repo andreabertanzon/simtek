@@ -9,4 +9,6 @@ public sealed class Site
     public string? ZipCode { get; set; }
     
     public int CustomerId { get; set; }
+    
+    public string? CustomerName { get; set; }
 }

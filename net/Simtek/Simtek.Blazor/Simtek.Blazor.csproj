@@ -15,4 +15,14 @@
       <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid" Version="8.0.6" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Template\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="Template\Intervento_template.xlsx">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
