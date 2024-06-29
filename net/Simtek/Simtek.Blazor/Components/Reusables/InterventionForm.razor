@@ -57,10 +57,17 @@
     protected override async Task OnInitializedAsync()
     {
         var getOperatorsOperation = await _mediator.Send(new GetWorkersQuery());
-        getOperatorsOperation.When(
-            onSuccess: x => _operators = x.Select(worker => new OperatorInfo { Worker = worker,  Value = 0.0M }).ToList(),
-            onFailure: x => Console.WriteLine(x)
-        );
+        if (Intervention.Operators.Count >0)
+        {
+            _operators = Intervention.Operators.Select(x => new OperatorInfo { Worker = x.Key, Value = x.Value }).ToList();
+        }
+        else
+        {
+            getOperatorsOperation.When(
+                onSuccess: x => _operators = x.Select(worker => new OperatorInfo { Worker = worker, Value = 0.0M }).ToList(),
+                onFailure: x => Console.WriteLine(x)
+            );
+        }
     }
 
     public async Task HandleSubmit()

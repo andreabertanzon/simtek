@@ -7,6 +7,7 @@
 @inject IMediator _mediator
 @inject ILogger<Home> _logger
 @inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
 
 <PageTitle>Home</PageTitle>
 
@@ -17,7 +18,7 @@
 <button class="btn btn-primary" type="button" @onclick="() => Filter()">Filtra</button>
 
 <!-- display all the interventions filtered by date -->
-<QuickGrid Class="table" ItemsProvider="_interventionsProvider">
+<QuickGrid Class="table table-hover" ItemsProvider="_interventionsProvider">
     
     <PropertyColumn Property="intervention => intervention.Site.CustomerName" Title="Cliente" Sortable="true">
         <ColumnOptions>
@@ -113,6 +114,7 @@
     private void NavigateToEditIntervention(int interventionId)
     {
         _logger.LogInformation("Navigate to edit intervention: {interventionId}", interventionId);
+        NavigationManager.NavigateTo("/EditIntervention/" + interventionId);
     }
 
     private async Task DeleteIntervention(int interventionId)

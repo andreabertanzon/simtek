@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Simtek.Application.Repositories.Mappings;
 using Simtek.Data;
@@ -63,6 +64,42 @@ public class InterventionRepository (IDbContextFactory<SimtekContext> contextFac
     public async Task<Intervention> CreateInterventionAsync(Intervention intervention, CancellationToken cancellationToken = default)
     {
         await using var context = await contextFactory.CreateDbContextAsync(cancellationToken);
+        
+        // if the intervention exists update it 
+        var interventionExists = await context.Interventions
+            .Include(i => i.InterventionWorkers)
+            .FirstOrDefaultAsync(i => i.Id == intervention.Id, cancellationToken);
+        if (interventionExists is not null)
+        {
+            interventionExists.Description = intervention.Description;
+            interventionExists.Date = intervention.Date;
+            interventionExists.Material = JsonSerializer.Serialize(intervention.Materials);
+            interventionExists.SiteId = intervention.Site.Id;
+            interventionExists.Notes = intervention.Notes;
+            context.Interventions.Update(interventionExists);
+            
+            await context.SaveChangesAsync(cancellationToken);
+            foreach (var op in intervention.Operators)
+            {
+                var interventionWorker = interventionExists.InterventionWorkers.FirstOrDefault(iw => iw.WorkerId == op.Key.Id);
+                if (interventionWorker is not null)
+                {
+                    interventionWorker.HourSpent = op.Value;
+                    context.InterventionWorkers.Update(interventionWorker);
+                }
+                else
+                {
+                    context.Add(new InterventionWorker
+                    {
+                        InterventionId = intervention.Id,
+                        WorkerId = op.Key.Id,
+                        HourSpent = op.Value
+                    });
+                }
+            }
+            await context.SaveChangesAsync(cancellationToken);
+            return intervention;
+        }
         
         var interventionNew = context.Interventions.Add(intervention.ToData());
         await context.SaveChangesAsync(cancellationToken);
