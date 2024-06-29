@@ -30,7 +30,7 @@
     {
         var operationResult = await _mediator.Send(new CreateInterventionCommand(){Intervention = arg});
         operationResult.When(
-            onSuccess: x => NavigationManager.NavigateTo($"/customers"),
+            onSuccess: x => NavigationManager.NavigateTo($"/"),
             onFailure: e => _logger.LogError(e, "Error while updating intervention")
         );
     }
