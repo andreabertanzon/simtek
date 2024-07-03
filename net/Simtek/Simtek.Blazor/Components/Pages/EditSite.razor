@@ -19,7 +19,7 @@ else
 
 @if (Site != null)
 {
-    <SiteForm site="Site" OnSubmit="async site => await HandleSubmit(site)"/>
+    <SiteForm site="Site" OnSubmit="async site => await HandleSubmit(site)" OnCancel="OnCancel"/>
 }else{
     <p>Caricamento...</p>
 }
@@ -62,5 +62,10 @@ else
             onSuccess: (x) => NavigationManager.NavigateTo($"/CustomerInfo/{CustomerId}"),
             onFailure: e => Console.WriteLine(e)
         );
+    }
+    
+    private async Task OnCancel()
+    {
+        NavigationManager.NavigateTo($"/CustomerInfo/{CustomerId}");
     }
 }

@@ -24,15 +24,36 @@
             onSuccess: i => Intervention = i,
             onFailure: e => _logger.LogError(e, "Error while getting intervention")
         );
+        
+        var getWorkersOperation = await _mediator.Send(new GetWorkersQuery());
+        getWorkersOperation.When(
+            onSuccess: x =>
+            {
+                foreach (var worker in x)
+                { 
+                    var operatorExists=Intervention.Operators.FirstOrDefault(x => x.Key.Id == worker.Id);
+                    if (operatorExists.Key == null)
+                    {
+                        Intervention.Operators.Add(worker, 0.0M);
+                    }
+                }
+            },
+            onFailure: e => _logger.LogError(e, "Error while getting workers")
+        );
     }
 
     private async Task HandleSubmit(Intervention arg)
     {
+        var interventionOperatorsWithNoValue = Intervention.Operators.Where(x => x.Value == 0.0M).Select(x => x.Key).ToList();
+        foreach (var workerNov in interventionOperatorsWithNoValue)
+        {
+            arg.Operators.Remove(workerNov);
+        }
+        
         var operationResult = await _mediator.Send(new CreateInterventionCommand(){Intervention = arg});
         operationResult.When(
             onSuccess: x => NavigationManager.NavigateTo($"/"),
             onFailure: e => _logger.LogError(e, "Error while updating intervention")
         );
     }
-
 }

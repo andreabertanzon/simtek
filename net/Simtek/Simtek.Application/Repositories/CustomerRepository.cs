@@ -33,9 +33,20 @@ public class CustomerRepository(IDbContextFactory<SimtekContext> contextFactory)
     public async Task CreateCustomerAsync(Domain.Customer customer, CancellationToken cancellationToken = default)
     {
         await using var context = await contextFactory.CreateDbContextAsync(cancellationToken);
-        if (context.Customers.Any(x => x.Name == customer.Name && x.Surname == customer.Surname))
+        var existingCustomer = context.Customers
+            .FirstOrDefault(x => x.Name == customer.Name && x.Surname == customer.Surname);
+        if (existingCustomer is not null)
         {
-            context.Customers.Update(customer.ToData());
+            existingCustomer.Address = customer.Address;
+            existingCustomer.City = customer.City;
+            existingCustomer.Email = customer.Email ?? "email@mancalemail.com";
+            existingCustomer.Phone = customer.Phone;
+            existingCustomer.Vat = customer.Vat;
+            existingCustomer.Zip = customer.Zip;
+            existingCustomer.Name = customer.Name;
+            existingCustomer.Surname = customer.Surname;
+            
+            context.Customers.Update(existingCustomer);
             await context.SaveChangesAsync(cancellationToken);
             return;
         }
@@ -43,14 +54,14 @@ public class CustomerRepository(IDbContextFactory<SimtekContext> contextFactory)
         context.Customers.Add(
             new Data.Customer()
             {
-                Name = customer.Name,
+                Name = customer.Name?.Trim(),
                 Email = customer.Email ?? "email@mancalemail.com",
-                Phone = customer.Phone,
-                Address = customer.Address,
-                City = customer.City,
-                Zip = customer.Zip,
-                Vat = customer.Vat,
-                Surname = customer.Surname
+                Phone = customer.Phone?.Trim(),
+                Address = customer.Address?.Trim(),
+                City = customer.City?.Trim(),
+                Zip = customer.Zip?.Trim(),
+                Vat = customer.Vat?.Trim(),
+                Surname = customer.Surname.Trim()
             }
         );
         await context.SaveChangesAsync(cancellationToken);

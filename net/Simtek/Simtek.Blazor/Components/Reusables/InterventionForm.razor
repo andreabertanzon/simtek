@@ -3,6 +3,10 @@
 
 <EditForm Model="Intervention" Enhance OnValidSubmit="HandleSubmit">
     <hr/>
+    <h4> Seleziona Data </h4>
+    <div class="form-group mb-4">
+    <InputDate id="date" class="form-control" @bind-Value="Intervention.Date"></InputDate>
+    </div>
     <h4 class="mt-4">Select Operator</h4>
     @foreach (var operatorInfo in _operators)
     {

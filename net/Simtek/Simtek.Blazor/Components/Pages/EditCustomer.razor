@@ -54,7 +54,7 @@ else
 
     private async Task HandleSubmit(Customer customer)
     {
-        var result = await _mediator.Send(new CreateCustomerCommand() { Customer = customer });
+        var result = await _mediator.Send(new UpdateCustomerCommand() { Customer = customer });
         result.When(
             onSuccess: (x) => NavigationManager.NavigateTo("customers"),
             onFailure: e => Console.WriteLine(e)

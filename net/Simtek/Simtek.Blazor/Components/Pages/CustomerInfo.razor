@@ -1,12 +1,14 @@
 @page "/CustomerInfo/{Id:int}"
 @using Simtek.Domain
 @using Microsoft.AspNetCore.Components.QuickGrid
+@using Simtek.Application.Commands
 @attribute [StreamRendering]
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 @inject IMediator _mediator
 @inject NavigationManager NavigationManager
 @inject ILogger<CustomerInfo> _logger
+@inject IJSRuntime JSRuntime
 
 <h3 class="mb-4">@Customer?.FullName</h3>
 
@@ -108,6 +110,11 @@
 </QuickGrid>
 <Paginator State="_state"/>
 
+@if (Customer?.Sites.Any() ?? false)
+{
+    <button class="btn btn-primary" @onclick="NavigateToCreateIntervention"><i class="bi bi-journal-plus"></i> Crea Intervento</button>
+}
+
 @code {
     [Parameter] public int Id { get; set; }
     Customer? Customer { get; set; }
@@ -170,14 +177,35 @@
         if (Customer != null) NavigationManager.NavigateTo($"/EditSite/{Customer.Id}/{i}");
     }
 
-    private Task NavigateToEditIntervention(int interventionId)
+    private async Task NavigateToEditIntervention(int interventionId)
     {
-        throw new NotImplementedException();
+        NavigationManager.NavigateTo("/EditIntervention/" + interventionId);
     }
 
-    private Task NavigateToInterventionInfo(int interventionId)
+    private async Task NavigateToInterventionInfo(int interventionId)
     {
-        throw new NotImplementedException();
+        var result = await _mediator.Send(new GenerateExcelCommand()
+        {
+            InterventionId = interventionId
+        });
+        
+        if (!result.IsSuccess)
+        {
+            _logger.LogError(exception:result.Error,"Error while generating excel for intervention {interventionId}", interventionId);
+        }
+        else
+        {
+            var stream = result.Data;
+            var bytes = new byte[stream.Length];
+            await stream.ReadAsync(bytes, 0, (int)stream.Length);
+            await JSRuntime.InvokeVoidAsync("downloadFile", $"Intervento_{interventionId}.xlsx", Convert.ToBase64String(bytes));
+            
+        }
+    }
+
+    private void NavigateToCreateIntervention()
+    {
+        NavigationManager.NavigateTo($"CreateIntervention/{Id}");
     }
 
 }

@@ -25,13 +25,18 @@
         <InputText id="cap" class="form-control" @bind-Value="site.ZipCode"></InputText>
         <ValidationMessage For="() => site.ZipCode"/>
     </div>
-    <button class="btn btn-primary" type="submit">Save</button>
+    <button class="btn btn-primary mt-2" type="submit">Save</button>
+    @if(OnCancel != null)
+    {
+        <button class="btn btn-secondary mt-2 mx-2" type="button" @onclick="OnCancel">Cancel</button>
+    }
 </EditForm>
 
 @code {
     [Parameter]
     public Site site { get; set; }
     [Parameter] public Func<Site,Task> OnSubmit { get; set; }
+    [Parameter] public Func<Task>? OnCancel { get; set; }
 
     private async Task HandleSubmit()
     {

@@ -1,4 +1,4 @@
-@page "/CreateIntervention"
+@page "/CreateIntervention/{CustomerId:int?}"
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using Simtek.Application.Commands
 @using Simtek.Domain
@@ -13,13 +13,9 @@
 <h3 class="mb-4">Nuovo Intervento</h3>
 
 
-@if (_customers == null)
+@if (State.CurrentStep == InterventionStep.CustomerSelection)
 {
-    <p>Loading ...</p>
-}
-else if (State.CurrentStep == InterventionStep.CustomerSelection)
-{
-    <h4>Seleziona Cliente</h4>
+    <h4>Step 1: Seleziona Cliente</h4>
 
     <div class="flex-column my-2">
         <input class="form-control" placeholder="Cerca..." type="search" @bind="_nameFilter" @bind:event="oninput" autofocus/>
@@ -47,26 +43,37 @@ else if (State.CurrentStep == InterventionStep.CustomerSelection)
 }
 else if (State.CurrentStep == InterventionStep.SiteSelection)
 {
-    <h4>Seleziona Cantiere</h4>
+    <h4>Step 2: Seleziona Cantiere</h4>
     <div class="flex-column my-2">
         <input class="form-control" placeholder="Cerca..." type="search" @bind="_nameFilter" @bind:event="oninput" autofocus/>
     </div>
-    <QuickGrid Class="table" Items="FilteredSites" Pagination="_state">
-        <TemplateColumn Title="Azioni" Context="site">
-            <div class="flex flex-row align-content-center justify-content-center">
-                <button class="btn btn-dark" @onclick="() => MoveToInterventionCreation(site)">
-                    <i class="bi bi-pencil-square"></i>
-                </button>
-            </div>
-        </TemplateColumn>
-        <PropertyColumn Property="site => site.Name" Sortable="true">
-        </PropertyColumn>
-        <PropertyColumn Property="site => site.Address"/>
-        <PropertyColumn Property="site => site.City"/>
-        <PropertyColumn Property="site => site.ZipCode"/>
+    @if(FilteredSites.Count() < 1)
+    {
+        <p>Nessun cantiere trovato</p>
+        <p>Vai al cliente per creare l'intervento:</p>
+        <button class="btn btn-dark" @onclick="NavigateToCustomerInfo">
+        <i class="bi bi-plus"></i> Crea
+        </button>
+    }
+    else
+    {
+        <QuickGrid Class="table" Items="FilteredSites" Pagination="_state">
+            <TemplateColumn Title="Azioni" Context="site">
+                <div class="flex flex-row align-content-center justify-content-center">
+                    <button class="btn btn-dark" @onclick="() => MoveToInterventionCreation(site)">
+                        <i class="bi bi-pencil-square"></i>
+                    </button>
+                </div>
+            </TemplateColumn>
+            <PropertyColumn Property="site => site.Name" Sortable="true">
+            </PropertyColumn>
+            <PropertyColumn Property="site => site.Address"/>
+            <PropertyColumn Property="site => site.City"/>
+            <PropertyColumn Property="site => site.ZipCode"/>
 
-    </QuickGrid>
-    <Paginator State="_state"/>
+        </QuickGrid>
+        <Paginator State="_state"/>
+    }
 }
 else if (State.CurrentStep == InterventionStep.InterventionCreation)
 {
@@ -80,6 +87,7 @@ else if (State.CurrentStep == InterventionStep.InterventionCreation)
 
     private IQueryable<Customer>? _customers;
     private IQueryable<Site>? _sites;
+    [Parameter] public int? CustomerId { get; set; }
 
     private IQueryable<Domain.Customer>? FilteredCustomers => _customers?.Where(x =>
         (x.Name != null && x.Name.Contains(_nameFilter, StringComparison.OrdinalIgnoreCase)) ||
@@ -94,6 +102,20 @@ else if (State.CurrentStep == InterventionStep.InterventionCreation)
 
     protected override async Task OnInitializedAsync()
     {
+        if (CustomerId is not null)
+        {
+            var customerOperation = await _mediator.Send(new GetCustomerQuery() { Id = CustomerId.Value });
+            customerOperation.When(
+                onSuccess: x =>
+                {
+                    State.SelectedCustomer = x;
+                    State.CurrentStep = InterventionStep.SiteSelection;
+                    _sites = x.Sites.AsQueryable();
+                },
+                onFailure: x => _logger.LogError(x, "Error while getting customer")
+            );
+            return;
+        }
         (await _mediator.Send(new GetCustomersQuery())).When(
             onSuccess: x =>
             {
@@ -190,6 +212,11 @@ else if (State.CurrentStep == InterventionStep.InterventionCreation)
         CustomerSelection = 0,
         SiteSelection = 1,
         InterventionCreation = 2
+    }
+
+    private void NavigateToCustomerInfo()
+    {
+        NavigationManager.NavigateTo($"CustomerInfo/{State.SelectedCustomer.Id}");
     }
 
 }
